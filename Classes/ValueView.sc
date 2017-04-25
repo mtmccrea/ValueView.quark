@@ -164,8 +164,6 @@ ValueView : View {
 		}
 	}
 
-	// init { this.subclassResponsibility(thisMethod) }
-
 	drawFunc { this.subclassResponsibility(thisMethod) }
 
 	value_ {|val|
@@ -235,11 +233,12 @@ ValueView : View {
 	}
 
 	spec_ {|controlSpec, updateValue=true|
-		var rangeInPx = spec.range/valuePerPixel; // get old pixels per range
+		var rangeInPx;
 		if (controlSpec.isKindOf(ControlSpec).not) {
 			"Spec provided isn't a ControlSpec. Spec isn't updated.".warn;
 			^this
 		};
+		rangeInPx = spec.range/valuePerPixel; // get old pixels per range
 		spec = controlSpec;
 		this.rangeInPixels_(rangeInPx);			// restore mouse scaling so it feels the same
 		updateValue.if{this.value_(value)};	// also updates input
