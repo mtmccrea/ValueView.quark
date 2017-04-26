@@ -116,20 +116,24 @@ XYBackgroundLayer : ValueViewLayer {
 
 	stroke {
 		var strokeWidth, sw_h, c;
-		strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.minDim}{p.strokeWidth};
-		sw_h = strokeWidth * 0.5;
-		c = view.canvas;
-		Pen.push;
-		Pen.strokeColor_(p.strokeXColor);
-		Pen.width_(strokeWidth);
-		Pen.strokeRect(Size(c.width-sw_h, c.height-sw_h).asRect.top_(c.top+sw_h).left_(c.left+sw_h));
-		Pen.pop;
+		if (p.stroke) {
+			strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.minDim}{p.strokeWidth};
+			sw_h = strokeWidth * 0.5;
+			c = view.canvas;
+			Pen.push;
+			Pen.strokeColor_(p.strokeXColor);
+			Pen.width_(strokeWidth);
+			Pen.strokeRect(Size(c.width-sw_h, c.height-sw_h).asRect.top_(c.top+sw_h).left_(c.left+sw_h));
+			Pen.pop;
+		}
 	}
 
 	fill {
-		Pen.push;
-		Pen.fillColor_(p.fillColor);
-		Pen.fillRect(view.canvas);
-		Pen.pop;
+		if (p.fill) {
+			Pen.push;
+			Pen.fillColor_(p.fillColor);
+			Pen.fillRect(view.canvas);
+			Pen.pop;
+		}
 	}
 }
