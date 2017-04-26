@@ -20,8 +20,6 @@ RotaryView : ValueView {
 	// drawing layers. Add getters to get/set individual properties by '.p'
 	var <range, <level, <text, <ticks, <handle, <outline;
 
-
-
 	*new {
 		|parent, bounds, spec, initVal, startAngle=0, sweepLength=2pi, innerRadiusRatio=0, outerRadiusRatio=1|
 		^super.new(parent, bounds, spec, initVal).init(startAngle, sweepLength, innerRadiusRatio, outerRadiusRatio);
