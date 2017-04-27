@@ -5,55 +5,57 @@ XYRangeLayer : ValueViewLayer {
 			show:					true,
 			strokeXColor: Color.blue.alpha_(0.5),
 			strokeYColor: Color.red.alpha_(0.5),
-			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			strokeWidth: 	0.03,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
 			fontSize:			11,
 		)
 	}
 
 	stroke {
-		var strokeWidth, sw_h, txtSize, c;
+		var strokeWidth, sw_h, txtRect, tmp, w, h, font;
 		strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.minDim}{p.strokeWidth};
 		sw_h = strokeWidth * 0.5;
-		txtSize = Size(45@25);
-		c = view.canvas;
+		txtRect = Size(45,p.fontSize+2).asRect;
+		w = view.canvas.width;
+		h = view.canvas.height;
+		font = Font("Helvetica", p.fontSize);
 
 		Pen.push;
 		// bottom axis
 		Pen.strokeColor_(p.strokeXColor);
-		Pen.moveTo(c.leftBottom - (0@sw_h));
-		Pen.lineTo(c.rightBottom - (0@sw_h));
+		Pen.width = strokeWidth;
+		tmp = h-sw_h;
+		Pen.moveTo(0@tmp);
+		Pen.lineTo(w@tmp);
 		Pen.stroke;
 		// txt labels
-		Pen.stringLeftJustIn(
+		tmp = h-strokeWidth;
+		Pen.stringInRect(
 			view.specs[0].minval.asString,
-			txtSize.asRect.left_(c.left).bottom_(c.bottom - strokeWidth),
-			Font.default.size_(p.fontSize),
-			p.strokeXColor
+			txtRect.left_(0).bottom_(tmp),
+			font, p.strokeXColor, QAlignment(\left)
 		);
-		Pen.stringRightJustIn(
+		Pen.stringInRect(
 			view.specs[0].maxval.asString,
-			txtSize.asRect.right_(c.right-strokeWidth).bottom_(c.bottom - strokeWidth),
-			Font.default.size_(p.fontSize),
-			p.strokeXColor
+			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth),
+			font, p.strokeXColor, QAlignment(\right)
 		);
 
 		// right axis
 		Pen.strokeColor_(p.strokeYColor);
-		Pen.moveTo(view.c.rightBottom - (sw_h@0));
-		Pen.lineTo(view.c.rightTop - (sw_h@0));
+		tmp = w-sw_h;
+		Pen.moveTo(tmp@h);
+		Pen.lineTo(tmp@0);
 		Pen.stroke;
 		// txt labels
-		Pen.stringRightJustIn(
+		Pen.stringInRect(
 			view.specs[1].minval.asString,
-			txtSize.asRect.right_(c.right-strokeWidth).bottom_(c.bottom - strokeWidth - p.fontSize - 5),
-			Font.default.size_(p.fontSize),
-			p.strokeYColor
+			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth-txtRect.height-5),
+			font, p.strokeYColor, QAlignment(\right)
 		);
-		Pen.stringRightJustIn(
+		Pen.stringInRect(
 			view.specs[1].maxval.asString,
-			txtSize.asRect.right_(c.right-strokeWidth).top_(c.top),
-			Font.default.size_(p.fontSize),
-			p.strokeYColor
+			txtRect.right_(w-strokeWidth).top_(0),
+			font, p.strokeYColor, QAlignment(\right)
 		);
 
 		Pen.pop;
@@ -110,7 +112,7 @@ XYBackgroundLayer : ValueViewLayer {
 			strokeColor:	Color.black,
 			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
 			fill:					true,
-			fillColor:		Color(0.1, 0.1, 0.1),
+			fillColor:		Color(0.9, 0.9, 0.9),
 		)
 	}
 
@@ -132,7 +134,7 @@ XYBackgroundLayer : ValueViewLayer {
 		if (p.fill) {
 			Pen.push;
 			Pen.fillColor_(p.fillColor);
-			Pen.fillRect(view.canvas);
+			Pen.fillRect(Rect(0,0,view.canvas.width, view.canvas.height));
 			Pen.pop;
 		}
 	}

@@ -1,6 +1,6 @@
 XYScaleView : ValuesView {
 	var <>moveRelative, <>fixSquare = true;
-	var background, range, levels;
+	var <background, <range, <levels;
 	var <bnds, <cen, <minDim, <canvas; // for access by drawing layers
 	var mDownInCanvas, stInputs;
 
@@ -15,7 +15,7 @@ XYScaleView : ValuesView {
 
 		// REQUIRED: in subclass init, initialize drawing layers
 		// initialize layer classes and save them to vars
-		#range, levels = [
+		#background, range, levels = [
 			XYBackgroundLayer, XYRangeLayer, XYLevelsLayer
 		].collect({
 			|class|
@@ -30,9 +30,11 @@ XYScaleView : ValuesView {
 	drawFunc {
 		^{|v|
 			// "global" instance vars, accessed by ValueViewLayers
+			"drawing:".postln;
 			bnds = v.bounds;
 			cen  = bnds.center;
 			minDim = min(bnds.width, bnds.height);
+			// TODO: move setting this variable to onResize function
 			canvas = if (fixSquare) {
 				Size(minDim, minDim).asRect.center_(cen);
 			} {

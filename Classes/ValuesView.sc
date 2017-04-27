@@ -83,12 +83,12 @@ ValuesView : View {
 
 	drawFunc { this.subclassResponsibility(thisMethod) }
 
+	wrapAt_ {|index, bool| wrap[index] = bool}
+
 	values_ {|...vals|
-		var oldVal, changed=false;
+		var changed = (vals != values);
 		vals.do{|val, i|
-			oldVal = values[i];
 			this.valueAt_(i, val, false);		// wait to broadcast all the changed values
-			if (val!=oldVal) {changed=true}
 		};
 		this.broadcastState(changed);
 	}
@@ -106,30 +106,26 @@ ValuesView : View {
 		broadcast.if{this.broadcastState(values[index]!=oldValue)};
 	}
 
-	valueAt { |index| ^values[index] }
-
-	wrapAt_ {|index, bool| wrap[index] = bool}
+	valueAt {|index| ^values[index] }
 
 	// set the value by unmapping a normalized value 0>1
-	inputs_ {|...normValues|
-		var oldVal, changed=false;
-		normValues.do{ |input, i|
-			oldVal = inputs[i];
-			this.inputAt_(i, input, false);		// wait to broadcast all the changed values
-			if (input!=oldVal) {changed=true}
+	inputs_ {|...normInputs|
+		var changed = (normInputs != inputs);
+		normInputs.do{ |in, i|
+			this.inputAt_(i, in, false);	// false: wait to broadcast all the changed values at once
 		};
 		this.broadcastState(changed);
 	}
 
-	inputAt_ {|index, normValue, broadcast=true|
+	inputAt_ {|index, normInput, broadcast=true|
 		var spec, oldValue;
 		spec = specs[index];
 		oldValue = values[index];
 
 		inputs[index] = if (wrap[index]) {
-			normValue.wrap(0,1);
+			normInput.wrap(0,1);
 		} {
-			normValue.clip(0,1);
+			normInput.clip(0,1);
 		};
 		values[index] = spec.map(inputs[index]);
 		inputs[index] = spec.unmap(values[index]);
@@ -144,11 +140,24 @@ ValuesView : View {
 		this.doAction(oldValue!=values[index]);
 	}
 
-	inputAtAction_ {|index, normValue|
+	inputAtAction_ {|index, normInput|
 		var oldValue = inputs[index];
-		this.input_(normValue);
+		this.input_(normInput);
 		this.doAction(oldValue!=inputs[index]);
 	}
+
+	valuesAction_ {|...newValues|
+		var changed = (newValues != values);
+		this.values_(*newValues);
+		this.doAction(changed);
+	}
+
+	inputsAction_ {|...normInputs|
+		var changed = (normInputs != inputs);
+		this.inputs_(*normInputs);
+		this.doAction(changed);
+	}
+
 
 	broadcastState { |newValue=true|
 		// update the value and input in layers' properties list
@@ -167,7 +176,7 @@ ValuesView : View {
 		if (newValue) {this.refresh};
 	}
 
-	action_ { |actionFunc|
+	action_ {|actionFunc|
 		action = actionFunc;
 	}
 
