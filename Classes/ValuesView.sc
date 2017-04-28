@@ -23,6 +23,9 @@ ValuesView : View {
 	superInit { |argSpecs, initVals|
 		var numVals;
 
+		// initVals are how we know how many values this view uses
+		// this makes more sense then requiring specs and initializing
+		// to their default values
 		initVals ?? {Error("No initial values provided to ValuesView").throw};
 
 		numVals = initVals.size;
