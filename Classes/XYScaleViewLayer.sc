@@ -36,7 +36,7 @@ XYRangeLayer : ValueViewLayer {
 		);
 		Pen.stringInRect(
 			view.specs[0].maxval.asString,
-			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth),
+			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth-txtRect.height),
 			font, p.strokeXColor, QAlignment(\right)
 		);
 
@@ -49,7 +49,7 @@ XYRangeLayer : ValueViewLayer {
 		// txt labels
 		Pen.stringInRect(
 			view.specs[1].minval.asString,
-			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth-txtRect.height-5),
+			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth),
 			font, p.strokeYColor, QAlignment(\right)
 		);
 		Pen.stringInRect(
@@ -73,17 +73,19 @@ XYLevelsLayer : ValueViewLayer {
 			strokeXColor: Color.blue.alpha_(0.5),
 			strokeYColor: Color.red.alpha_(0.5),
 			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			fontSize:			11,
+			fontSize:			14,
 		)
 	}
 
 	stroke {
 		var strokeWidth, txtSize, c, xpx, ypx;
+		var txtRect, txtRect1, txtRect2, font, align;
 		strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.minDim}{p.strokeWidth};
 		txtSize = Size(45@25);
 		c = view.canvas;
 		#xpx, ypx = view.inputs * [c.width, c.height];
 		ypx = c.height - ypx; // invert y for upward positive
+		font = Font("Helvetica", p.fontSize);
 
 		Pen.push;
 		// x value
@@ -96,6 +98,39 @@ XYLevelsLayer : ValueViewLayer {
 		Pen.moveTo(0@ypx);
 		Pen.lineTo(c.width@ypx);
 		Pen.stroke;
+
+		Pen.fillColor_(p.strokeXColor.blend(p.strokeYColor, 0.5));
+		Pen.fillOval(Size(6,6).asRect.origin_(xpx@ypx-3@3));
+
+		if (p.showText) {
+			txtRect = Size(45,p.fontSize+2).asRect;
+			// find left bound
+			if (xpx < txtRect.width) {
+				txtRect = txtRect.left_(xpx+4);
+				align = \left;
+			} {
+				txtRect = txtRect.right_(xpx-4);
+				align = \right;
+			};
+			// find top bound
+			if (ypx < (txtRect.height*2)) {
+				txtRect1 = txtRect.copy.top_(ypx+2); // x val rect
+				txtRect2 = txtRect.top_(ypx+txtRect.height); // y val rect
+			} {
+				txtRect1 = txtRect.copy.bottom_(ypx-txtRect.height); // x val rect
+				txtRect2 = txtRect.bottom_(ypx-2); // y val rect
+			};
+			// x value
+			Pen.stringInRect(
+				view.values[0].round(0.1).asString, txtRect1,
+				font, p.strokeXColor, QAlignment(align)
+			);
+			// y value
+			Pen.stringInRect(
+				view.values[1].round(0.1).asString, txtRect2,
+				font, p.strokeYColor, QAlignment(align)
+			);
+		};
 
 		Pen.pop;
 	}

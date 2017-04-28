@@ -2,7 +2,7 @@ XYScaleView : ValuesView {
 	var <>moveRelative, <>fixSquare = true;
 	var <background, <range, <levels;
 	var <bnds, <cen, <minDim, <canvas; // for access by drawing layers
-	var mDownInCanvas, stInputs;
+	var mDownInCanvas, stInputsPnt;
 
 	*new {
 		|parent, bounds, specs, initVals, moveRelative=false|
@@ -30,7 +30,6 @@ XYScaleView : ValuesView {
 	drawFunc {
 		^{|v|
 			// "global" instance vars, accessed by ValueViewLayers
-			"drawing:".postln;
 			bnds = v.bounds;
 			cen  = bnds.center;
 			minDim = min(bnds.width, bnds.height);
@@ -38,7 +37,7 @@ XYScaleView : ValuesView {
 			canvas = if (fixSquare) {
 				Size(minDim, minDim).asRect.center_(cen);
 			} {
-				v.bnds.size.asRect
+				bnds.size.asRect
 			};
 			this.drawInThisOrder;
 		};
@@ -65,7 +64,7 @@ XYScaleView : ValuesView {
 				if (moveRelative.not) {
 					this.setAbsPosInput(mouseDownPnt);
 				} {
-					stInputs = inputs;
+					stInputsPnt = inputs.copy.asPoint; // store starting input for relative movement
 				}
 			}
 		};
@@ -75,10 +74,9 @@ XYScaleView : ValuesView {
 			mouseMovePnt = x@y;
 			if (mDownInCanvas) { // make sure click started in canvas bounds
 				if (moveRelative) {
-					var dx, dy; // normalized change
-					dx = mouseMovePnt.x - mouseDownPnt.x / canvas.width;
-					dy = (mouseMovePnt.y - mouseDownPnt.y / canvas.height).neg;
-					this.inputsAction_(dx - stInputs[0], dy - stInputs[1]);
+					var delta; // normalized change
+					delta = mouseMovePnt - mouseDownPnt / (canvas.width@canvas.height.neg);
+					this.inputsAction_(*(delta + stInputsPnt).asArray);
 				} { // folow absolute position
 					this.setAbsPosInput(mouseMovePnt);
 				}
