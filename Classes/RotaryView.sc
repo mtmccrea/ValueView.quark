@@ -90,16 +90,14 @@ RotaryView : ValueView {
 	}
 
 	drawInThisOrder {
-		if (outline.p.show) {
-			if (outline.p.fill) {outline.fill};
-			if (outline.p.stroke) {outline.stroke};
-		};
+		if (outline.p.show and: outline.p.fill) {outline.fill};
 		if (range.p.show and: range.p.fill) {range.fill};
 		if (level.p.show and: level.p.fill) {level.fill};
 		if (ticks.p.show) {ticks.fill; ticks.stroke};
 		if (range.p.show and: range.p.stroke) {range.stroke};
 		if (level.p.show and: level.p.stroke) {level.stroke};
 		if (handle.p.show) {handle.stroke}; // fill isn't used because they need not be drawn separately
+		if (outline.p.show and: outline.p.stroke) {outline.stroke};
 		if (text.p.show) {text.fill; text.stroke};
 	}
 

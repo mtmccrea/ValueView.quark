@@ -417,7 +417,7 @@ RotaryHandleLayer : ValueViewLayer {
 
 }
 
-RotaryOutlineLayer : RotaryArcWedgeLayer {
+RotaryOutlineLayer : ValueViewLayer {
 
 	*properties {
 		^(
@@ -428,21 +428,36 @@ RotaryOutlineLayer : RotaryArcWedgeLayer {
 			stroke: 	 		true,
 			strokeColor: 	Color.black,
 			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			rangeOnly:		false,				// if true, outline only the range of the rotary, not full circle
+			capStyle:			\flat,				// if rangeOnly
 		)
 	}
 
 	stroke {
-		var d, rect, strokeWidth;
-		d = p.radius*view.outerRadius*2;
+		var r, d, rect, strokeWidth;
+		r = p.radius*view.outerRadius;
 		strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.maxRadius}{p.strokeWidth};
-		rect = Size(d, d).asRect;
-		rect = rect.center_(view.cen);
-		if (p.fill) {Pen.fillColor = p.fillColor; Pen.fillOval(rect)};
-		if (p.stroke) {
-			Pen.width_(strokeWidth);
-			Pen.strokeColor = p.strokeColor;
-			Pen.strokeOval(rect)
+
+		Pen.push;
+		Pen.strokeColor_(p.strokeColor).width_(strokeWidth);
+
+		if (p.rangeOnly) {
+			// draw only an arc across the range
+			Pen.capStyle_(this.getCapIndex(p.capStyle));
+			Pen.addArc(view.cen, r, view.prStartAngle, view.prSweepLength);
+			Pen.stroke;
+		} {
+			d = r*2;
+			rect = Size(d, d).asRect;
+			rect = rect.center_(view.cen);
+			if (p.fill) {Pen.fillColor = p.fillColor; Pen.fillOval(rect)};
+			if (p.stroke) {
+				Pen.width_(strokeWidth);
+				Pen.strokeColor = p.strokeColor;
+				Pen.strokeOval(rect)
+			};
 		};
+		Pen.pop;
 	}
 
 	// fill need not be called, stroke does everything needed
