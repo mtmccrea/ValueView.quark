@@ -241,7 +241,11 @@ ValueView : View {
 		rangeInPx = spec.range/valuePerPixel; // get old pixels per range
 		spec = controlSpec;
 		this.rangeInPixels_(rangeInPx);			// restore mouse scaling so it feels the same
-		updateValue.if{this.value_(value)};	// also updates input
+		updateValue.if{
+			this.value_(value); // also updates input
+			this.broadcastState(true);  // force a state broadcast because input will be updated, but value will stay the same
+		};
+		"value view spec updated.".postln;
 	}
 
 	// refresh { userView.refresh }

@@ -212,24 +212,28 @@ RotaryView : ValueView {
 	}
 
 	// arrays of radian positions, reference from startAngle
-	ticksAt_ {|majorRadPositions, minorRadPositions, show=true|
-		majTicks = majorRadPositions;
-		minTicks = minorRadPositions;
-		majTickVals = spec.map(majTicks / sweepLength);
-		minTickVals = spec.map(minTicks / sweepLength);
-		// show.if{showTicks = true};
-		show.if{ticks.show = true};
+	ticksAt_ {|majorRadPositions, minorRadPositions|
+		majorRadPositions !? {
+			majTicks = majorRadPositions;
+			majTickVals = spec.map(majTicks / sweepLength);
+		};
+		minorRadPositions	!? {
+			minTickVals = spec.map(minTicks / sweepLength);
+			minTicks = minorRadPositions;
+		};
 		this.refresh;
 	}
 
 	// ticks at values unmapped by spec
-	ticksAtValues_ {|majorVals, minorVals, show=true|
-		majTicks = spec.unmap(majorVals)*sweepLength;
-		minTicks = spec.unmap(minorVals)*sweepLength;
-		majTickVals = majorVals;
-		minTickVals = minorVals;
-		// show.if{showTicks = true};
-		show.if{ticks.show = true};
+	ticksAtValues_ {|majorVals, minorVals|
+		majorVals !? {
+			majTicks = spec.unmap(majorVals)*sweepLength;
+			majTickVals = majorVals;
+		};
+		minorVals !? {
+			minTicks = spec.unmap(minorVals)*sweepLength;
+			minTickVals = minorVals;
+		};
 		this.refresh;
 	}
 
@@ -255,12 +259,20 @@ RotaryView : ValueView {
 	numTicks_ {|num, majorEvery=2, endTick=true|
 		var hop, ticks, numMaj, majList, minList;
 		hop = if (endTick) {sweepLength / (num-1)} {sweepLength / num};
-		// drawNum = if (sweepLength==2pi) {num-1} {num}; // don't draw overlaying ticks in the case of full circle
 		ticks = num.asInt.collect{|i| i * hop};
 		numMaj = num/majorEvery;
 		majList = List(numMaj);
 		minList = List(num-numMaj);
 		ticks.do{|val, i| if ((i%majorEvery) == 0) {majList.add(val)} {minList.add(val)} };
 		this.ticksAt_(majList, minList);
+	}
+
+	// extend superclass's spec setter to also update ticks
+	// and centerValue in the case it's bipolar
+	spec_ {|controlSpec, updateValue=true|
+		super.spec_(controlSpec, updateValue);
+		"also subclass".postln;
+		this.ticksAtValues_(majTickVals, minTickVals);
+		this.centerValue_(centerValue);
 	}
 }

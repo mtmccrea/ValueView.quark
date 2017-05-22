@@ -183,7 +183,7 @@ RotaryLevelLayer : RotaryArcWedgeLayer {
 			stroke: 	 		true,
 			strokeColor: 	Color.green,
 			strokeType:  	\around,			// if style: \wedge; \inside, \outside, or \around
-			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			strokeWidth: 	0.05,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
 			capStyle:	 		0, 						// if style: \arc or \wedge with strokeType != \around
 			joinStyle:	 	0,						// if style: \wedge; 0=flat
 		)
@@ -263,8 +263,8 @@ RotaryTickLayer : ValueViewLayer {
 			align: 				\outside,				// specifies the direction the tick is drawn from anchor; \inside, \outside, or \center
 			majorLength:	0.25,						// length of major ticks, realtive to maxRadius (1)
 			minorLength:	0.6,						// length of minor ticks, realtive to majorLength
-			majorWidth: 	1,							// width of major tick, in pixels, TODO: this could be relative to windowSize if < 1
-			minorWidth: 	0.5,						// width of minor tick, realtive to majorWidth
+			majorWidth: 	0.05,							// width of major tick, in pixels, TODO: this could be relative to windowSize if < 1
+			minorWidth: 	0.025,						// width of minor tick, realtive to majorWidth
 			majorColor: 	Color.black,
 			minorColor: 	Color.gray,
 			capStyle:			\round
