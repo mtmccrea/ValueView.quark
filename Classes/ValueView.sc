@@ -245,7 +245,6 @@ ValueView : View {
 			this.value_(value); // also updates input
 			this.broadcastState(true);  // force a state broadcast because input will be updated, but value will stay the same
 		};
-		"value view spec updated.".postln;
 	}
 
 	// refresh { userView.refresh }

@@ -271,7 +271,6 @@ RotaryView : ValueView {
 	// and centerValue in the case it's bipolar
 	spec_ {|controlSpec, updateValue=true|
 		super.spec_(controlSpec, updateValue);
-		"also subclass".postln;
 		this.ticksAtValues_(majTickVals, minTickVals);
 		this.centerValue_(centerValue);
 	}
