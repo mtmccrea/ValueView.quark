@@ -1,0 +1,282 @@
+TITLE:: ValueView
+summary:: Create customizable UI views associated with values and assignable actions.
+categories:: Undocumented classes
+related:: Classes/ValueViewLayer, Classes/RotaryView, Classes/XYScaleView, Classes/ValuesView
+
+DESCRIPTION::
+Create customizable UI views associated with values and assignable actions.
+A ValueView stores a value and will draw a representation of that value
+in whatever way you choose, using Pen's drawing methods (ValueView uses a UserView
+internally). The view automatically updates when the value is set, and the view can
+optionally be made interactive to change the value as well as perform an action
+when the value changes. Update rates can be limited and repeated actions can be
+suppressed.
+
+The class isn't quite plug-and-play — ValueView is meant to be subclassed to author a new
+view/value representation, along with authoring ValueViewLayers which define drawing layers.
+link::Classes/RotaryView:: offers a more elaborate example of how a value can be displayed
+in various ways akin to a rotary encoder or "knob" control.
+
+To represent more than one value associated in a single view, see link::Classes/ValuesView::.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+(describe method here)
+
+ARGUMENT:: parent
+(describe argument here)
+
+ARGUMENT:: bounds
+(describe argument here)
+
+ARGUMENT:: spec
+(describe argument here)
+
+ARGUMENT:: initVal
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+INSTANCEMETHODS::
+
+METHOD:: onClose
+(describe method here)
+
+ARGUMENT:: func
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mouseUpAction
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: layers
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: userView
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: value
+(describe method here)
+
+ARGUMENT:: val
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: action
+(describe method here)
+
+ARGUMENT:: actionFunc
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: drawFunc
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: superInit
+(describe method here)
+
+ARGUMENT:: argSpec
+(describe argument here)
+
+ARGUMENT:: initVal
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: rangeInPixels
+(describe method here)
+
+ARGUMENT:: px
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: keyStep
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: scrollStep
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: broadcastState
+(describe method here)
+
+ARGUMENT:: newValue
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: update
+(describe method here)
+
+ARGUMENT:: changer
+(describe argument here)
+
+ARGUMENT:: what
+(describe argument here)
+
+ARGUMENT::  ... args
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: limitRefresh
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: yScrollDir
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: maxRefreshRate
+(describe method here)
+
+ARGUMENT:: hz
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: spec
+(describe method here)
+
+ARGUMENT:: controlSpec
+(describe argument here)
+
+ARGUMENT:: updateValue
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: xScrollDir
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: keyDirUD
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: valueAction
+(describe method here)
+
+ARGUMENT:: val
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: inputAction
+(describe method here)
+
+ARGUMENT:: normValue
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: suppressRepeatedAction
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: refresh
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mouseMoveAction
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: stepByArrowKey
+(describe method here)
+
+ARGUMENT:: key
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: input
+(describe method here)
+
+ARGUMENT:: normValue
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: wrap
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: doAction
+(describe method here)
+
+ARGUMENT:: newValue
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: keyDirLR
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: stepByScroll
+(describe method here)
+
+ARGUMENT:: v
+(describe argument here)
+
+ARGUMENT:: x
+(describe argument here)
+
+ARGUMENT:: y
+(describe argument here)
+
+ARGUMENT:: modifiers
+(describe argument here)
+
+ARGUMENT:: xDelta
+(describe argument here)
+
+ARGUMENT:: yDelta
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: mouseDownAction
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: valuePerPixel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+EXAMPLES::
+
+code::
+(some example code)
+::
