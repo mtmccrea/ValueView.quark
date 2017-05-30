@@ -1,0 +1,16 @@
+(
+          name: "ValueView",
+       summary: "Create customizable UI views associated with values and assignable actions.",
+        author: "Michael McCrea",
+     copyright: "2017",
+       license: "GPL v3",
+       version: "0.0.1",
+        schelp: "",
+          test: "",
+           url: "https://github.com/mtmccrea/ValueView",
+  dependencies: [
+
+                ],
+  isCompatible: true ,
+         since: ""
+)
