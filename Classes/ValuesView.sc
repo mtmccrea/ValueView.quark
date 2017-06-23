@@ -3,7 +3,9 @@
 // and draws custom layers in a UserView, with mouse/arrow interaction
 
 ValuesView : View {
+	// to be set and accessed by subclasses
 	var <specs, <values, <inputs, <action, <wrap;
+
 	var <>limitRefresh = false, <maxRefreshRate=25, updateWait, allowUpdate=true, updateHeld=false;
 	var <>suppressRepeatedAction = true;
 
@@ -17,7 +19,7 @@ ValuesView : View {
 
 	// number of values inferred from number of intiVals
 	*new { |parent, bounds, specs, initVals |
-		^super.new(parent, bounds).superInit(specs, initVals); //.init(*args)
+		^super.new(parent, bounds).superInit(specs, initVals);
 	}
 
 	superInit { |argSpecs, initVals|

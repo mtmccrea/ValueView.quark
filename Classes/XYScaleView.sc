@@ -1,7 +1,7 @@
 XYScaleView : ValuesView {
 	var <>moveRelative, <>fixSquare = true;
 	var <background, <range, <levels;
-	var <bnds, <cen, <minDim, <canvas; // for access by drawing layers
+	var <bnds, <cen, <minDim, <canvas; // set in drawFunc, for access by drawing layers
 	var mDownInCanvas, stInputsPnt;
 
 	*new {
