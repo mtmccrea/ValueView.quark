@@ -2,7 +2,6 @@
 
 RotaryView : ValueView {
 
-	// variables to be use by this class which don't need getters
 	var <innerRadiusRatio, <outerRadiusRatio, boarderPx, <boarderPad;
 	var stValue, stInput, >clickMode;
 
@@ -106,7 +105,6 @@ RotaryView : ValueView {
 		// assign action variables: down/move
 		mouseDownAction = {
 			|v, x, y|
-			// mouseDownPnt = x@y; // set for moveAction
 			stValue = value;
 			stInput = input;
 			if (clickMode=='absolute') {this.respondToAbsoluteClick};
