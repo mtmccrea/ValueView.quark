@@ -141,13 +141,13 @@ ValuesView : View {
 
 	valueAtAction_ {|index, val|
 		var oldValue = values[index];
-		this.valueAt_(val);
+		this.valueAt_(index, val);
 		this.doAction(oldValue!=values[index]);
 	}
 
 	inputAtAction_ {|index, normInput|
 		var oldValue = inputs[index];
-		this.input_(normInput);
+		this.input_(index, normInput);
 		this.doAction(oldValue!=inputs[index]);
 	}
 
