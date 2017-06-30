@@ -139,25 +139,25 @@ ValuesView : View {
 
 	inputAt { |index| ^inputs[index] }
 
-	valueAtAction_ {|index, val|
+	valueAtDoAction_ {|index, val|
 		var oldValue = values[index];
 		this.valueAt_(index, val);
 		this.doAction(oldValue!=values[index]);
 	}
 
-	inputAtAction_ {|index, normInput|
+	inputAtDoAction_ {|index, normInput|
 		var oldValue = inputs[index];
 		this.input_(index, normInput);
 		this.doAction(oldValue!=inputs[index]);
 	}
 
-	valuesAction_ {|...newValues|
+	valuesDoAction_ {|...newValues|
 		var changed = (newValues != values);
 		this.values_(*newValues);
 		this.doAction(changed);
 	}
 
-	inputsAction_ {|...normInputs|
+	inputsDoAction_ {|...normInputs|
 		var changed = (normInputs != inputs);
 		this.inputs_(*normInputs);
 		this.doAction(changed);
