@@ -38,10 +38,10 @@ ValueViewLayer {
 		{^style}
 		{
 			^switch(style,
-				\miter, {0}, 			// pointed corners, will overshoot vertex at sharp angles
-				\round, {1}, 			// round corners
-				\bevel, {2}, 			// snubbed corners
-				{0} 							// default
+				\miter, {0},    // pointed corners, will overshoot vertex at sharp angles
+				\round, {1},    // round corners
+				\bevel, {2},    // snubbed corners
+				{0}             // default
 			)
 		}
 	}
@@ -51,11 +51,11 @@ ValueViewLayer {
 		{^style}
 		{
 			^switch(style,
-				\butt,	{0},			// square end that doesn't overshoot endpoint, i.e. "butts" up angainst the endpoint
-				\flat,	{0},			// same as butt, as Qt calls it
-				\round, {1},			// round end that overshoots endpoint by half pen width, i.e. center of the brush stops on the endpoint
-				\square,{2},			// square end that overshoots endpoint by half pen width, i.e. center of the brush stops on the endpoint
-				{0} 							// default
+				\butt,  {0},    // square end that doesn't overshoot endpoint, i.e. "butts" up angainst the endpoint
+				\flat,  {0},    // same as butt, as Qt calls it
+				\round, {1},    // round end that overshoots endpoint by half pen width, i.e. center of the brush stops on the endpoint
+				\square,{2},    // square end that overshoots endpoint by half pen width, i.e. center of the brush stops on the endpoint
+				{0}             // default
 			)
 		}
 	}
@@ -86,7 +86,7 @@ RotaryArcWedgeLayer : ValueViewLayer {
 			\arc, {
 				arcStrokeWidth = view.wedgeWidth*p.width;
 				arcStrokeRadius = (view.wedgeWidth*p.radius) + view.innerRadius - (arcStrokeWidth*0.5);
-				Pen.strokeColor_(p.fillColor); 																	// TODO: change to strokeColor?
+				Pen.strokeColor_(p.fillColor);                  // TODO: change to strokeColor?
 				Pen.capStyle_(this.getCapIndex(p.capStyle));
 				Pen.width_(arcStrokeWidth);
 				Pen.addArc(view.cen, arcStrokeRadius, sweepFrom, sweepLength);
@@ -136,20 +136,20 @@ RotaryRangeLayer : RotaryArcWedgeLayer {
 	// define default properties in an Event as a class method
 	*properties {
 		^(
-			show:					true,					// show this layer or not
-			style:				\wedge,				// \wedge or \arc: annularWedge or arc
-																	// note if \arc, the width follows .width, not strokeWidth
-			width:				1,						// width of either annularWedge or arc; relative to wedgeWidth
-			radius:				1,						// outer edge of the wedge or arc; relative to maxRadius
-																	// TODO: rename this?
-			fill:		 			true,					// if annularWedge
-			fillColor:		Color.gray.alpha_(0.3),
-			stroke:				true,
-			strokeColor:	Color.gray,
-			strokeType:		\around, 			// if style: \wedge; \inside, \outside, or \around
-			strokeWidth:	1, 						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			capStyle:			\round,				// if style: \arc
-			joinStyle:	 	0,						// if style: \wedge; 0=flat
+			show:        true,       // show this layer or not
+			style:       \wedge,     // \wedge or \arc: annularWedge or arc
+                                     // note if \arc, the width follows .width, not strokeWidth
+			width:       1,          // width of either annularWedge or arc; relative to wedgeWidth
+			radius:      1,          // outer edge of the wedge or arc; relative to maxRadius
+                                     // TODO: rename this?
+			fill:        true,       // if annularWedge
+			fillColor:   Color.gray.alpha_(0.3),
+			stroke:      true,
+			strokeColor: Color.gray,
+			strokeType:  \around,    // if style: \wedge; \inside, \outside, or \around
+			strokeWidth: 1,          // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			capStyle:    \round,     // if style: \arc
+			joinStyle:   0,          // if style: \wedge; 0=flat
 		)
 	}
 
@@ -172,21 +172,21 @@ RotaryRangeLayer : RotaryArcWedgeLayer {
 RotaryLevelLayer : RotaryArcWedgeLayer {
 
 	*properties {
-		^(
-			show:					true,
-			style:				\wedge,				// \wedge or \arc: annularWedge or arc
-			width:				1,						// width of either annularWedge or arc; relative to wedgeWidth
-			radius:				1,						// outer edge of the wedge or arc; relative to maxRadius (1)
-																	// TODO: rename this?
-			fill: 		 		true,					// if style: \wedge
-			fillColor: 	 	Color.white,
-			stroke: 	 		true,
-			strokeColor: 	Color.green,
-			strokeType:  	\around,			// if style: \wedge; \inside, \outside, or \around
-			strokeWidth: 	0.05,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			capStyle:	 		0, 						// if style: \arc or \wedge with strokeType != \around
-			joinStyle:	 	0,						// if style: \wedge; 0=flat
-		)
+        ^(
+            show:           true,
+            style:          \wedge,     // \wedge or \arc: annularWedge or arc
+            width:          1,          // width of either annularWedge or arc; relative to wedgeWidth
+            radius:         1,          // outer edge of the wedge or arc; relative to maxRadius (1)
+                                        // TODO: rename this?
+            fill:           true,       // if style: \wedge
+            fillColor:      Color.white,
+            stroke:         true,
+            strokeColor:    Color.green,
+            strokeType:     \around,    // if style: \wedge; \inside, \outside, or \around
+            strokeWidth:    0.05,       // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+            capStyle:       0,          // if style: \arc or \wedge with strokeType != \around
+            joinStyle:      0,          // if style: \wedge; 0=flat
+        )
 	}
 
 	getStartAngle {
@@ -258,16 +258,16 @@ RotaryTickLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show: 				false,					// show ticks or not
-			anchor:				1,							// position/radius where the ticks are "anchored", relative to wedgeWidth
-			align: 				\outside,				// specifies the direction the tick is drawn from anchor; \inside, \outside, or \center
-			majorLength:	0.25,						// length of major ticks, realtive to maxRadius (1)
-			minorLength:	0.6,						// length of minor ticks, realtive to majorLength
-			majorWidth: 	0.05,							// width of major tick, in pixels, TODO: this could be relative to windowSize if < 1
-			minorWidth: 	0.025,						// width of minor tick, realtive to majorWidth
-			majorColor: 	Color.black,
-			minorColor: 	Color.gray,
-			capStyle:			\round
+			show:        false,      // show ticks or not
+			anchor:      1,          // position/radius where the ticks are "anchored", relative to wedgeWidth
+			align:       \outside,   // specifies the direction the tick is drawn from anchor; \inside, \outside, or \center
+			majorLength: 0.25,       // length of major ticks, realtive to maxRadius (1)
+			minorLength: 0.6,        // length of minor ticks, realtive to majorLength
+			majorWidth:  0.05,       // width of major tick, in pixels, TODO: this could be relative to windowSize if < 1
+			minorWidth:  0.025,      // width of minor tick, realtive to majorWidth
+			majorColor:  Color.black,
+			minorColor:  Color.gray,
+			capStyle:\round
 		)
 	}
 
@@ -322,19 +322,19 @@ RotaryHandleLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:				true,					// show handle or not
-			style:			\line,	 			// \line, \circle, or \arrow
-			fill:				true,					// if style = \circle or \arrow
-			fillColor:	Color.red,
-			stroke:			true,					// if style = \circle or \arrow
+			show:        true,       // show handle or not
+			style:       \line,      // \line, \circle, or \arrow
+			fill:        true,       // if style = \circle or \arrow
+			fillColor:   Color.red,
+			stroke:      true,       // if style = \circle or \arrow
 			strokeColor: Color.black,
-			strokeWidth: 2,						// if style = \line or \circle
-			radius:			3,						// if style = \circle; if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
-			length: 		0.3,					// if style = \line or \arrow
-			width:			0.6,					// if style = \arrow, relative to length (width of 1 = length)
-			anchor:			0.9,					// where the outer end of the handle is anchored, 0>1, relative to wedgeWidth
-			capStyle:		\round,				// if style = \line
-			joinStyle:	\round,				// if style = \arrow
+			strokeWidth: 2,          // if style = \line or \circle
+			radius:      3,          // if style = \circle; if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
+			length:      0.3,        // if style = \line or \arrow
+			width:       0.6,        // if style = \arrow, relative to length (width of 1 = length)
+			anchor:      0.9,        // where the outer end of the handle is anchored, 0>1, relative to wedgeWidth
+			capStyle:    \round,     // if style = \line
+			joinStyle:   \round,     // if style = \arrow
 		)
 	}
 
@@ -421,15 +421,15 @@ RotaryOutlineLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:					false,
-			radius:				1,						// outer edge of the wedge or arc; relative to maxRadius (1)
-			fill: 		 		false,				// if style: \wedge
-			fillColor: 	 	Color.white,
-			stroke: 	 		true,
-			strokeColor: 	Color.black,
-			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			rangeOnly:		false,				// if true, outline only the range of the rotary, not full circle
-			capStyle:			\flat,				// if rangeOnly
+			show:false,
+			radius:1,            // outer edge of the wedge or arc; relative to maxRadius (1)
+			fill:false,          // if style: \wedge
+			fillColor:Color.white,
+			stroke:true,
+			strokeColor:Color.black,
+			strokeWidth:2,       // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			rangeOnly:false,     // if true, outline only the range of the rotary, not full circle
+			capStyle:\flat,      // if rangeOnly
 		)
 	}
 

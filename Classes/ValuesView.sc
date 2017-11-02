@@ -199,8 +199,8 @@ ValuesView : View {
 		};
 		rangeInPx = specs[index].range / valuesPerPixel[index]; // get old pixels per range
 		specs[index] = controlSpec;
-		this.rangeInPixelsAt_(index, rangeInPx);			// restore mouse scaling so it feels the same
-		updateValue.if{this.valueAt_(index, values[index])};	// also updates input
+		this.rangeInPixelsAt_(index, rangeInPx);                // restore mouse scaling so it feels the same
+		updateValue.if{this.valueAt_(index, values[index])};    // also updates input
 	}
 
 	// refresh { userView.refresh }

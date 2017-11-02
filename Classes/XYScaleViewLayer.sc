@@ -2,11 +2,11 @@ XYRangeLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:					true,
+			show:         true,
 			strokeXColor: Color.blue.alpha_(0.5),
 			strokeYColor: Color.red.alpha_(0.5),
-			strokeWidth: 	0.03,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			fontSize:			11,
+			strokeWidth:  0.03,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			fontSize:     11,
 		)
 	}
 

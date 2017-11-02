@@ -50,7 +50,6 @@ XYScaleView : ValuesView {
 		if (range.p.show) {range.stroke};
 		if (levels.p.show) {levels.stroke};
 		if (background.p.show) {background.stroke};
-
 	}
 
 	defineMouseActions {
@@ -76,7 +75,7 @@ XYScaleView : ValuesView {
 				if (moveRelative) {
 					var delta; // normalized change
 					delta = mouseMovePnt - mouseDownPnt / (canvas.width@canvas.height.neg);
-					this.inputsAction_(*(delta + stInputsPnt).asArray);
+					this.inputsDoAction_(*(delta + stInputsPnt).asArray);
 				} { // folow absolute position
 					this.setAbsPosInput(mouseMovePnt);
 				}
@@ -91,7 +90,7 @@ XYScaleView : ValuesView {
 		pxRel = mPnt - canvas.leftTop;
 		normX = pxRel.x/canvas.width;
 		normY = (canvas.height - pxRel.y)/canvas.height;
-		this.inputsAction_(normX, normY);
+		this.inputsDoAction_(normX, normY);
 	}
 
 }
