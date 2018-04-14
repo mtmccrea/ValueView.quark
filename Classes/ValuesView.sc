@@ -23,17 +23,20 @@ ValuesView : View {
 	}
 
 	superInit { |argSpecs, initVals|
-		var numVals;
+		var numVals, numSpecs;
 
 		// initVals are how we know how many values this view uses
 		// this makes more sense then requiring specs and initializing
 		// to their default values
 		initVals ?? {Error("No initial values provided to ValuesView").throw};
-
 		numVals = initVals.size;
 		specs = argSpecs ?? numVals.collect{\unipolar.asSpec.copy};
-		values = initVals.collect{ |val,i| val ?? {specs[i].default}};
-		inputs = values.collect{ |v,i| specs[i].unmap(v)};
+        numSpecs = specs.size;
+        // if there are less specs than initVals, it's assumed the values wrap
+        // around the spec list
+		values = initVals.collect{ |val,i| val ?? {specs[i%numSpecs].default}};
+		inputs = values.collect{ |v,i| specs[i%numSpecs].unmap(v)};
+
 		action = {};
 		wrap = numVals.collect{false};
 		valuesPerPixel = specs.collect{|spec| spec.range / 200}; // for interaction: movement range in pixels to cover full spec range
@@ -88,6 +91,7 @@ ValuesView : View {
 
 	drawFunc { this.subclassResponsibility(thisMethod) }
 
+    // index is index of value list
 	wrapAt_ {|index, bool| wrap[index] = bool}
 
 	values_ {|...vals|
