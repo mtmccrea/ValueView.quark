@@ -10,9 +10,9 @@ RotaryView : ValueView {
 	var <direction, <orientation, <bipolar, <startAngle, <sweepLength;
 	var <prCenterAngle, <centerNorm, <centerValue;
 	var <bnds, <cen, <maxRadius, <innerRadius, <outerRadius, <wedgeWidth;  // units: pixels, set in drawFunc
-	var <dirFlag; 				// cw=1, ccw=-1
-	var <prStartAngle;		// start angle used internally, reference 0 to the RIGHT, as used in addAnnularWedge
-	var <prSweepLength; 	// sweep length used internally, = sweepLength * dirFlag
+	var <dirFlag;           // cw=1, ccw=-1
+	var <prStartAngle;      // start angle used internally, reference 0 to the RIGHT, as used in addAnnularWedge
+	var <prSweepLength;     // sweep length used internally, = sweepLength * dirFlag
 	var <levelSweepLength;
 	var <majTicks, <minTicks, majTickVals, minTickVals;
 

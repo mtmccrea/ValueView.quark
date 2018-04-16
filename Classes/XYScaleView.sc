@@ -1,5 +1,5 @@
 XYScaleView : ValuesView {
-	var <>moveRelative, <>fixSquare = true;
+	var <>moveRelative, <fixSquare = true;
 	var <background, <range, <levels;
 	var <bnds, <cen, <minDim, <canvas; // set in drawFunc, for access by drawing layers
 	var mDownInCanvas, stInputsPnt;
@@ -93,4 +93,8 @@ XYScaleView : ValuesView {
 		this.inputsDoAction_(normX, normY);
 	}
 
+	fixSquare_ { |bool|
+		fixSquare = bool;
+		this.refresh;
+	}
 }

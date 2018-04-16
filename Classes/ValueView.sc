@@ -131,11 +131,11 @@ ValueView : View {
 	stepByArrowKey { |key|
 		var dir, delta;
 		dir = switch( key,
-			16777234, {-1 * keyDirLR},	// left
+			16777234, {-1 * keyDirLR},  // left
 			16777236, { 1 * keyDirLR},  // right
-			16777237, {-1 * keyDirUD},	// down
-			16777235, { 1 * keyDirUD},	// up
-			{^this}											// break
+			16777237, {-1 * keyDirUD},  // down
+			16777235, { 1 * keyDirUD},  // up
+			{^this}  // break
 		);
 
 		// delta = max(step, 1e-10) * dir * arrowKeyStepMul;

@@ -86,7 +86,7 @@ RotaryArcWedgeLayer : ValueViewLayer {
 			\arc, {
 				arcStrokeWidth = view.wedgeWidth*p.width;
 				arcStrokeRadius = (view.wedgeWidth*p.radius) + view.innerRadius - (arcStrokeWidth*0.5);
-				Pen.strokeColor_(p.fillColor);                  // TODO: change to strokeColor?
+				Pen.strokeColor_(p.fillColor);  // TODO: change to strokeColor?
 				Pen.capStyle_(this.getCapIndex(p.capStyle));
 				Pen.width_(arcStrokeWidth);
 				Pen.addArc(view.cen, arcStrokeRadius, sweepFrom, sweepLength);

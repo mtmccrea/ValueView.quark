@@ -97,7 +97,7 @@ ValuesView : View {
 	values_ {|...vals|
 		var changed = (vals != values);
 		vals.do{|val, i|
-			this.valueAt_(i, val, false);		// wait to broadcast all the changed values
+			this.valueAt_(i, val, false);  // false: wait to broadcast all the changed values at once
 		};
 		this.broadcastState(changed);
 	}
@@ -121,7 +121,7 @@ ValuesView : View {
 	inputs_ {|...normInputs|
 		var changed = (normInputs != inputs);
 		normInputs.do{ |in, i|
-			this.inputAt_(i, in, false);	// false: wait to broadcast all the changed values at once
+			this.inputAt_(i, in, false);  // false: wait to broadcast all the changed values at once
 		};
 		this.broadcastState(changed);
 	}
