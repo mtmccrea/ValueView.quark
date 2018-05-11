@@ -2,7 +2,6 @@
 
 RotaryView : ValueView {
 
-	// variables to be use by this class which don't need getters
 	var <innerRadiusRatio, <outerRadiusRatio, boarderPx, <boarderPad;
 	var stValue, stInput, >clickMode;
 
@@ -11,9 +10,9 @@ RotaryView : ValueView {
 	var <direction, <orientation, <bipolar, <startAngle, <sweepLength;
 	var <prCenterAngle, <centerNorm, <centerValue;
 	var <bnds, <cen, <maxRadius, <innerRadius, <outerRadius, <wedgeWidth;  // units: pixels, set in drawFunc
-	var <dirFlag; 				// cw=1, ccw=-1
-	var <prStartAngle;		// start angle used internally, reference 0 to the RIGHT, as used in addAnnularWedge
-	var <prSweepLength; 	// sweep length used internally, = sweepLength * dirFlag
+	var <dirFlag;           // cw=1, ccw=-1
+	var <prStartAngle;      // start angle used internally, reference 0 to the RIGHT, as used in addAnnularWedge
+	var <prSweepLength;     // sweep length used internally, = sweepLength * dirFlag
 	var <levelSweepLength;
 	var <majTicks, <minTicks, majTickVals, minTickVals;
 
@@ -106,7 +105,6 @@ RotaryView : ValueView {
 		// assign action variables: down/move
 		mouseDownAction = {
 			|v, x, y|
-			// mouseDownPnt = x@y; // set for moveAction
 			stValue = value;
 			stInput = input;
 			if (clickMode=='absolute') {this.respondToAbsoluteClick};

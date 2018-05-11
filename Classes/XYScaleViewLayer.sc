@@ -2,11 +2,11 @@ XYRangeLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:					true,
+			show:         true,
 			strokeXColor: Color.blue.alpha_(0.5),
 			strokeYColor: Color.red.alpha_(0.5),
-			strokeWidth: 	0.03,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			fontSize:			11,
+			strokeWidth:  0.03,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			fontSize:     11,
 		)
 	}
 
@@ -68,12 +68,12 @@ XYLevelsLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:					true,
-			showText:			true,
+			show:         true,
+			showText:     true,
 			strokeXColor: Color.blue.alpha_(0.5),
 			strokeYColor: Color.red.alpha_(0.5),
-			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			fontSize:			14,
+			strokeWidth:  2,  // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			fontSize:     14,
 		)
 	}
 
@@ -142,12 +142,12 @@ XYBackgroundLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:					true,
-			stroke:				false,
-			strokeColor:	Color.black,
-			strokeWidth: 	2,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			fill:					true,
-			fillColor:		Color(0.9, 0.9, 0.9),
+			show:        true,
+			stroke:      false,
+			strokeColor: Color.black,
+			strokeWidth: 2,  // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			fill:        true,
+			fillColor:   Color(0.9, 0.9, 0.9),
 		)
 	}
 

@@ -3,7 +3,9 @@
 // and draws custom layers in a UserView, with mouse/arrow interaction
 
 ValuesView : View {
+	// to be set and accessed by subclasses
 	var <specs, <values, <inputs, <action, <wrap;
+
 	var <>limitRefresh = false, <maxRefreshRate=25, updateWait, allowUpdate=true, updateHeld=false;
 	var <>suppressRepeatedAction = true;
 
@@ -17,21 +19,24 @@ ValuesView : View {
 
 	// number of values inferred from number of intiVals
 	*new { |parent, bounds, specs, initVals |
-		^super.new(parent, bounds).superInit(specs, initVals); //.init(*args)
+		^super.new(parent, bounds).superInit(specs, initVals);
 	}
 
 	superInit { |argSpecs, initVals|
-		var numVals;
+		var numVals, numSpecs;
 
 		// initVals are how we know how many values this view uses
 		// this makes more sense then requiring specs and initializing
 		// to their default values
 		initVals ?? {Error("No initial values provided to ValuesView").throw};
-
 		numVals = initVals.size;
 		specs = argSpecs ?? numVals.collect{\unipolar.asSpec.copy};
-		values = initVals.collect{ |val,i| val ?? {specs[i].default}};
-		inputs = values.collect{ |v,i| specs[i].unmap(v)};
+        numSpecs = specs.size;
+        // if there are less specs than initVals, it's assumed the values wrap
+        // around the spec list
+		values = initVals.collect{ |val,i| val ?? {specs[i%numSpecs].default}};
+		inputs = values.collect{ |v,i| specs[i%numSpecs].unmap(v)};
+
 		action = {};
 		wrap = numVals.collect{false};
 		valuesPerPixel = specs.collect{|spec| spec.range / 200}; // for interaction: movement range in pixels to cover full spec range
@@ -86,12 +91,13 @@ ValuesView : View {
 
 	drawFunc { this.subclassResponsibility(thisMethod) }
 
+    // index is index of value list
 	wrapAt_ {|index, bool| wrap[index] = bool}
 
 	values_ {|...vals|
 		var changed = (vals != values);
 		vals.do{|val, i|
-			this.valueAt_(i, val, false);		// wait to broadcast all the changed values
+			this.valueAt_(i, val, false);  // false: wait to broadcast all the changed values at once
 		};
 		this.broadcastState(changed);
 	}
@@ -115,7 +121,7 @@ ValuesView : View {
 	inputs_ {|...normInputs|
 		var changed = (normInputs != inputs);
 		normInputs.do{ |in, i|
-			this.inputAt_(i, in, false);	// false: wait to broadcast all the changed values at once
+			this.inputAt_(i, in, false);  // false: wait to broadcast all the changed values at once
 		};
 		this.broadcastState(changed);
 	}
@@ -137,25 +143,25 @@ ValuesView : View {
 
 	inputAt { |index| ^inputs[index] }
 
-	valueAtAction_ {|index, val|
+	valueAtDoAction_ {|index, val|
 		var oldValue = values[index];
-		this.valueAt_(val);
+		this.valueAt_(index, val);
 		this.doAction(oldValue!=values[index]);
 	}
 
-	inputAtAction_ {|index, normInput|
+	inputAtDoAction_ {|index, normInput|
 		var oldValue = inputs[index];
-		this.input_(normInput);
+		this.input_(index, normInput);
 		this.doAction(oldValue!=inputs[index]);
 	}
 
-	valuesAction_ {|...newValues|
+	valuesDoAction_ {|...newValues|
 		var changed = (newValues != values);
 		this.values_(*newValues);
 		this.doAction(changed);
 	}
 
-	inputsAction_ {|...normInputs|
+	inputsDoAction_ {|...normInputs|
 		var changed = (normInputs != inputs);
 		this.inputs_(*normInputs);
 		this.doAction(changed);
@@ -197,8 +203,8 @@ ValuesView : View {
 		};
 		rangeInPx = specs[index].range / valuesPerPixel[index]; // get old pixels per range
 		specs[index] = controlSpec;
-		this.rangeInPixelsAt_(index, rangeInPx);			// restore mouse scaling so it feels the same
-		updateValue.if{this.valueAt_(index, values[index])};	// also updates input
+		this.rangeInPixelsAt_(index, rangeInPx);                // restore mouse scaling so it feels the same
+		updateValue.if{this.valueAt_(index, values[index])};    // also updates input
 	}
 
 	// refresh { userView.refresh }
