@@ -43,6 +43,7 @@ ValueView : View {
 	var <>wrap=false;
 	var <>limitRefresh = false, <maxRefreshRate=25, updateWait, allowUpdate=true, updateHeld=false;
 	var <>suppressRepeatedAction = true;
+	var <>autoRefresh=true; // refresh automatically when layer properties are updated
 
 	// interaction
 	var mouseDownPnt, mouseUpPnt, mouseMovePnt;
@@ -159,8 +160,7 @@ ValueView : View {
 	update { |changer, what ...args|
 		// refresh when layer properties change
 		if (what == \layerProperty) {
-			// postf("heard % % change to %\n", what, args[0], args[1]);
-			this.refresh;
+			autoRefresh.if{this.refresh};
 		}
 	}
 
