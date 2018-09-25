@@ -42,13 +42,13 @@ RotaryView : ValueView {
 		// convenience variable to access a list of the layers
 		layers = [range, level, text, ticks, handle, outline];
 
-		startAngle = argStartAngle;		// reference 0 is UP
+		startAngle = argStartAngle; // reference 0 is UP
 		sweepLength = argSweepLength;
 		direction = \cw;
 		dirFlag = 1;
 		orientation = \vertical;
 		wrap = false;
-		clickMode = \relative;			// or \absolute
+		clickMode = \relative; // or \absolute
 		boarderPad = 1;
 		boarderPx = boarderPad;
 
@@ -71,11 +71,11 @@ RotaryView : ValueView {
 		minTickVals = [];
 
 		this.defineMouseActions;
-		this.direction_(direction);  // this initializes prStarAngle and prSweepLength
+		this.direction_(direction); // this initializes prStarAngle and prSweepLength
 	}
 
 	drawFunc {
-		^{|v|
+		^{ |v|
 			// "global" instance vars, accessed by ValueViewLayers
 			bnds = v.bounds;
 			cen  = bnds.center;
@@ -83,21 +83,21 @@ RotaryView : ValueView {
 			outerRadius = maxRadius * outerRadiusRatio;
 			innerRadius = maxRadius * innerRadiusRatio;
 			wedgeWidth = outerRadius - innerRadius;
-			levelSweepLength = if (bipolar,{input - centerNorm},{input}) * prSweepLength;
+			levelSweepLength = if (bipolar, { input - centerNorm },{ input }) * prSweepLength;
 			this.drawInThisOrder;
 		}
 	}
 
 	drawInThisOrder {
-		if (outline.p.show and: outline.p.fill) {outline.fill};
-		if (range.p.show and: range.p.fill) {range.fill};
-		if (level.p.show and: level.p.fill) {level.fill};
-		if (ticks.p.show) {ticks.fill; ticks.stroke};
-		if (range.p.show and: range.p.stroke) {range.stroke};
-		if (level.p.show and: level.p.stroke) {level.stroke};
-		if (handle.p.show) {handle.stroke}; // fill isn't used because they need not be drawn separately
-		if (outline.p.show and: outline.p.stroke) {outline.stroke};
-		if (text.p.show) {text.fill; text.stroke};
+		if (outline.p.show and: outline.p.fill) { outline.fill };
+		if (range.p.show and: range.p.fill) { range.fill };
+		if (level.p.show and: level.p.fill) { level.fill };
+		if (ticks.p.show) { ticks.fill; ticks.stroke };
+		if (range.p.show and: range.p.stroke) { range.stroke };
+		if (level.p.show and: level.p.stroke) { level.stroke };
+		if (handle.p.show) { handle.stroke }; // fill isn't used because they need not be drawn separately
+		if (outline.p.show and: outline.p.stroke) { outline.stroke };
+		if (text.p.show) { text.fill; text.stroke };
 	}
 
 	defineMouseActions {
@@ -107,20 +107,20 @@ RotaryView : ValueView {
 			|v, x, y|
 			stValue = value;
 			stInput = input;
-			if (clickMode=='absolute') {this.respondToAbsoluteClick};
+			if (clickMode=='absolute') { this.respondToAbsoluteClick };
 		};
 
-		mouseMoveAction  = {
+		mouseMoveAction = {
 			|v, x, y|
 			switch (orientation,
-				\vertical, {this.respondToLinearMove(mouseDownPnt.y-y)},
-				\horizontal, {this.respondToLinearMove(x-mouseDownPnt.x)},
-				\circular, {this.respondToCircularMove(x@y)}
+				\vertical, { this.respondToLinearMove(mouseDownPnt.y-y) },
+				\horizontal, { this.respondToLinearMove(x-mouseDownPnt.x) },
+				\circular, { this.respondToCircularMove(x@y) }
 			);
 		};
 	}
 
-	respondToLinearMove {|dPx|
+	respondToLinearMove { |dPx|
 		if (dPx != 0) {
 			this.valueAction_(stValue + (dPx * valuePerPixel))
 		};
@@ -128,11 +128,11 @@ RotaryView : ValueView {
 	}
 
 	// radial change, relative to center
-	respondToCircularMove {|mMovePnt|
+	respondToCircularMove { |mMovePnt|
 		var pos, rad, radRel;
 		pos = (mMovePnt - cen);
-		rad = atan2(pos.y,pos.x);					// radian position, relative 0 at 3 o'clock
-		radRel = rad + 0.5pi * dirFlag; 	// relative 0 at 12 o'clock, clockwise
+		rad = atan2(pos.y,pos.x);       // radian position, relative 0 at 3 o'clock
+		radRel = rad + 0.5pi * dirFlag; // relative 0 at 12 o'clock, clockwise
 		radRel = (radRel - (startAngle*dirFlag)).wrap(0, 2pi); // relative to start position
 		if (radRel.inRange(0, sweepLength)) {
 			this.inputAction_(radRel/sweepLength); // triggers refresh
@@ -144,9 +144,9 @@ RotaryView : ValueView {
 	respondToAbsoluteClick {
 		var pos, rad, radRel;
 		pos = (mouseDownPnt - cen);
-		rad = atan2(pos.y,pos.x);					// radian position, relative 0 at 3 o'clock
-		radRel = rad + 0.5pi * dirFlag;		// relative 0 at 12 o'clock, clockwise
-		radRel = (radRel - (startAngle*dirFlag)).wrap(0, 2pi);	// relative to start position
+		rad = atan2(pos.y,pos.x);       // radian position, relative 0 at 3 o'clock
+		radRel = rad + 0.5pi * dirFlag; // relative 0 at 12 o'clock, clockwise
+		radRel = (radRel - (startAngle*dirFlag)).wrap(0, 2pi); // relative to start position
 		if (radRel.inRange(0, sweepLength)) {
 			this.inputAction_(radRel/sweepLength); // triggers refresh
 			stValue = value;
@@ -156,19 +156,19 @@ RotaryView : ValueView {
 
 	/* Orientation and Movement */
 
-	direction_ {|dir=\cw|
+	direction_ { |dir=\cw|
 		direction = dir;
-		dirFlag = switch (direction, \cw, {1}, \ccw, {-1});
+		dirFlag = switch (direction, \cw, { 1 }, \ccw, { -1 });
 		this.startAngle_(startAngle);
-		this.sweepLength_(sweepLength);		// updates prSweepLength
+		this.sweepLength_(sweepLength); // updates prSweepLength
 		this.refresh;
 	}
 
-	startAngle_ {|radians=0|
+	startAngle_ { |radians=0|
 		startAngle = radians;
-		prStartAngle = -0.5pi + startAngle;		// start angle always relative to 0 is up, cw
+		prStartAngle = -0.5pi + startAngle; // start angle always relative to 0 is up, cw
 		this.setPrCenter;
-		this.ticksAtValues_(majTickVals, minTickVals, false);		// refresh the list of maj/minTicks positions
+		this.ticksAtValues_(majTickVals, minTickVals, false); // refresh the list of maj/minTicks positions
 	}
 
 	setPrCenter {
@@ -176,13 +176,13 @@ RotaryView : ValueView {
 		this.refresh;
 	}
 
-	centerValue_ {|value|
+	centerValue_ { |value|
 		centerValue = spec.constrain(value);
 		centerNorm = spec.unmap(centerValue);
 		this.setPrCenter;
 	}
 
-	sweepLength_ {|radians=2pi|
+	sweepLength_ { |radians=2pi|
 		sweepLength = radians;
 		prSweepLength = sweepLength * dirFlag;
 		this.setPrCenter;
@@ -190,32 +190,32 @@ RotaryView : ValueView {
 		this.ticksAtValues_(majTickVals, minTickVals, false); // refresh the list of maj/minTicks positions
 	}
 
-	orientation_ {|vertHorizOrCirc = \vertical|
+	orientation_ { |vertHorizOrCirc = \vertical|
 		orientation = vertHorizOrCirc;
 	}
 
-	innerRadiusRatio_ {|ratio|
-		innerRadiusRatio = if (ratio == 0) {1e-5} {ratio};
+	innerRadiusRatio_ { |ratio|
+		innerRadiusRatio = if (ratio == 0, { 1e-5 }, { ratio });
 		this.refresh
 	}
 
-	outerRadiusRatio_ {|ratio|
+	outerRadiusRatio_ { |ratio|
 		outerRadiusRatio = ratio;
 		this.refresh
 	}
 
-	bipolar_ {|bool|
+	bipolar_ { |bool|
 		bipolar = bool;
 		this.refresh;
 	}
 
 	// arrays of radian positions, reference from startAngle
-	ticksAt_ {|majorRadPositions, minorRadPositions|
+	ticksAt_ { |majorRadPositions, minorRadPositions|
 		majorRadPositions !? {
 			majTicks = majorRadPositions;
 			majTickVals = spec.map(majTicks / sweepLength);
 		};
-		minorRadPositions	!? {
+		minorRadPositions !? {
 			minTickVals = spec.map(minTicks / sweepLength);
 			minTicks = minorRadPositions;
 		};
@@ -223,7 +223,7 @@ RotaryView : ValueView {
 	}
 
 	// ticks at values unmapped by spec
-	ticksAtValues_ {|majorVals, minorVals|
+	ticksAtValues_ { |majorVals, minorVals|
 		majorVals !? {
 			majTicks = spec.unmap(majorVals)*sweepLength;
 			majTickVals = majorVals;
@@ -236,38 +236,38 @@ RotaryView : ValueView {
 	}
 
 	// ticks values by value hop, unmapped by spec
-	ticksEveryVal_ {|valueHop, majorEvery=2|
+	ticksEveryVal_ { |valueHop, majorEvery=2|
 		var num, ticks, numMaj, majList, minList;
 		num = (spec.range / valueHop).floor.asInt;
-		ticks = num.collect{|i| spec.unmap(i * valueHop) * sweepLength};
+		ticks = num.collect{ |i| spec.unmap(i * valueHop) * sweepLength };
 		numMaj = num/majorEvery;
 		majList = List(numMaj);
 		minList = List(num-numMaj);
-		ticks.do{|val, i| if ((i%majorEvery) == 0) {majList.add(val)} {minList.add(val)} };
+		ticks.do{ |val, i| if ((i % majorEvery) == 0, { majList.add(val) }, { minList.add(val) }) };
 		this.ticksAt_(majList, minList);
 		this.refresh;
 	}
 
 
-	ticksEvery_ {|radienHop, majorEvery=2|
+	ticksEvery_ { |radienHop, majorEvery=2|
 		this.refresh;
 	}
 
 	// evenly distribute ticks
-	numTicks_ {|num, majorEvery=2, endTick=true|
+	numTicks_ { |num, majorEvery=2, endTick=true|
 		var hop, ticks, numMaj, majList, minList;
-		hop = if (endTick) {sweepLength / (num-1)} {sweepLength / num};
-		ticks = num.asInt.collect{|i| i * hop};
+		hop = if (endTick, { sweepLength / (num-1) }, { sweepLength / num });
+		ticks = num.asInt.collect{ |i| i * hop };
 		numMaj = num/majorEvery;
 		majList = List(numMaj);
 		minList = List(num-numMaj);
-		ticks.do{|val, i| if ((i%majorEvery) == 0) {majList.add(val)} {minList.add(val)} };
+		ticks.do{ |val, i| if ((i%majorEvery) == 0, { majList.add(val) }, { minList.add(val) }) };
 		this.ticksAt_(majList, minList);
 	}
 
 	// extend superclass's spec setter to also update ticks
 	// and centerValue in the case it's bipolar
-	spec_ {|controlSpec, updateValue=true|
+	spec_ { |controlSpec, updateValue=true|
 		super.spec_(controlSpec, updateValue);
 		this.ticksAtValues_(majTickVals, minTickVals);
 		this.centerValue_(centerValue);

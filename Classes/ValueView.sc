@@ -147,8 +147,7 @@ ValueView : View {
 
 	// overwrite default View method to retain freeing dependants
 	onClose_ {|func|
-		var newFunc = {
-			|...args|
+		var newFunc = { |...args|
 			layers.do(_.removeDependant(this));
 			func.(*args)
 		};
@@ -189,7 +188,7 @@ ValueView : View {
 			normValue.clip(0,1);
 		};
 		value = spec.map(input);
-		input = spec.unmap(value); // remap input back to it's stepped with the value TODO: reconsider?
+		input = spec.unmap(value); // remap input back so it's stepped with the value TODO: reconsider?
 		this.broadcastState(value!=oldValue);
 	}
 
@@ -240,9 +239,9 @@ ValueView : View {
 		};
 		rangeInPx = spec.range/valuePerPixel; // get old pixels per range
 		spec = controlSpec;
-		this.rangeInPixels_(rangeInPx);			// restore mouse scaling so it feels the same
+		this.rangeInPixels_(rangeInPx); // restore mouse scaling so it feels the same
 		updateValue.if{
-			this.value_(value); // also updates input
+			this.value_(value);         // also updates input
 			this.broadcastState(true);  // force a state broadcast because input will be updated, but value will stay the same
 		};
 	}
@@ -255,7 +254,7 @@ ValueView : View {
 				allowUpdate = false;
 				AppClock.sched(updateWait, {
 
-					if (updateHeld) {			// perform deferred refresh
+					if (updateHeld) { // perform deferred refresh
 						userView.refresh;
 						updateHeld = false;
 					};
