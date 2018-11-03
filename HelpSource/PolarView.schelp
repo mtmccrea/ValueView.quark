@@ -1,0 +1,430 @@
+TITLE:: PolarView
+summary:: A polar plot for data of one or more channels.
+categories:: GUI
+related:: Classes/ValueView, Classes/Plotter
+
+DESCRIPTION::
+A radial plot view for data meant to be visualized in degrees, radians, or other
+polar formats (e.g. microphone patterns, cylindrical/spherical harmonics, etc.).
+The plot is constructed of multiple layers, each with their own settable
+attributes: background, scale grid, data plot, title, and legend.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Create a new link::Classes/PolarView::.
+
+ARGUMENT:: parent
+An optional parent view in which to embed the link::Classes/PolarView::. If
+code::nil::, a new window is created for the plot.
+
+ARGUMENT:: bounds
+A link::Classes/Rect:: specifying the view's origin and dimensions.
+
+ARGUMENT:: specs
+An link::Classes/Array:: of link::Classes/ControlSpec::s, each specifying the
+range of data at the corresponding index of the data array. If only one spec is
+provided, all data is mapped within that spec.
+strong::TODO::
+
+ARGUMENT:: initVals
+strong::TODO:: rename initData?
+
+ARGUMENT:: startAngle
+The radian angle where the sweep of the plot begins.
+When setting this value, reference up = code::0::, direction = code::\cw::.
+strong::TODO:: confirm & elaborate
+
+ARGUMENT:: sweepLength
+The radian length of the plot, from link::#-startAngle::.
+strong::TODO:: confirm & elaborate
+
+ARGUMENT:: direction
+The sweep direction of the plot, clockwise code::\cw:: or counter-clockwise
+code::\ccw::. Default code::\cw::.
+strong::TODO:: confirm & elaborate
+
+ARGUMENT:: zeroPos
+A radian value or position keyword (code::\up::, code::\down::, code::\left::,
+code::\right::) specifying the radial position of code::0::. When setting this
+value, reference up = code::0::, direction = link::#-startAngle::.
+strong::TODO:: confirm & elaborate
+
+ARGUMENT:: plotRadius
+A value normalized to the radius of the view, where code::1.0:: would extend the
+plot radius to the edge of the view. Default code::0.9::.
+Note::The values of the link::#-thetaGridLines:: displayed in the
+link::#-grid:: are drawn just outside the plot's radius, so use a value less
+than code::1.0:: to allow room for these labels if you plan to include labels
+for the theta grid lines.::
+
+ARGUMENT:: plotUnits
+The unit of measurement to display in the plot: code::\db:: or code::\scalar::.
+Default code::\scalar::.
+Note::The data need not be provided in the same units as the plot. You specify
+your data units when setting link::#-data::. Conversion to the plot's units
+happens under the hood.::
+strong::TODO:: confirm & elaborate relatioinship between units of initVals and
+plot units. Should units of initData be specified at creation?
+
+
+INSTANCEMETHODS::
+
+
+METHOD:: levelGridLinesAt
+Draw data level grid lines at specific values, as opposed to even intervals as
+in link::#-levelGridLines::.
+
+ARGUMENT:: levelArray
+An link::Classes/Array:: of values at which to draw lines on the plot. Values
+should be in the same units as link::#-plotUnits::.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+METHOD:: thetaGridLines
+(describe method here)
+
+ARGUMENT:: spacing
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+
+METHOD:: plotData
+Get the plot data, stored internally as scalar values between, normalized
+(unmapped) to teh level bounds link::#-plotMin:: and link::#-plotMax::.
+
+
+METHOD:: gridVals
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: background
+(describe method here)
+
+ARGUMENT:: color
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+
+
+METHOD:: clipDbLow
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: bipolar
+(describe method here)
+
+ARGUMENT:: bool
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: defineMouseActions
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: minVal
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: levelGridLines
+(describe method here)
+
+ARGUMENT:: from
+(describe argument here)
+
+ARGUMENT:: every
+(describe argument here)
+
+ARGUMENT:: until
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotSpec
+(describe method here)
+
+ARGUMENT:: spec
+(describe argument here)
+
+ARGUMENT:: rescaleNow
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: thetaGridLinesAt
+(describe method here)
+
+ARGUMENT:: thetaArray
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: minDim
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: grid
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotMin
+(describe method here)
+
+ARGUMENT:: min
+(describe argument here)
+
+ARGUMENT:: rescaleNow
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: maxVal
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: thetaLines
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: sweepLength
+(describe method here)
+
+ARGUMENT:: radians
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotRadius
+(describe method here)
+
+ARGUMENT:: normRadius
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+METHOD:: dataUnits
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: bnds
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: direction
+(describe method here)
+
+ARGUMENT:: dir
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotMinMax
+(describe method here)
+
+ARGUMENT:: min
+(describe argument here)
+
+ARGUMENT:: max
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotWarp
+(describe method here)
+
+ARGUMENT:: warp
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: thetas
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: dirFlag
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plots
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: data
+(describe method here)
+
+ARGUMENT:: thetaArray
+(describe argument here)
+
+ARGUMENT:: rhoArray
+(describe argument here)
+
+ARGUMENT:: units
+(describe argument here)
+
+ARGUMENT:: bipolar
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotMax
+(describe method here)
+
+ARGUMENT:: max
+(describe argument here)
+
+ARGUMENT:: rescaleNow
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: legend
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: drawFunc
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: init
+(describe method here)
+
+ARGUMENT:: argStartAngle
+(describe argument here)
+
+ARGUMENT:: argSweepLength
+(describe argument here)
+
+ARGUMENT:: argDirection
+(describe argument here)
+
+ARGUMENT:: argZeroPos
+(describe argument here)
+
+ARGUMENT:: argPlotRadius
+(describe argument here)
+
+ARGUMENT:: argPlotUnits
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: startAngle
+(describe method here)
+
+ARGUMENT:: radians
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: zeroPos
+(describe method here)
+
+ARGUMENT:: radiansOrDir
+(describe argument here)
+
+ARGUMENT:: refresh
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotUnits
+(describe method here)
+
+ARGUMENT:: dbOrScalar
+(describe argument here)
+
+ARGUMENT:: min
+(describe argument here)
+
+ARGUMENT:: max
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: cen
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: title
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: drawInThisOrder
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: dataScalar
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: plotGrid
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength
+
+EXAMPLES::
+
+code::
+(some example code)
+::
