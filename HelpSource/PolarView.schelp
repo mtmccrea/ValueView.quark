@@ -6,7 +6,7 @@ related:: Classes/ValueView, Classes/Plotter
 DESCRIPTION::
 A radial plot view for data meant to be visualized in degrees, radians, or other
 polar formats (e.g. microphone patterns, cylindrical/spherical harmonics, etc.).
-The plot is constructed of multiple layers, each with their own settable
+The plot is comprised of multiple layers, each with their own settable
 attributes: background, scale grid, data plot, title, and legend.
 
 
@@ -71,14 +71,34 @@ plot units. Should units of initData be specified at creation?
 
 INSTANCEMETHODS::
 
+METHOD:: levelGridLines
+Set the range and interval of level lines on the plot. Return the level values
+with the getter method of the same name.
+
+ARGUMENT:: spacing
+The increment between level lines, in link::#-plotUnits::.
+
+ARGUMENT:: from
+The first value to draw a level line, in link::#-plotUnits::. Also accepts
+keywords code::\min:: and code::\max::. Default code::\min::.
+
+ARGUMENT:: to
+The last value to draw a level line, in link::#-plotUnits::. Also accepts
+keywords code::\min:: and code::\max::. Default code::\max::.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
 
 METHOD:: levelGridLinesAt
 Draw data level grid lines at specific values, as opposed to even intervals as
 in link::#-levelGridLines::.
 
 ARGUMENT:: levelArray
-An link::Classes/Array:: of values at which to draw lines on the plot. Values
-should be in the same units as link::#-plotUnits::.
+An link::Classes/Array:: of values at which to draw level  lines on the plot.
+Values should be in the same units as link::#-plotUnits::. Levels that are out
+of the range of link::#-plotMin:: and link::#-plotMax:: are discarded.
 
 ARGUMENT:: refresh
 A link::Classes/Boolean::, specifying whether to refresh the view immediately.
@@ -86,78 +106,83 @@ Default is code::true::.
 
 
 METHOD:: thetaGridLines
-(describe method here)
+Set the spacing between theta (longitude) grid lines.
 
 ARGUMENT:: spacing
-(describe argument here)
+The increment between theta lines, in radians.
+strong::TODO: make possible degreees::
 
 ARGUMENT:: refresh
-(describe argument here)
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+METHOD:: thetaGridLinesAt
+Draw theta (longitude) grid lines at specific values, as opposed to even
+intervals as in link::#-thetaGridLines::.
+
+ARGUMENT:: thetaArray
+An link::Classes/Array:: of values at which to draw longitude lines on the plot,
+in radians. Levels that are out of the range of code::startAngle:: and
+code::startAngle + sweepLength:: are discarded.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+METHOD:: levelGridLines
+Return an link::Classes/Array:: of values which are the levels where lines are
+drawn on the plot's grid, in link::#-plotUnits::. Set these levels with
+link::#-levelGridlines::, or link::#-levelGridlinesAt::.
+
+
+METHOD:: thetaGridLines
+Return an link::Classes/Array:: of values which are the levels where lines are
+drawn on the plot's grid, in radians. Set these levels with
+link::#-thetaGridLines::, or link::#-thetaGridLinesAt::.
+
 
 
 METHOD:: plotData
 Get the plot data, stored internally as scalar values between, normalized
-(unmapped) to teh level bounds link::#-plotMin:: and link::#-plotMax::.
+(unmapped) to the level bounds link::#-plotMin:: and link::#-plotMax::.
+
+METHOD:: scalarData
+Return the plot data in scalar values. E.g. if link::#-data:: was set with
+code::\db:: values, link::#-scalarData:: returns code::data.dbamp::.
 
 
-METHOD:: gridVals
-(describe method here)
 
-returns:: (describe returnvalue here)
-
-METHOD:: background
-(describe method here)
-
-ARGUMENT:: color
-(describe argument here)
-
-returns:: (describe returnvalue here)
 
 
 
 
 METHOD:: clipDbLow
-(describe method here)
+Set/get the minimum dB level to clip link::#-plotMin:: when using code::\db:: as
+your link::#-plotUnits::. The reason for clipping this value is
+code::0.ampdb = -inf::, which breaks link::Classes/ControlSpec::, so this will
+catch and clip code::-inf::.  Default code::-90::.
 
-returns:: (describe returnvalue here)
+
 
 METHOD:: bipolar
-(describe method here)
+Set the plot to display the absolute value of the data (of the scalar values),
+with negative values shown as a different color. In other words, the sign of the
+phase is indicated through color. For example, a figure-of-eight
+microphone response pattern would be displayed with a level spec range of
+code::[0, 1]::, but the positive and negative phase lobes would each
+be drawn with a different color.
 
 ARGUMENT:: bool
-(describe argument here)
-
+A link::Classes/Boolean:: indicating whether the data should be displayed as
+bipolar or not.
 ARGUMENT:: refresh
-(describe argument here)
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
 
-returns:: (describe returnvalue here)
 
-METHOD:: defineMouseActions
-(describe method here)
 
-returns:: (describe returnvalue here)
-
-METHOD:: minVal
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: levelGridLines
-(describe method here)
-
-ARGUMENT:: from
-(describe argument here)
-
-ARGUMENT:: every
-(describe argument here)
-
-ARGUMENT:: until
-(describe argument here)
-
-ARGUMENT:: refresh
-(describe argument here)
-
-returns:: (describe returnvalue here)
 
 METHOD:: plotSpec
 (describe method here)
@@ -171,257 +196,259 @@ ARGUMENT:: rescaleNow
 ARGUMENT:: refresh
 (describe argument here)
 
-returns:: (describe returnvalue here)
 
-METHOD:: thetaGridLinesAt
-(describe method here)
 
-ARGUMENT:: thetaArray
-(describe argument here)
 
-ARGUMENT:: refresh
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: minDim
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: grid
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: plotMin
-(describe method here)
+METHOD:: plotMinMax
+Set the min and max levels displayed on the plot, in link::#-plotUnits::.
+Data outside this range is clipped. This is the preferred way to set the min and
+max at the same time.
 
 ARGUMENT:: min
-(describe argument here)
+Minimum value to display, in link::#-plotUnits::.
+
+ARGUMENT:: max
+Maximum value to display, in link::#-plotUnits::.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+METHOD:: plotMin
+Set the minimum level displayed on the plot.
+Data outside this range is clipped. To set both the min and max at the same time,
+it's more efficient to use link::#-plotMinMax::.
+
+ARGUMENT:: min
+Minimum value to display, in link::#-plotUnits::.
 
 ARGUMENT:: rescaleNow
-(describe argument here)
+A link::Classes/Boolean::, specifying whether to recalculate internal data
+immediately. Many of these calculations would be redundant of followed by
+setting link::#-plotMax:: (hence the link::#-plotMinMax:: method), which is
+noticeable with large data sets. Default is code::true::.
 
 ARGUMENT:: refresh
-(describe argument here)
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
 
-returns:: (describe returnvalue here)
 
-METHOD:: maxVal
-(describe method here)
+METHOD:: plotMax
+Set the maximum level displayed on the plot.
+Data outside this range is clipped. To set both the min and max at the same time,
+it's more efficient to use link::#-plotMinMax::.
 
-returns:: (describe returnvalue here)
+ARGUMENT:: max
+Maximum value to display, in link::#-plotUnits::.
 
-METHOD:: thetaLines
-(describe method here)
+ARGUMENT:: rescaleNow
+A link::Classes/Boolean::, specifying whether to recalculate internal data
+immediately. Many of these calculations would be redundant of followed by
+setting link::#-plotMin:: (hence the link::#-plotMinMax:: method), which is
+noticeable with large data sets. Default is code::true::.
 
-returns:: (describe returnvalue here)
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
 
 METHOD:: sweepLength
-(describe method here)
+Set the radial length of the plot from link::#-startAngle::, in radians.
 
 ARGUMENT:: radians
-(describe argument here)
+Radial length, or spread, of the plot.
 
 ARGUMENT:: refresh
-(describe argument here)
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
 
-returns:: (describe returnvalue here)
+
 
 METHOD:: plotRadius
-(describe method here)
+Get/set the normalized value of the plot radius.
 
 ARGUMENT:: normRadius
-(describe argument here)
+A value normalized to the radius of the view (the half-length of its smallest
+side), where code::1.0:: would extend the plot radius to the edge of the view.
+Default code::0.9::.
+Note:: The labels of the link::#-thetaGridLines:: displayed on the edge of the
+link::#-grid:: are drawn just outside the plot's radius, so use a value less
+than code::1.0:: to allow room for these labels if you plan to include labels
+for the theta grid lines.::
 
-returns:: (describe returnvalue here)
 
 
-METHOD:: dataUnits
-(describe method here)
+METHOD:: direction
+Get/set the positive direction of the plot: clockwise or counterclockwise. This
+affects the display of the data, as well as the direction of the offset of the
+link::#-startAngle:: from the link::#-zeroPos::.
 
-returns:: (describe returnvalue here)
+ARGUMENT:: dir
+A link::Classes/Symbol::, code::\cw:: or code::\ccw::.
+
+
+
+METHOD:: thetas
+Return an link::Classes/Array:: of the theta positions of the data points. Used
+internally and by the drawing layer classes.
+
+
+METHOD:: plotWarp
+* Not yet implemented *
+
+ARGUMENT:: warp
+TBD
+
+
+
+
+
+
+
+METHOD:: data
+Set the data to plot.
+
+ARGUMENT:: dataArray
+An link::Classes/Array:: of values to plot. If the array is 2D, the data is
+considered to be multichannel and will plot the values of each sub-array.
+
+ARGUMENT:: thetaArray
+An link::Classes/Array:: of values corresponding to angular values of each data
+point. 2D arrays are treated the same as in strong::dataArray::.
+
+If code::thetaArray.size < dataArray.size::, then sub-arrays
+code::dataArray[i]:: are associated with code::thetaArray.wrapAt(i)::.
+
+If the size of each sub-array in strong::thetaArray:: doesn't match the size of
+its associated sub-array in strong::dataArray::, the elements are considered
+breakpoints of an link::Classes/Env::, and the data points are mapped into that
+envelope. For example a strong::dataArray:: of size 100 paired with a
+strong::thetaArray:: of code::[0, 2pi]:: would uniformly distribute all 100 values
+of strong::dataArray:: into the range of code::0:: to code::2pi::.
+
+strong::TODO: a value of nil maps the dataArray into [startAngle, startAngle+sweepLength]::
+
+ARGUMENT:: units
+A link::Classes/Symbol:: indicating the units of the data in strong::dataArray:::
+code::\db:: or code::\scalar::. This is independent of link::#-plotUnits::.
+Default code::\scalar::.
+
+ARGUMENT:: bipolar
+A link::Classes/Boolean::, specifying whether the data should be considered
+bipolar, where data is plotted as values, and color indicates polarity/phase.
+See link::#-bipolar::. Default is code::false::.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+
+
+
+
+
+
+METHOD:: startAngle
+Set/get the angular position of the plot's lower bound.
+
+ARGUMENT:: radians
+A radian angle, relative to link::#-zeroPos:: and link::#-direction::.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+
+METHOD:: zeroPos
+Set/get the reference for the angular value of zero. The link::#-startAngle::
+(the angle where the plot's range begins) references this position.
+
+strong::TODO: does zero refer to the value zero or the start of the data spec?,
+i.e. what happens if the data doens't include a domain value of 0? could rename
+so something like "referenceHeading"::
+
+ARGUMENT:: radiansOrDir
+A radian angle, referencing code::0:: as up, and a positive offset from code::0::
+degrees in either a clockwise or counterclockwise direction as specified by
+link::#-direction::.
+Also accepts keywords: code::\up::, code::\down::, code::\left::, code::\right::.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+
+METHOD:: plotUnits
+Get or set the units used to display the data: code::\db:: or code::\scalar::.
+strong::Note::: The data you set need not match the plot's units, your data
+units are set through the link::#-data:: method, and is converted to the plot's
+units for display.
+
+ARGUMENT:: dbOrScalar
+A link::Classes/Symbol::: code::\db:: or code::\scalar::.
+
+ARGUMENT:: min
+The minimum value at which to clip the plot levels, in link::#-plotUnits::.
+
+ARGUMENT:: max
+The maximum value at which to clip the plot levels, in link::#-plotUnits::.
+
+
+METHOD:: cen
+Return a link::Classes/Point:: thar is the center of the plot, in pixels.
+
 
 METHOD:: bnds
 (describe method here)
 
-returns:: (describe returnvalue here)
-
-METHOD:: direction
+METHOD:: minDim
 (describe method here)
 
-ARGUMENT:: dir
-(describe argument here)
 
-returns:: (describe returnvalue here)
+SUBSECTION:: Drawing layers
+The plot is comprised of multiple layers, each with their own settable
+attributes: background, scale grid, data plots, title, and legend. Each drawing
+layer has a code::*properties:: list (an link::Classes/Event::), the keys of
+which can be accessed as pseudo-methods for getting and setting their values.
+Setting an attribute automatically refreshes the view. For example:
+code::
+// assuming you've created a PolarView 'myPolarPlot'
+myPolarPlot.title.show = false;    // hide the title box layer
+myPolarPlot.grid.strokeWidth = 2;  // set the stroke width of the grid layer to 2 pixels
+::
 
-METHOD:: plotMinMax
-(describe method here)
+METHOD:: background
+Return the drawing layer class link::Classes/PolarBackgroundLayer::, which has
+the following attributes:
 
-ARGUMENT:: min
-(describe argument here)
-
-ARGUMENT:: max
-(describe argument here)
-
-ARGUMENT:: refresh
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: plotWarp
-(describe method here)
-
-ARGUMENT:: warp
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: thetas
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: dirFlag
-(describe method here)
-
-returns:: (describe returnvalue here)
+METHOD:: grid
+Return the drawing layer class link::Classes/PolarGridLayer::, which has
+the following attributes:
 
 METHOD:: plots
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: data
-(describe method here)
-
-ARGUMENT:: thetaArray
-(describe argument here)
-
-ARGUMENT:: rhoArray
-(describe argument here)
-
-ARGUMENT:: units
-(describe argument here)
-
-ARGUMENT:: bipolar
-(describe argument here)
-
-ARGUMENT:: refresh
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: plotMax
-(describe method here)
-
-ARGUMENT:: max
-(describe argument here)
-
-ARGUMENT:: rescaleNow
-(describe argument here)
-
-ARGUMENT:: refresh
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: legend
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: drawFunc
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: init
-(describe method here)
-
-ARGUMENT:: argStartAngle
-(describe argument here)
-
-ARGUMENT:: argSweepLength
-(describe argument here)
-
-ARGUMENT:: argDirection
-(describe argument here)
-
-ARGUMENT:: argZeroPos
-(describe argument here)
-
-ARGUMENT:: argPlotRadius
-(describe argument here)
-
-ARGUMENT:: argPlotUnits
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: startAngle
-(describe method here)
-
-ARGUMENT:: radians
-(describe argument here)
-
-ARGUMENT:: refresh
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: zeroPos
-(describe method here)
-
-ARGUMENT:: radiansOrDir
-(describe argument here)
-
-ARGUMENT:: refresh
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: plotUnits
-(describe method here)
-
-ARGUMENT:: dbOrScalar
-(describe argument here)
-
-ARGUMENT:: min
-(describe argument here)
-
-ARGUMENT:: max
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: cen
-(describe method here)
-
-returns:: (describe returnvalue here)
+Return the drawing layer class link::Classes/PolarPlotLayer::, which has
+the following attributes:
 
 METHOD:: title
-(describe method here)
+Return the drawing layer class link::Classes/PolarTitleLayer::, which has
+the following attributes:
 
-returns:: (describe returnvalue here)
+METHOD:: legend
+Return the drawing layer class link::Classes/PolarLegendLayer::, which has
+the following attributes:
 
-METHOD:: drawInThisOrder
-(describe method here)
 
-returns:: (describe returnvalue here)
+METHOD:: levelGridNorm
+Return an link::Classes/Array:: of values of the level grid lines, normalized
+between link::#-plotMin:: and link::#-plotMax::.
 
-METHOD:: dataScalar
-(describe method here)
 
-returns:: (describe returnvalue here)
-
-METHOD:: plotGrid
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength
+PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength, drawInThisOrder, defineMouseActions, init, drawFunc, dirFlag
 
 EXAMPLES::
 
