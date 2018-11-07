@@ -32,8 +32,8 @@ ARGUMENT:: initVals
 strong::TODO:: rename initData?
 
 ARGUMENT:: startAngle
-The radian angle where the sweep of the plot begins.
-When setting this value, reference up = code::0::, direction = code::\cw::.
+The radian angle where the sweep of the plot begins. This is relative to the
+angle of strong::zeroPos:: and strong::direction:: (see below).
 strong::TODO:: confirm & elaborate
 
 ARGUMENT:: sweepLength
@@ -47,8 +47,9 @@ strong::TODO:: confirm & elaborate
 
 ARGUMENT:: zeroPos
 A radian value or position keyword (code::\up::, code::\down::, code::\left::,
-code::\right::) specifying the radial position of code::0::. When setting this
-value, reference up = code::0::, direction = link::#-startAngle::.
+code::\right::) specifying the radial angle of code::0::. When setting this
+value, reference angle code::0:: at the top of the plot (12 o'clock), and
+direction = link::#-direction::.
 strong::TODO:: confirm & elaborate
 
 ARGUMENT:: plotRadius
@@ -346,8 +347,11 @@ Default is code::true::.
 
 
 
+METHOD:: background
+Get/set the background color of the view.
 
-
+ARGUMENT:: color
+A link::Classes/Color::.
 
 
 
@@ -364,8 +368,9 @@ Default is code::true::.
 
 
 METHOD:: zeroPos
-Set/get the reference for the angular value of zero. The link::#-startAngle::
-(the angle where the plot's range begins) references this position.
+Set/get the reference for the angular direction of zero. This angle will be relative
+to the code::\up:: (12 o'clock) position, and the link::#-direction:: you specify
+(code::\cw:: or code::\ccw::, clockwise or counterclockwise). The link::#-startAngle:: references this position.
 
 strong::TODO: does zero refer to the value zero or the start of the data spec?,
 i.e. what happens if the data doens't include a domain value of 0? could rename
@@ -448,7 +453,7 @@ Return an link::Classes/Array:: of values of the level grid lines, normalized
 between link::#-plotMin:: and link::#-plotMax::.
 
 
-PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength, drawInThisOrder, defineMouseActions, init, drawFunc, dirFlag
+PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength, drawInThisOrder, defineMouseActions, init, drawFunc, dirFlag, prThetaGridLinesAt
 
 EXAMPLES::
 
