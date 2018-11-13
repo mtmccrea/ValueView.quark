@@ -20,37 +20,40 @@ An optional parent view in which to embed the link::Classes/PolarView::. If
 code::nil::, a new window is created for the plot.
 
 ARGUMENT:: bounds
-A link::Classes/Rect:: specifying the view's origin and dimensions.
+A link::Classes/Rect:: specifying the view's origin within the strong::parent::
+view, and its dimensions.
 
 ARGUMENT:: specs
 An link::Classes/Array:: of link::Classes/ControlSpec::s, each specifying the
-range of data at the corresponding index of the data array. If only one spec is
-provided, all data is mapped within that spec.
-strong::TODO::
+range of data, in radians, at the corresponding index of the data array. If only
+one spec is provided, multichannel data is mapped within that spec. Default is
+code::[[0, 2pi].asSpec]::.
 
-ARGUMENT:: initVals
-strong::TODO:: rename initData?
+ARGUMENT:: data
+An link::Classes/Array:: of data to plot. 2D arrays are considered multichannel
+data and plotted separately, each with settable attribute. See the properties
+of the link::#-plots:: drawing layer.
 
 ARGUMENT:: startAngle
 The radian angle where the sweep of the plot begins. This is relative to the
 angle of strong::zeroPos:: and strong::direction:: (see below).
-strong::TODO:: confirm & elaborate
 
 ARGUMENT:: sweepLength
 The radian length of the plot, from link::#-startAngle::.
-strong::TODO:: confirm & elaborate
+strong::TODO: startAngle and sweepLength should be inferred from the data's specs, so need not be
+set with this variable, and more generally sweepLength and startAngle could be inferred from these specs
+when data is set. hmmmmmmmmm.::
 
 ARGUMENT:: direction
-The sweep direction of the plot, clockwise code::\cw:: or counter-clockwise
-code::\ccw::. Default code::\cw::.
-strong::TODO:: confirm & elaborate
+The sweep direction of the plot, code::\cw:: or code::\ccw::, clockwise or
+counter-clockwise, respectively. Default code::\cw::.
 
 ARGUMENT:: zeroPos
 A radian value or position keyword (code::\up::, code::\down::, code::\left::,
 code::\right::) specifying the radial angle of code::0::. When setting this
 value, reference angle code::0:: at the top of the plot (12 o'clock), and
-direction = link::#-direction::.
-strong::TODO:: confirm & elaborate
+direction is that set by the strong::direction:: argument and is updated if you
+later use the link::#-direction:: method.
 
 ARGUMENT:: plotRadius
 A value normalized to the radius of the view, where code::1.0:: would extend the
@@ -60,14 +63,16 @@ link::#-grid:: are drawn just outside the plot's radius, so use a value less
 than code::1.0:: to allow room for these labels if you plan to include labels
 for the theta grid lines.::
 
+ARGUMENT:: dataUnits
+The unit of measurement of your strong::data::: code::\db:: or code::\scalar::.
+Default code::\scalar::. This need not match the strong::plotUnits:: argument,
+which determines the units the data is displayed in.
+
 ARGUMENT:: plotUnits
-The unit of measurement to display in the plot: code::\db:: or code::\scalar::.
-Default code::\scalar::.
-Note::The data need not be provided in the same units as the plot. You specify
-your data units when setting link::#-data::. Conversion to the plot's units
-happens under the hood.::
-strong::TODO:: confirm & elaborate relatioinship between units of initVals and
-plot units. Should units of initData be specified at creation?
+The unit of measurement to emphasis::display:: in the plot: code::\db::
+or code::\scalar::. Default strong::dataUnits::. The data need not be provided in
+the same units as the plot. You specify your data units when
+setting link::#-data::. Conversion to the plot's units happens under the hood.
 
 
 INSTANCEMETHODS::
@@ -370,7 +375,7 @@ Default is code::true::.
 METHOD:: zeroPos
 Set/get the reference for the angular direction of zero. This angle will be relative
 to the code::\up:: (12 o'clock) position, and the link::#-direction:: you specify
-(code::\cw:: or code::\ccw::, clockwise or counterclockwise). The link::#-startAngle:: references this position.
+(clockwise or counterclockwise). The link::#-startAngle:: references this position.
 
 strong::TODO: does zero refer to the value zero or the start of the data spec?,
 i.e. what happens if the data doens't include a domain value of 0? could rename
