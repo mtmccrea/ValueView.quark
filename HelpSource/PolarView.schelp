@@ -424,31 +424,65 @@ myPolarPlot.title.show = false;    // hide the title box layer
 myPolarPlot.grid.strokeWidth = 2;  // set the stroke width of the grid layer to 2 pixels
 ::
 
-METHOD:: background
-Return the drawing layer class link::Classes/PolarBackgroundLayer::, which has
-the following attributes:
 
 METHOD:: grid
-Return the drawing layer class link::Classes/PolarGridLayer::, which has
-the following attributes:
+Return the grid line drawing layer (a  link::Classes/PolarGridLayer::),
+The grid layer is drawn first (bottommost layer) and has the following attributes:
+
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show           || code::true:: || show the grid layer or not
+## fill           || code::true:: || fill the grid or not
+## fillColor      || code::Color.white:: || link::Classes/Color:: to fill the grid
+## showRhoLines   || code::true:: || show the rho (latitude) grid lines or not
+## showThetaLines || code::true:: || show the theta (longitude) grid lines or not
+## strokeWidth    || code::1:: || stroke width of grid lines
+## strokeColor    || code::Color.gray.alpha_(0.4):: || stroke link::Classes/Color:: of grid lines
+## showRhoVals    || code::true:: || show the value of the rho grid lines
+## showThetaVals  || code::true:: || show the value of the theta grid lines
+## rhoTxtAng      || code::0:: || the angle to align the text of the rho grid line values
+## rhoTxtRound    || code::0.01:: || the resolution of the rho grid line values to display
+## rhoTxtColor    || code::Color.gray.alpha_(0.4):: || the link::Classes/Color:: of the rho grid line values text
+## thetaTxtRound  || code::1:: || the resolution of the theta grid line values to display
+## thetaTxtWrap   || code::[ 0, 2pi ]:: || the values around which to wrap the text of the theta grid lines
+## thetaTxtOffset || code::0.065:: || the offset of the theta grid lines text from the edge of the plot, normalized to the radius length
+## thetaTxtUnits  || code::'degrees':: || units to display for theta lines values: code::\degrees::, code::\radians::, or code::\pi::
+## thetaTxtColor  || code::Color.gray.alpha_(0.4):: || the link::Classes/Color:: of the theta grid line values text
+::
 
 METHOD:: plots
-Return the drawing layer class link::Classes/PolarPlotLayer::, which has
-the following attributes:
+Return the drawing layer responsibl for drawing the data plots
+(a  link::Classes/PolarPlotLayer::). The plot layer is drawn drawn over the
+grid layer and has the following attributes:
 
 METHOD:: title
-Return the drawing layer class link::Classes/PolarTitleLayer::, which has
+Return the drawing layer (a  link::Classes/PolarTitleLayer::), which has
 the following attributes:
 
 METHOD:: legend
-Return the drawing layer class link::Classes/PolarLegendLayer::, which has
+Return the drawing layer (a  link::Classes/PolarLegendLayer::), which has
 the following attributes:
 
+table::
+## strong::attribute:: || strong::default:: || strong::description::
 
-METHOD:: levelGridNorm
-Return an link::Classes/Array:: of values of the level grid lines, normalized
-between link::#-rhoMin:: and link::#-rhoMax::.
-
+## show        || code::true:: || show the legend or not
+## labels      || code::[  ]:: || an link::Classes/Array:: of link::Classes/String::s, one for each data plot, in the order supplied in link::#-data::.
+## align       || code::\bottomRight:: || where to align the legend in the view: code::\right::, code::\left::, code::\top::, code::\bottom::, code::\topRight::, code::\topLeft::, code::\bottomRight::, code::\bottomLeft::
+## layout      || code::\vertical:: || layout of the lines/labels: code::\vertical:: or code::\horizontal::
+## inset       || code::10:: || space between the legend and the edge of the view, in pixels
+## margin      || code::10:: || space between the border of the legend and the lines/text, in pixels
+## spacing     || code::8:: || spacing between labels, in pixels
+## lineLength  || code::15:: || length of the sample lines, in pixels
+## lineSpacing || code::6:: || spacing between sample line its corresponding label text, in pixels
+## font        || code::Font("Helvetica"):: || font of the labels
+## fontSize    || code::14:: || font size of the labels
+## txtColor    || code::Color.gray:: || link::Classes/Color:: of the text labels
+## fillColor   || code::Color.white:: || link::Classes/Color:: to fill the background of the legend
+## showBorder  || code::true:: || show a border around the legend or not
+## borderWidth || code::1:: || stroke width of the border around the legend
+## borderColor || code::Color.gray:: || link::Classes/Color:: of the border around the legend
+::
 
 PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength, drawInThisOrder, defineMouseActions, init, drawFunc, dirFlag, prThetaGridLinesAt
 
