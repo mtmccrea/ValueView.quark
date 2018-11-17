@@ -4,10 +4,10 @@ categories:: GUI
 related:: Classes/ValueView, Classes/Plotter
 
 DESCRIPTION::
-A radial plot view for data meant to be visualized in degrees, radians, or other
-polar formats (e.g. microphone patterns, cylindrical/spherical harmonics, etc.).
+A radial plot view for viewing data degrees or radians, (e.g. microphone
+patterns, cylindrical/spherical harmonics, etc.).
 The plot is comprised of multiple layers, each with their own settable
-attributes: background, scale grid, data plot, title, and legend.
+attributes: grid lines, data plot, title, and legend.
 
 
 CLASSMETHODS::
@@ -84,34 +84,74 @@ internally.
 
 INSTANCEMETHODS::
 
-METHOD:: thetaGridLines
-Set the range and interval of level lines on the plot. Return the level values
-with the getter method of the same name.
+
+
+SUBSECTION:: Plot orientation
+
+
+METHOD:: thetaZeroPosition
+Set/get the reference for the angular direction of zero. This angle will be
+relative to the code::\top:: (12 o'clock) position, and
+the link::#-thetaDirection:: you specify (clockwise or counterclockwise).
+link::#-thetaMin:: is defined relative to this position.
+
+ARGUMENT:: radiansOrDir
+A radian angle, referencing code::0:: as up, and a positive offset
+from code::0:: degrees in either a clockwise or counterclockwise direction as
+specified by link::#-thetaDirection::. Also accepts
+keywords: code::\top::, code::\botom::, code::\left::, code::\right::.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+METHOD:: thetaDirection
+Get/set the positive direction of the plot: clockwise or counterclockwise. This
+affects the display of the data, as well as the direction of the offset of the
+link::#-thetaMin:: from the link::#-thetaZeroPosition::.
+
+ARGUMENT:: dir
+A link::Classes/Symbol::, code::\cw:: or code::\ccw::.
+
+
+
+SUBSECTION:: Grid Lines
+
+
+METHOD:: rhoGridLines
+Set the range and interval of rho (latitude) lines on the plot. Return the
+calculated rho values with the getter method of the same name.
+
+To set specific rho values, use link::#-rhoGridLinesAt::.
 
 ARGUMENT:: spacing
-The increment between level lines, in link::#-plotUnits::.
+The increment between rho lines, in link::#-plotUnits::.
 
 ARGUMENT:: from
-The first value to draw a level line, in link::#-plotUnits::. Also accepts
-keywords code::\min:: and code::\max::. Default code::\min::.
+The first value at which to draw a rho line, in link::#-plotUnits::. Also
+accepts keywords code::\min:: and code::\max::, which correspond to the bounds
+of the link::#-plotSpec::. Defaults to code::\max::, which ensures a rho line
+is drawn at the outmost edge of the plot.
 
 ARGUMENT:: to
 The last value to draw a level line, in link::#-plotUnits::. Also accepts
-keywords code::\min:: and code::\max::. Default code::\max::.
+keywords code::\min:: and code::\max::, which correspond to the bounds
+of the link::#-plotSpec::. Default code::\min::.
 
 ARGUMENT:: refresh
 A link::Classes/Boolean::, specifying whether to refresh the view immediately.
 Default is code::true::.
 
 
-METHOD:: thetaGridLinesAt
-Draw data level grid lines at specific values, as opposed to even intervals as
-in link::#-thetaGridLines::.
+METHOD:: rhoGridLinesAt
+Draw data rho (latitude) grid lines at specific values, as opposed to even
+intervals as in link::#-rhoGridLines::.
 
-ARGUMENT:: thetaArray
-An link::Classes/Array:: of values at which to draw level  lines on the plot.
-Values should be in the same units as link::#-plotUnits::. Levels that are out
-of the range of link::#-rhoMin:: and link::#-rhoMax:: are discarded.
+ARGUMENT:: rhoArray
+An link::Classes/Array:: of values at which to draw rho (latitude) lines on the
+plot. Values should be in the same units as link::#-plotUnits::. Levels that are
+out of the range of the link::#-rhoSpec:: are discarded.
 
 ARGUMENT:: refresh
 A link::Classes/Boolean::, specifying whether to refresh the view immediately.
@@ -119,11 +159,13 @@ Default is code::true::.
 
 
 METHOD:: thetaGridLines
-Set the spacing between theta (longitude) grid lines.
+Set the spacing between theta (longitude) grid lines, in radians. Return the
+calculated theta values with the getter method of the same name.
+
+To set specific theta values, use link::#-thetaGridLinesAt::.
 
 ARGUMENT:: spacing
 The increment between theta lines, in radians.
-strong::TODO: make possible degreees::
 
 ARGUMENT:: refresh
 A link::Classes/Boolean::, specifying whether to refresh the view immediately.
@@ -136,7 +178,7 @@ intervals as in link::#-thetaGridLines::.
 
 ARGUMENT:: thetaArray
 An link::Classes/Array:: of values at which to draw longitude lines on the plot,
-in radians. Levels that are out of the range of code::thetaMin:: and
+in radians. Values that are out of the range of code::thetaMin:: and
 code::thetaMin + thetaRange:: are discarded.
 
 ARGUMENT:: refresh
@@ -144,67 +186,26 @@ A link::Classes/Boolean::, specifying whether to refresh the view immediately.
 Default is code::true::.
 
 
-METHOD:: thetaGridLines
-Return an link::Classes/Array:: of values which are the levels where lines are
-drawn on the plot's grid, in link::#-plotUnits::. Set these levels with
-link::#-thetaGridLines::, or link::#-thetaGridLinesAt::.
+
+SUBSECTION:: Bounds of data display
 
 
-METHOD:: thetaGridLines
-Return an link::Classes/Array:: of values which are the levels where lines are
-drawn on the plot's grid, in radians. Set these levels with
-link::#-thetaGridLines::, or link::#-thetaGridLinesAt::.
+METHOD:: thetaMin
+Set/get the angular position of the plot's minimum bound.
 
-
-METHOD:: plotData
-Get the plot data, stored internally as scalar values, normalized
-(unmapped) from the bounds link::#-plotMin:: and
-link::#-plotMax::.
-
-
-METHOD:: scalarData
-Return the plot data in scalar values. I.e. if link::#-data:: was set with
-code::\db:: values, link::#-scalarData:: returns code::data.dbamp::.
-
-
-METHOD:: clipDbLow
-Set/get the minimum dB level to clip link::#-rhoMin:: when using code::\db:: as
-your link::#-plotUnits::. The reason for clipping this value is
-code::0.ampdb = -inf::, which breaks link::Classes/ControlSpec::, so this will
-catch and clip code::-inf::.  Default code::-90::.
-
-
-METHOD:: bipolar
-Set the plot to display the absolute value of the data (the scalar values),
-with negative values shown as a different color. In other words, the sign of the
-phase is indicated through color (as set by the code::negativeColors:: attribute
-of the link::#-plots:: layer). For example, a figure-of-eight
-microphone response pattern would be displayed with a code::rhoSpec:: range of
-code::[0, 1]::, but the positive and negative phase lobes would each
-be drawn with a different color.
-
-ARGUMENT:: bool
-A link::Classes/Boolean:: indicating whether the data should be displayed as
-bipolar or not.
+ARGUMENT:: radians
+A radian angle, relative to link::#-thetaZeroPosition:: and link::#-thetaDirection::.
 
 ARGUMENT:: refresh
 A link::Classes/Boolean::, specifying whether to refresh the view immediately.
 Default is code::true::.
 
 
+METHOD:: thetaRange
+Set/get the sweep length of the plot, starting from link::#-thetaMin::.
 
-
-METHOD:: rhoSpec
-Get/set the link::Classes/ControlSpec:: used to map the (rho) data to the plot.
-
-ARGUMENT:: spec
-A link::Classes/ControlSpec::.
-
-ARGUMENT:: recalcNow
-A link::Classes/Boolean::, specifying whether to recalculate the internal data
-immediately (recommended). In some special cases, e.g. large datasets and
-multiple parameter-setting operations, you may want to only rescale the data at
-the end of all of the operations. Default is code::true::.
+ARGUMENT:: radians
+Sweep length of the plot, in radians.
 
 ARGUMENT:: refresh
 A link::Classes/Boolean::, specifying whether to refresh the view immediately.
@@ -212,15 +213,17 @@ Default is code::true::.
 
 
 METHOD:: rhoMinMax
-Set the min and max levels displayed on the plot, in link::#-plotUnits::.
+Set the min and max rho values displayed on the plot, in link::#-plotUnits::.
 Data outside this range is clipped. This is the preferred way to set the min and
 max at the same time.
 
 ARGUMENT:: min
-Minimum value to display, in link::#-plotUnits::.
+Minimum value to display, in link::#-plotUnits::. If code::nil::, the minimum
+will be inferred from the data.
 
 ARGUMENT:: max
-Maximum value to display, in link::#-plotUnits::.
+Maximum value to display, in link::#-plotUnits::. If code::nil::, the maximum
+will be inferred from the data.
 
 ARGUMENT:: refresh
 A link::Classes/Boolean::, specifying whether to refresh the view immediately.
@@ -228,12 +231,13 @@ Default is code::true::.
 
 
 METHOD:: rhoMin
-Set the minimum level displayed on the plot.
+Set the minimum rho values displayed on the plot.
 Data outside this range is clipped. To set both the min and max at the same time,
 it's more efficient to use link::#-rhoMinMax::.
 
 ARGUMENT:: min
-Minimum value to display, in link::#-plotUnits::.
+Minimum value to display, in link::#-plotUnits::.  If code::nil::, the minimum
+will be inferred from the data.
 
 ARGUMENT:: rescaleNow
 A link::Classes/Boolean::, specifying whether to recalculate internal data
@@ -247,12 +251,13 @@ Default is code::true::.
 
 
 METHOD:: rhoMax
-Set the maximum level displayed on the plot.
+Set the maximum rho values displayed on the plot.
 Data outside this range is clipped. To set both the min and max at the same time,
 it's more efficient to use link::#-rhoMinMax::.
 
 ARGUMENT:: max
-Maximum value to display, in link::#-plotUnits::.
+Maximum value to display, in link::#-plotUnits::. If code::nil::, the maximum
+will be inferred from the data.
 
 ARGUMENT:: rescaleNow
 A link::Classes/Boolean::, specifying whether to recalculate internal data
@@ -265,44 +270,90 @@ A link::Classes/Boolean::, specifying whether to refresh the view immediately.
 Default is code::true::.
 
 
-METHOD:: plotRadius
-Get/set the normalized value of the plot radius.
+METHOD:: rhoSpec
+Get/set the link::Classes/ControlSpec:: used to map the (rho) data to the plot.
+This is similar to setting link::#-rhoMin:: and link::#-rhoMax::, but as the
+the min and max values in those setters can be code::nil::, inferring the values
+from the data and also returning code::nil:: when getting the value, the min
+and max values of strong::rhoSpec:: reflect the emphasis::actual:: bounds into
+which the data is mapped.  These are the values returned from
+link::#-plotMin:: and link::#-plotMax::.
 
-ARGUMENT:: normRadius
-A value normalized to the radius of the view (the half-length of its smallest
-side), where code::1.0:: would extend the plot radius to the edge of the view.
-Default code::0.9::.
-Note:: The labels of the link::#-thetaGridLines:: displayed on the edge of the
-link::#-grid:: are drawn just outside the plot's radius, so use a value less
-than code::1.0:: to allow room for these labels if you plan to include labels
-for the theta grid lines.::
+ARGUMENT:: spec
+A link::Classes/ControlSpec:: with minval and maxval in link::#-plotUnits::.
+Specifying a non-linear strong::warp:: in this link::Classes/ControlSpec::
+allow you to display your data (and grid lines) on a warped scaling
+(see also link::#-rhoWarp::).
 
+ARGUMENT:: recalcNow
+A link::Classes/Boolean::, specifying whether to recalculate the internal data
+immediately (recommended). In some special cases, e.g. large datasets and
+multiple parameter-setting operations, you may want to only rescale the data at
+the end of all of the operations. Default is code::true::.
 
-
-METHOD:: thetaDirection
-Get/set the positive direction of the plot: clockwise or counterclockwise. This
-affects the display of the data, as well as the direction of the offset of the
-link::#-thetaMin:: from the link::#-zeroPos::.
-
-ARGUMENT:: dir
-A link::Classes/Symbol::, code::\cw:: or code::\ccw::.
-
-
-
-METHOD:: thetas
-Return an link::Classes/Array:: of the theta positions of the data points. Used
-internally and by the drawing layer classes.
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
 
 
-METHOD:: plotWarp
-* Not yet implemented *
+METHOD:: rhoWarp
+Get/Set the warp of the rho (radius) domain.
+Note:: Warping your radius domain will also affect your grid lines, so you may
+need to follow this setter with link::#-rhoGridLines:: or
+link::#-rhoGridLinesAt:: depending if you prefer specific rho spacing or pixel
+spacing.
+::
 
-ARGUMENT:: warp
-TBD
+ARGUMENT:: warpOrNum
+A link::Classes/Warp::, or one of it's subclasses, or a
+link::Classes/Number::, which will be interpreted as a
+link::Classes/CurveWarp::, as with link::Classes/Env::.
+
+
+METHOD:: plotUnits
+Get or set the units used to display the data: code::\db:: or code::\scalar::.
+
+The data you set need not match the plot's units, your data
+units are set through the link::#-data:: method, and is converted to the plot's
+units for display.
+
+ARGUMENT:: dbOrScalar
+A link::Classes/Symbol::: code::\db:: or code::\scalar::.
+
+ARGUMENT:: min
+The minimum value at which to clip the plot levels, in link::#-plotUnits::.
+
+ARGUMENT:: max
+The maximum value at which to clip the plot levels, in link::#-plotUnits::.
+
+
+METHOD:: bipolar
+Set the plot to display the absolute value of the data (the scalar values),
+with negative values shown as a different color. In other words, the sign of the
+phase is indicated through color (as set by the
+link::#-plots#negativeColors:: attribute of the link::#-plots:: layer). For
+example, a figure-of-eight microphone response pattern would be displayed with a
+link::#-rhoSpec:: range of code::[0, 1]::, but the positive and negative phase
+lobes would each be drawn with a different color.
+
+ARGUMENT:: bool
+A link::Classes/Boolean:: indicating whether the data should be displayed as
+bipolar or not.
+
+ARGUMENT:: refresh
+A link::Classes/Boolean::, specifying whether to refresh the view immediately.
+Default is code::true::.
+
+
+METHOD:: clipDbLow
+Set/get the minimum dB level to clip link::#-rhoMin:: when using code::\db:: as
+your link::#-plotUnits::. The reason for clipping this value is
+code::0.ampdb = -inf::, which breaks link::Classes/ControlSpec::, so this will
+catch and clip code::-inf::.  Default code::-90::.
 
 
 
-
+SUBSECTION:: Setting Plot Data
 
 METHOD:: data
 Set the data to plot.
@@ -344,6 +395,22 @@ Default is code::true::.
 
 
 
+SUBSECTION:: Appearance
+
+
+METHOD:: plotRadius
+Get/set the normalized value of the plot radius.
+
+ARGUMENT:: normRadius
+A value normalized to the radius of the view (the half-length of its smallest
+side), where code::1.0:: would extend the plot radius to the edge of the view.
+Default code::0.9::.
+Note:: The labels of the link::#-thetaGridLines:: displayed on the edge of the
+link::#-grid:: are drawn just outside the plot's radius, so use a value less
+than code::1.0:: to allow room for these labels if you plan to include labels
+for the theta grid lines.::
+
+
 METHOD:: background
 Get/set the background color of the view.
 
@@ -352,67 +419,8 @@ A link::Classes/Color::.
 
 
 
-METHOD:: thetaMin
-Set/get the angular position of the plot's lower bound.
+SUBSECTION:: Fine Tuning Appearance
 
-ARGUMENT:: radians
-A radian angle, relative to link::#-zeroPos:: and link::#-thetaDirection::.
-
-ARGUMENT:: refresh
-A link::Classes/Boolean::, specifying whether to refresh the view immediately.
-Default is code::true::.
-
-
-
-METHOD:: zeroPos
-Set/get the reference for the angular direction of zero. This angle will be relative
-to the code::\top:: (12 o'clock) position, and the link::#-thetaDirection:: you specify
-(clockwise or counterclockwise). The link::#-thetaMin:: references this position.
-
-strong::TODO: does zero refer to the value zero or the start of the data spec?,
-i.e. what happens if the data doens't include a domain value of 0? could rename
-so something like "referenceHeading"::
-
-ARGUMENT:: radiansOrDir
-A radian angle, referencing code::0:: as up, and a positive offset from code::0::
-degrees in either a clockwise or counterclockwise direction as specified by
-link::#-thetaDirection::.
-Also accepts keywords: code::\top::, code::\botom::, code::\left::, code::\right::.
-
-ARGUMENT:: refresh
-A link::Classes/Boolean::, specifying whether to refresh the view immediately.
-Default is code::true::.
-
-
-
-METHOD:: plotUnits
-Get or set the units used to display the data: code::\db:: or code::\scalar::.
-strong::Note::: The data you set need not match the plot's units, your data
-units are set through the link::#-data:: method, and is converted to the plot's
-units for display.
-
-ARGUMENT:: dbOrScalar
-A link::Classes/Symbol::: code::\db:: or code::\scalar::.
-
-ARGUMENT:: min
-The minimum value at which to clip the plot levels, in link::#-plotUnits::.
-
-ARGUMENT:: max
-The maximum value at which to clip the plot levels, in link::#-plotUnits::.
-
-
-METHOD:: cen
-Return a link::Classes/Point:: thar is the center of the plot, in pixels.
-
-
-METHOD:: bnds
-(describe method here)
-
-METHOD:: minDim
-(describe method here)
-
-
-SUBSECTION:: Drawing layers
 The plot is comprised of multiple layers, each with their own settable
 attributes: background, scale grid, data plots, title, and legend. Each drawing
 layer has a code::*properties:: list (an link::Classes/Event::), the keys of
@@ -426,7 +434,7 @@ myPolarPlot.grid.strokeWidth = 2;  // set the stroke width of the grid layer to 
 
 
 METHOD:: grid
-Return the grid line drawing layer (a  link::Classes/PolarGridLayer::),
+Return the grid line drawing layer (a link::Classes/PolarGridLayer::),
 The grid layer is drawn first (bottommost layer) and has the following attributes:
 
 table::
@@ -444,38 +452,87 @@ table::
 ## rhoTxtRound    || code::0.01:: || the resolution of the rho grid line values to display
 ## rhoTxtColor    || code::Color.gray.alpha_(0.4):: || the link::Classes/Color:: of the rho grid line values text
 ## thetaTxtRound  || code::1:: || the resolution of the theta grid line values to display
-## thetaTxtWrap   || code::[ 0, 2pi ]:: || the values around which to wrap the text of the theta grid lines
-## thetaTxtOffset || code::0.065:: || the offset of the theta grid lines text from the edge of the plot, normalized to the radius length
-## thetaTxtUnits  || code::'degrees':: || units to display for theta lines values: code::\degrees::, code::\radians::, or code::\pi::
+## thetaTxtWrap   || code::[ 0, 2pi ]:: || the values around which to wrap the text of
+
+the theta grid lines
+## thetaTxtOffset || code::0.065:: || the offset of the theta grid lines text from the edge
+
+of the plot, normalized to the radius length
+## thetaTxtUnits  || code::'degrees':: || units to display for theta lines values:
+
+code::\degrees::, code::\radians::, or code::\pi::
 ## thetaTxtColor  || code::Color.gray.alpha_(0.4):: || the link::Classes/Color:: of the theta grid line values text
 ::
 
 METHOD:: plots
-Return the drawing layer responsibl for drawing the data plots
-(a  link::Classes/PolarPlotLayer::). The plot layer is drawn drawn over the
+Return the drawing layer responsible for drawing the data plots
+(a link::Classes/PolarPlotLayer::). The plot layer is drawn drawn over the
 grid layer and has the following attributes:
 
-METHOD:: title
-Return the drawing layer (a  link::Classes/PolarTitleLayer::), which has
-the following attributes:
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show           || code::true:: || show the plots or not
+## pointRad       || code::2:: || if stroke type is code::\points::, circles have strong::pointRad:: radius, in pixels,
 
-METHOD:: legend
-Return the drawing layer (a  link::Classes/PolarLegendLayer::), which has
+if code::nil::, strong::pointRad:: is strong::strokeWidth::
+## strokeTypes    || code::[ \line ]:: || an link::Classes/Array:: of code::\line::, code::\points::, or a code::FloatArray:: specifying a
+
+dashed line, e.g. code::FloatArray.with(5, 2, 3, 2):: creates a
+
+dashed line alternating 5px, 3px lines separated by 2px
+## plotColors     || code::[ Color.blue ]:: || an link::Classes/Array:: of link::Classes/Color::s, for each plot
+## negativeColors || code::[ 0.09 ]:: || an link::Classes/Array:: of link::Classes/Color::s, for the negative-valued portion
+
+of each plot, if code::bipolar == true::.
+## strokeWidth    || code::2:: || stroke width of the lines of the plots
+## fill           || code::false:: || fill the area under the plots or not
+## fillAlpha      || code::0.3:: || an alpha value to apply to the strong::plotColors:: used
+
+to fill the area under each plot
+::
+
+METHOD:: title
+Return the drawing layer responsible for drawing the title bar (a
+link::Classes/PolarTitleLayer::), which has
 the following attributes:
 
 table::
 ## strong::attribute:: || strong::default:: || strong::description::
+## show        || code::true:: || show the title bar or not
+## inset       || code::10:: || space between the title box and the edge of the view, in pixels
+## txt         || code::plot:: || the link::Classes/String:: to display, newline characters, code::"\n"::, are valid
 
+for creating multiple lines
+## font        || code::Font("Helvetica"):: || title's link::Classes/Font::
+## fontSize    || code::18:: || title's font size
+## txtColor    || code::Color.gray:: || link::Classes/Color:: of the title text
+## margin      || code::15:: || space between the border of the title box and the text, in pixels
+## fillColor   || code::Color.white:: || background fill link::Classes/Color:: of the title box
+## showBorder  || code::true:: || show the title box's border or not
+## borderWidth || code::1:: || pixel width of the title border
+## borderColor || code::Color.gray:: || link::Classes/Color:: of the title border
+::
+
+METHOD:: legend
+Return the drawing layer (a link::Classes/PolarLegendLayer::), which has
+the following attributes:
+
+table::
+## strong::attribute:: || strong::default:: || strong::description::
 ## show        || code::true:: || show the legend or not
-## labels      || code::[  ]:: || an link::Classes/Array:: of link::Classes/String::s, one for each data plot, in the order supplied in link::#-data::.
-## align       || code::\bottomRight:: || where to align the legend in the view: code::\right::, code::\left::, code::\top::, code::\bottom::, code::\topRight::, code::\topLeft::, code::\bottomRight::, code::\bottomLeft::
+## labels      || code::[  ]:: || an link::Classes/Array:: of link::Classes/String::s, one for each data plot, in the order
+
+defined in link::#-data::.
+## align       || code::\bottomRight:: || where to align the legend in the view: code::\right::, code::\left::, code::\top::,
+
+code::\bottom::, code::\topRight::, code::\topLeft::, code::\bottomRight::, code::\bottomLeft::
 ## layout      || code::\vertical:: || layout of the lines/labels: code::\vertical:: or code::\horizontal::
 ## inset       || code::10:: || space between the legend and the edge of the view, in pixels
 ## margin      || code::10:: || space between the border of the legend and the lines/text, in pixels
 ## spacing     || code::8:: || spacing between labels, in pixels
 ## lineLength  || code::15:: || length of the sample lines, in pixels
 ## lineSpacing || code::6:: || spacing between sample line its corresponding label text, in pixels
-## font        || code::Font("Helvetica"):: || font of the labels
+## font        || code::Font("Helvetica"):: || link::Classes/Font:: of the labels
 ## fontSize    || code::14:: || font size of the labels
 ## txtColor    || code::Color.gray:: || link::Classes/Color:: of the text labels
 ## fillColor   || code::Color.white:: || link::Classes/Color:: to fill the background of the legend
@@ -484,7 +541,46 @@ table::
 ## borderColor || code::Color.gray:: || link::Classes/Color:: of the border around the legend
 ::
 
-PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength, drawInThisOrder, defineMouseActions, init, drawFunc, dirFlag, prThetaGridLinesAt
+
+
+SUBSECTION:: Internal: data
+
+
+METHOD:: scalarData
+Return the plot data in scalar values. I.e. if link::#-data:: was set with
+code::\db:: values, link::#-scalarData:: returns code::data.dbamp::.
+
+
+METHOD:: plotData
+Get the data stored internally for plotting, unmapped (normalized 0 .. 1) from
+link::#-plotSpec::.
+
+
+METHOD:: thetas
+Return an link::Classes/Array:: of the theta positions of the data points. Used
+internally and by the drawing layer classes.
+
+
+
+SUBSECTION:: Internal: layout
+
+
+METHOD:: cen
+Returns a link::Classes/Point:: centered in the area of the view in which the
+plot is drawn.
+
+
+METHOD:: bnds
+Returns the link::Classes/Rect:: describing the area of the view in which the
+plot is drawn.
+
+
+METHOD:: minDim
+Returns the minimum pixel dimension of the area of the view in which the plot is
+drawn.
+
+
+PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength, drawInThisOrder, defineMouseActions, init, drawFunc, dirFlag, prThetaGridLinesAt, prRhoGridLinesAt
 
 EXAMPLES::
 
