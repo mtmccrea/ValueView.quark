@@ -448,6 +448,10 @@ table::
 ## strokeColor    || code::Color.gray.alpha_(0.4):: || stroke link::Classes/Color:: of grid lines
 ## showRhoVals    || code::true:: || show the value of the rho grid lines
 ## showThetaVals  || code::true:: || show the value of the theta grid lines
+## rhoTxtOrientation || code::\horizontal:: || code::\horizontal:: for horizontal labels regardless of code::rhoTxtAng::,
+
+code::\radial:: to be tangent to the rho line
+## rhoTxtAlign    || code::\inside:: || text placement relative to rho grid lines: code::\inside::, code::\outside::, code::\on::
 ## rhoTxtAng      || code::0:: || the angle to align the text of the rho grid line values
 ## rhoTxtRound    || code::0.01:: || the resolution of the rho grid line values to display
 ## rhoTxtColor    || code::Color.gray.alpha_(0.4):: || the link::Classes/Color:: of the rho grid line values text
@@ -499,6 +503,7 @@ the following attributes:
 table::
 ## strong::attribute:: || strong::default:: || strong::description::
 ## show        || code::true:: || show the title bar or not
+## fill        || code::true:: || fill the bakcground of the title bar or not
 ## inset       || code::10:: || space between the title box and the edge of the view, in pixels
 ## txt         || code::plot:: || the link::Classes/String:: to display, newline characters, code::"\n"::, are valid
 
