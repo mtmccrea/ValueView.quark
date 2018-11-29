@@ -27,20 +27,20 @@ ValuesView : View {
 		var numVals, numSpecs;
 
 		// initVals are how we know how many values this view uses
-		// this makes more sense then requiring specs and initializing
+		// this makes more sense than requiring specs and initializing
 		// to their default values
-		initVals ?? {Error("No initial values provided to ValuesView").throw};
+		initVals ?? { Error("No initial values provided to ValuesView").throw };
 		numVals = initVals.size;
-		specs = argSpecs ?? numVals.collect{\unipolar.asSpec.copy};
+		specs = argSpecs ?? numVals.collect{ \unipolar.asSpec.copy };
         numSpecs = specs.size;
         // if there are less specs than initVals, it's assumed the values wrap
         // around the spec list
-		values = initVals.collect{ |val,i| val ?? {specs[i%numSpecs].default}};
-		inputs = values.collect{ |v,i| specs[i%numSpecs].unmap(v)};
+		values = initVals.collect{ |val,i| val ?? { specs[i%numSpecs].default } };
+		inputs = values.collect{ |v,i| specs[i%numSpecs].unmap(v) };
 
-		action = {};
-		wrap = numVals.collect{false};
-		valuesPerPixel = specs.collect{|spec| spec.range / 200}; // for interaction: movement range in pixels to cover full spec range
+		action = { };
+		wrap = numVals.collect{false };
+		valuesPerPixel = specs.collect{ |spec| spec.range / 200 }; // for interaction: movement range in pixels to cover full spec range
 		updateWait = maxRefreshRate.reciprocal;
 
 		userView = UserView(this, this.bounds.origin_(0@0)).resize_(5);
@@ -66,17 +66,17 @@ ValuesView : View {
 			mouseUpAction.(v,x,y,modifiers)
 		});
 
-		this.onResize_({userView.bounds_(this.bounds.origin_(0@0))});
-		this.onClose_({}); // set default onClose to removeDependants
+		this.onResize_({ userView.bounds_(this.bounds.origin_(0@0)) });
+		this.onClose_({ }); // set default onClose to removeDependants
 	}
 
 	// overwrite default View method to retain freeing dependants
-	onClose_ {|func|
+	onClose_ { |func|
 		var newFunc = {
 			|...args|
 			layers.do(_.removeDependant(this));
 			func.(*args)
-		};
+		 };
 		// from View:onClose_
 		this.manageFunctionConnection( onClose, newFunc, 'destroyed()', false );
 		onClose = newFunc;
@@ -85,24 +85,24 @@ ValuesView : View {
 	update { |changer, what ...args|
 		// refresh when layer properties change
 		if (what == \layerProperty) {
-			autoRefresh.if{this.refresh};
+			autoRefresh.if{ this.refresh };
 		}
 	}
 
 	drawFunc { this.subclassResponsibility(thisMethod) }
 
     // index is index of value list
-	wrapAt_ {|index, bool| wrap[index] = bool}
+	wrapAt_ { |index, bool| wrap[index] = bool }
 
-	values_ {|...vals|
+	values_ { |...vals|
 		var changed = (vals != values);
-		vals.do{|val, i|
+		vals.do{ |val, i|
 			this.valueAt_(i, val, false);  // false: wait to broadcast all the changed values at once
-		};
+		 };
 		this.broadcastState(changed);
 	}
 
-	valueAt_ {|index, value, broadcast=true|
+	valueAt_ { |index, value, broadcast=true|
 		var spec, oldValue;
 		spec = specs[index];
 		oldValue = values[index];
@@ -110,23 +110,23 @@ ValuesView : View {
 			value.wrap(spec.minval, spec.maxval);
 		} {
 			spec.constrain(value);
-		};
+		 };
 		inputs[index] = spec.unmap(value);
-		broadcast.if{this.broadcastState(values[index]!=oldValue)};
+		broadcast.if{ this.broadcastState(values[index]!=oldValue) };
 	}
 
-	valueAt {|index| ^values[index] }
+	valueAt { |index| ^values[index] }
 
 	// set the value by unmapping a normalized value 0>1
-	inputs_ {|...normInputs|
+	inputs_ { |...normInputs|
 		var changed = (normInputs != inputs);
 		normInputs.do{ |in, i|
 			this.inputAt_(i, in, false);  // false: wait to broadcast all the changed values at once
-		};
+		 };
 		this.broadcastState(changed);
 	}
 
-	inputAt_ {|index, normInput, broadcast=true|
+	inputAt_ { |index, normInput, broadcast=true|
 		var spec, oldValue;
 		spec = specs[index];
 		oldValue = values[index];
@@ -135,33 +135,33 @@ ValuesView : View {
 			normInput.wrap(0,1);
 		} {
 			normInput.clip(0,1);
-		};
+		 };
 		values[index] = spec.map(inputs[index]);
 		inputs[index] = spec.unmap(values[index]);
-		broadcast.if{this.broadcastState(values[index]!=oldValue)};
+		broadcast.if{ this.broadcastState(values[index]!=oldValue) };
 	}
 
 	inputAt { |index| ^inputs[index] }
 
-	valueAtDoAction_ {|index, val|
+	valueAtDoAction_ { |index, val|
 		var oldValue = values[index];
 		this.valueAt_(index, val);
 		this.doAction(oldValue!=values[index]);
 	}
 
-	inputAtDoAction_ {|index, normInput|
+	inputAtDoAction_ { |index, normInput|
 		var oldValue = inputs[index];
 		this.input_(index, normInput);
 		this.doAction(oldValue!=inputs[index]);
 	}
 
-	valuesDoAction_ {|...newValues|
+	valuesDoAction_ { |...newValues|
 		var changed = (newValues != values);
 		this.values_(*newValues);
 		this.doAction(changed);
 	}
 
-	inputsDoAction_ {|...normInputs|
+	inputsDoAction_ { |...normInputs|
 		var changed = (normInputs != inputs);
 		this.inputs_(*normInputs);
 		this.doAction(changed);
@@ -170,7 +170,7 @@ ValuesView : View {
 
 	broadcastState { |newValue=true|
 		// update the value and input in layers' properties list
-		layers.do({|l| l.p.vals = values; l.p.inputs = inputs});
+		layers.do({ |l| l.p.vals = values; l.p.inputs = inputs});
 
 		// TODO: add a notify flag instead of automatically notifying?
 		// TODO: consider making this a global flag, e.g. broadcastNewOnly
@@ -182,29 +182,29 @@ ValuesView : View {
 		this.changed(\values, values);
 		this.changed(\inputs, inputs);
 		// TODO: consider making this a global flag, e.g. refreshNewOnly
-		if (newValue) {this.refresh};
+		if (newValue) { this.refresh };
 	}
 
-	action_ {|actionFunc|
+	action_ { |actionFunc|
 		action = actionFunc;
 	}
 
 	doAction { |newValue=true|
 		if (suppressRepeatedAction.not or: newValue) {
 			action.(this, values, inputs)
-		};
+		 };
 	}
 
-	specAt_ {|index, controlSpec, updateValue=true|
+	specAt_ { |index, controlSpec, updateValue=true|
 		var rangeInPx;
 		if (controlSpec.isKindOf(ControlSpec).not) {
 			"Spec provided isn't a ControlSpec. Spec isn't updated.".warn;
 			^this
-		};
+		 };
 		rangeInPx = specs[index].range / valuesPerPixel[index]; // get old pixels per range
 		specs[index] = controlSpec;
 		this.rangeInPixelsAt_(index, rangeInPx);                // restore mouse scaling so it feels the same
-		updateValue.if{this.valueAt_(index, values[index])};    // also updates input
+		updateValue.if{ this.valueAt_(index, values[index]) };    // also updates input
 	}
 
 	// refresh { userView.refresh }
@@ -218,12 +218,12 @@ ValuesView : View {
 					if (updateHeld) {			// perform deferred refresh
 						userView.refresh;
 						updateHeld = false;
-					};
+					 };
 					allowUpdate = true;
 				});
 			} {
 				updateHeld = true;
-			};
+			 };
 		} {
 			userView.refresh;
 		}
