@@ -585,6 +585,36 @@ Returns the minimum pixel dimension of the area of the view in which the plot is
 drawn.
 
 
+SUBSECTION:: Other
+
+METHOD:: export
+Export the plot to an image file.
+
+ARGUMENT:: fileName
+A link::Classes/String:: that is the name of the file, including the extension.
+The extension isn't necessary, but you'll then need to specify the
+strong::format:: and the file will be written without an extension.
+
+ARGUMENT:: directory
+A link::Classes/String:: that is the directory into which the file will be
+written. Default is the user home directory, code::Platform.userHomeDir::.
+
+ARGUMENT:: format
+An optional link::Classes/String:: of the format to use.
+code::Image.formats:: lists supported formats.
+If code::nil::, the format will be inferred from the path extension (the
+default).
+
+ARGUMENT:: quality
+The quality factor in the range code::0::, small compressed files, to
+code::100::, large uncompressed files, or code::-1::, the default settings.
+Default is code::-1::.
+
+ARGUMENT:: finishCond
+An optional link::Classes/Condition:: which will be set code::true:: and signal
+when the image has been written.
+
+
 PRIVATE:: prStartAngle, prZeroPos, prRescalePlotData, prPlotRad, prThetaLines, prPlotCen, prSweepLength, drawInThisOrder, defineMouseActions, init, drawFunc, dirFlag, prThetaGridLinesAt, prRhoGridLinesAt
 
 EXAMPLES::
