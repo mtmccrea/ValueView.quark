@@ -328,13 +328,17 @@ The maximum value at which to clip the plot levels, in link::#-plotUnits::.
 
 
 METHOD:: bipolar
-Set the plot to display the absolute value of the data (the scalar values),
+Set the plot to display the absolute value of the data (dB values will be
+converted to scalar, take the absolute value, then back to dB),
 with negative values shown as a different color. In other words, the sign of the
-phase is indicated through color (as set by the
-link::#-plots#negativeColors:: attribute of the link::#-plots:: layer). For
+values is indicated through color. Colors of negative values are set by the
+link::#-plots#negativeColors:: attribute of the link::#-plots:: layer. For
 example, a figure-of-eight microphone response pattern would be displayed with a
 link::#-rhoSpec:: range of code::[0, 1]::, but the positive and negative phase
 lobes would each be drawn with a different color.
+Note:: If you have specified your dataset to have individual colors for each
+datapoint, this will be ingnored in bipolar mode, and the first color from the
+color array for that dataset is used.::
 
 ARGUMENT:: bool
 A link::Classes/Boolean:: indicating whether the data should be displayed as
@@ -476,19 +480,26 @@ grid layer and has the following attributes:
 table::
 ## strong::attribute:: || strong::default:: || strong::description::
 ## show           || code::true:: || show the plots or not
-## pointRad       || code::2:: || if stroke type is code::\points::, circles have strong::pointRad:: radius, in pixels,
-
-if code::nil::, strong::pointRad:: is strong::strokeWidth::
 ## strokeTypes    || code::[ \line ]:: || an link::Classes/Array:: of code::\line::, code::\points::, or a code::FloatArray:: specifying a
 
 dashed line, e.g. code::FloatArray.with(5, 2, 3, 2):: creates a
 
 dashed line alternating 5px, 3px lines separated by 2px
-## plotColors     || code::[ Color.blue ]:: || an link::Classes/Array:: of link::Classes/Color::s, for each plot
+## plotColors     || code::[ Color.blue ]:: || an link::Classes/Array:: of link::Classes/Color::s, one for each plot,
+
+or an link::Classes/Array:: of link::Classes/Array::s containing link::Classes/Color::s, one for
+
+each data point in a plot (not available when link::#-bipolar:: is code::true::)
 ## negativeColors || code::[ 0.09 ]:: || an link::Classes/Array:: of link::Classes/Color::s, for the negative-valued portion
 
-of each plot, if code::bipolar == true::.
-## strokeWidth    || code::2:: || stroke width of the lines of the plots
+of each plot, if code::bipolar == true::. You can also specify a
+
+link::Classes/Number:: which will act as a hue shift by that amount (0..0.999).
+## strokeWidth    || code::2:: || stroke width of the lines or points of the plots
+## pointRad       || code::2:: || if stroke type is code::\points::, circles have strong::pointRad:: radius, in pixels,
+
+if code::nil::, strong::pointRad:: is strong::strokeWidth::
+## fillPoints     || code::false:: || if stroke type is code::\points::, fill them or not
 ## fill           || code::false:: || fill the area under the plots or not
 ## fillAlpha      || code::0.3:: || an alpha value to apply to the strong::plotColors:: used
 
