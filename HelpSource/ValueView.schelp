@@ -13,11 +13,11 @@ when the value changes. Update rates can be limited and repeated actions can be
 suppressed.
 
 The class isn't quite plug-and-play — ValueView is meant to be subclassed to author a new
-view/value representation, along with authoring link::Classes/ValueViewLayers:: which define drawing layers.
-link::Classes/RotaryView:: is an elaborate example of how a value can be displayed
+view/value representation, along with authoring ValueViewLayers which define drawing layers.
+RotaryView is an elaborate example of how a value can be displayed
 in various ways akin to a rotary encoder or "knob" control.
 
-To represent more than one value associated in a single view, see link::Classes/ValuesView::.
+To represent more than one value associated in a single view, use ValuesView.
 
 
 CLASSMETHODS::
