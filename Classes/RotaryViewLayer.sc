@@ -198,8 +198,8 @@ RotaryTickLayer : ValueViewLayer {
 			show:        false,      // show ticks or not
 			anchor:      1,          // position/radius where the ticks are "anchored", relative to wedgeWidth
 			align:       \outside,   // specifies the direction the tick is drawn from anchor; \inside, \outside, or \center
-			majorLength: 0.25,       // length of major ticks, realtive to maxRadius (1)
-			minorLength: 0.6,        // length of minor ticks, realtive to majorLength
+			majorLength: 0.25,       // length of major ticks, realtive to maxRadius (0..1)
+			minorLength: 0.1,        // length of minor ticks, realtive to maxRadius (0..1)
 			majorWidth:  0.05,       // width of major tick, in pixels, TODO: this could be relative to windowSize if < 1
 			minorWidth:  0.025,      // width of minor tick, realtive to majorWidth
 			majorColor:  Color.black,
@@ -211,15 +211,13 @@ RotaryTickLayer : ValueViewLayer {
 	fill {}
 
 	stroke {
-		var majLen;
 		Pen.push;
 		Pen.translate(view.cen.x, view.cen.y);
 		Pen.rotate(view.prStartAngle);
-		majLen = p.majorLength * view.wedgeWidth;
 		this.drawTicks(	// major ticks
-			view.majTicks, majLen, p.majorWidth, p.majorColor);
+			view.majTicks, p.majorLength * view.wedgeWidth, p.majorWidth, p.majorColor);
 		this.drawTicks(	// minor ticks
-			view.minTicks, p.minorLength * majLen, p.minorWidth * p.majorWidth, p.minorColor);
+			view.minTicks, p.minorLength * view.wedgeWidth, p.minorWidth, p.minorColor);
 		Pen.pop;
 	}
 
@@ -228,9 +226,9 @@ RotaryTickLayer : ValueViewLayer {
 		// start the pen on the inside end of the line and draw outward
 		penSt_temp = view.innerRadius + (p.anchor*view.wedgeWidth);
 		penSt = switch (p.align,
-			\inside, {penSt_temp},
-			\outside, {penSt_temp - tickLength},
-			\center, {penSt_temp - (tickLength * 0.5)},
+			\inside,  { penSt_temp - tickLength },
+			\outside, { penSt_temp },
+			\center,  { penSt_temp - (tickLength * 0.5) },
 			{"Tick 'align' property isn't \inside, \outside, or \center".warn; 0}
 		);
 		penEnd = penSt + tickLength;
@@ -270,6 +268,7 @@ RotaryHandleLayer : ValueViewLayer {
 			length:      0.3,        // if style = \line or \arrow
 			width:       0.6,        // if style = \arrow, relative to length (width of 1 = length)
 			anchor:      0.9,        // where the outer end of the handle is anchored, 0>1, relative to wedgeWidth
+			align:       \inside,    // \inside, \outside, or \center on the anchor
 			capStyle:    \round,     // if style = \line
 			joinStyle:   \round,     // if style = \arrow
 		)
@@ -285,46 +284,62 @@ RotaryHandleLayer : ValueViewLayer {
 		Pen.push;
 		Pen.translate(cen.x, cen.y);
 		switch (p.style,
-			\line, {this.drawLine},
-			\circle, {this.drawCircle},
-			\lineAndCircle, {Pen.push ; this.drawLine; Pen.pop; this.drawCircle},
-			\arrow, {this.drawArrow}
+			\line,   { this.drawLine },
+			\circle, { this.drawCircle },
+			\lineAndCircle, { Pen.push; this.drawLine; Pen.pop; this.drawCircle },
+			\arrow,  { this.drawArrow }
 		);
 		Pen.pop;
 	}
 
 	drawLine {
-		var penSt, strokeWidth;
-		penSt = view.innerRadius+(view.wedgeWidth*p.anchor);
-		strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.maxRadius}{p.strokeWidth};
+		var penSt, strokeWidth, anchor, length;
+		length = view.wedgeWidth * p.length;
+		anchor = view.wedgeWidth * p.anchor;
+		anchor = anchor + switch(p.align,
+			\outside, { length }, \center, { length * 0.5 }, { 0 } // \inside, catch-all
+		);
+		penSt = view.innerRadius + anchor;
+		strokeWidth = if (p.strokeWidth<1) { p.strokeWidth*view.maxRadius } { p.strokeWidth };
 		Pen.capStyle = this.getCapIndex(p.capStyle);
 		Pen.width = strokeWidth;
 		Pen.strokeColor = p.strokeColor;
 		Pen.moveTo(penSt@0);
-		Pen.lineTo((penSt-(view.wedgeWidth*p.length))@0);
-		Pen.rotate(view.prStartAngle+(view.prSweepLength*view.input));
+		Pen.lineTo((penSt - (length)) @ 0);
+		Pen.rotate(view.prStartAngle + (view.prSweepLength*view.input));
 		Pen.stroke;
 	}
 
 	drawCircle {
-		var rad, d, rect;
-		rad = if (p.radius<1){p.radius*view.maxRadius}{p.radius};
+		var rad, d, rect, anchor;
+		rad = if (p.radius < 1) { p.radius*view.maxRadius } { p.radius };
 		d = rad*2;
+		anchor = view.wedgeWidth * p.anchor;
+		anchor = anchor + switch(p.align,
+			\outside, { rad }, \center, { 0 }, { rad.neg } // \inside, catch-all
+		);
 		rect = Size(d, d).asRect;
-		rect = rect.center_((view.innerRadius+(view.wedgeWidth*p.anchor))@0);
+		rect = rect.center_(
+			(view.innerRadius + anchor) @ 0
+		);
+
 		Pen.rotate(view.prStartAngle+(view.prSweepLength*view.input));
-		if (p.fill) {Pen.fillColor = p.fillColor; Pen.fillOval(rect)};
-		if (p.stroke) {Pen.strokeColor = p.strokeColor; Pen.strokeOval(rect)};
+		if (p.fill) { Pen.fillColor = p.fillColor; Pen.fillOval(rect) };
+		if (p.stroke) { Pen.strokeColor = p.strokeColor; Pen.strokeOval(rect) };
 	}
 
 	drawArrow {
-		var rect, w, h;
+		var rect, w, h, anchor;
 		h = view.wedgeWidth * p.length;
 		w = h * p.width;
 		rect = Size(h, w).asRect.center_(0@0); // note h<>w, rect starts at 3 o'clock
+		anchor = view.wedgeWidth * p.anchor;
+		anchor = anchor + switch(p.align,
+			\outside, { h }, \center, { h * 0.5 }, { 0 } // \inside, catch-all
+		);
 		// define rect enclosing the arrow
 		// align determines location of the arrow's tip
-		rect = rect.right_(view.innerRadius + (view.wedgeWidth*p.anchor));
+		rect = rect.right_(view.innerRadius + anchor);
 		if (p.fill) {
 			Pen.push;
 			this.genArrowPath(rect);
@@ -358,15 +373,15 @@ RotaryOutlineLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:false,
-			radius:1,            // outer edge of the wedge or arc; relative to maxRadius (1)
-			fill:false,          // if style: \wedge
-			fillColor:Color.white,
-			stroke:true,
-			strokeColor:Color.black,
-			strokeWidth:2,       // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			rangeOnly:false,     // if true, outline only the range of the rotary, not full circle
-			capStyle:\flat,      // if rangeOnly
+			show: false,
+			radius: 1,            // outer edge of the wedge or arc; relative to maxRadius (1)
+			fill: false,          // if style: \wedge
+			fillColor: Color.white,
+			stroke: true,
+			strokeColor: Color.black,
+			strokeWidth: 2,       // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			rangeOnly: false,     // if true, outline only the range of the rotary, not full circle
+			capStyle: \flat,      // if rangeOnly
 		)
 	}
 
