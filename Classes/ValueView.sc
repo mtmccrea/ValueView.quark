@@ -40,10 +40,11 @@
 
 ValueView : View {
 	var <spec, <value, <input, <action;
-	var <>wrap=false;
+	var <>wrap = false;
 	var <>limitRefresh = false, <maxRefreshRate=25, updateWait, allowUpdate=true, updateHeld=false;
 	var <>suppressRepeatedAction = true;
-	var <>autoRefresh=true; // refresh automatically when layer properties are updated
+	var <>autoRefresh = true;         // refresh automatically when layer properties are updated
+	var <>broadcastNewOnly = false;   // only notify dependents on input/value update if new value, otherwise anytime value is set
 
 	// interaction
 	var mouseDownPnt, mouseUpPnt, mouseMovePnt;
@@ -56,13 +57,13 @@ ValueView : View {
 	 * e.g. keyStep of 0.05 means 20 key strokes
 	 * to cover the full range of the value
    */
-	var <>keyStep    = 0.03333333; // scale step when arrow keys are pressed
+	var <>keyStep = 0.03333333;    // scale step when arrow keys are pressed
 	var <>scrollStep = 0.01;       // scale _input_ step when scroll wheel moves
 
 	var <>xScrollDir = 1;          // change scroll direction, -1 or 1
 	var <>yScrollDir = -1;         // change scroll direction, -1 or 1, -1 is "natural" scrolling on Mac
-	var <>keyDirLR   = 1;          // change step direction of Left/Right arrow keys (1=right increments)
-	var <>keyDirUD   = 1;          // change step direction of Up/Down arrow keys (1=up increments)
+	var <>keyDirLR = 1;            // change step direction of Left/Right arrow keys (1=right increments)
+	var <>keyDirUD = 1;            // change step direction of Up/Down arrow keys (1=up increments)
 
 	var <userView;
 	var <layers;                   // array of drawing layers which respond to .properties
@@ -86,42 +87,41 @@ ValueView : View {
 		// TODO: make a complete list
 
 		userView.mouseMoveAction_({
-			|v,x,y,modifiers|
+			|v, x, y, modifiers|
 			mouseMovePnt = x@y;
 			mouseMoveAction.(v,x,y,modifiers)
 		});
 
 		userView.mouseDownAction_({
-			|v,x,y, modifiers, buttonNumber, clickCount|
+			|v, x, y, modifiers, buttonNumber, clickCount|
 			mouseDownPnt = x@y;
-			mouseDownAction.(v,x,y, modifiers, buttonNumber, clickCount)
+			mouseDownAction.(v, x, y, modifiers, buttonNumber, clickCount)
 		});
 
 		userView.mouseUpAction_({
-			|v,x,y, modifiers|
+			|v, x, y, modifiers, buttonNumber|
 			mouseUpPnt = x@y;
-			mouseUpAction.(v,x,y,modifiers)
+			mouseUpAction.(v, x, y, modifiers, buttonNumber)
 		});
 
+		// NOTE: if overwriting the following UserView actions,
+		// include a call to the step functions within to retain
+		// key inc/decrement capability
 		userView.mouseWheelAction_({
 			|v, x, y, modifiers, xDelta, yDelta|
 			this.stepByScroll(v, x, y, modifiers, xDelta, yDelta);
 		});
 
-		// add mouse wheel action directly
-		// NOTE: if overwriting this function, include a call to
-		// this.stepByArrowKey(key) to retain key inc/decrement capability
 		userView.keyDownAction_ ({
 			|view, char, modifiers, unicode, keycode, key|
 			this.stepByArrowKey(key);
 		});
 
-		this.onResize_({userView.bounds_(this.bounds.origin_(0@0))});
-		this.onClose_({}); // set default onClose to removeDependants
+		this.onResize_({ userView.bounds_(this.bounds.origin_(0@0)) });
+		this.onClose_({ }); // set default onClose to removeDependants
 	}
 
-	stepByScroll {
-		|v, x, y, modifiers, xDelta, yDelta|
+	stepByScroll { |v, x, y, modifiers, xDelta, yDelta|
 		var dx, dy, delta;
 		dx = xDelta * xScrollDir;
 		dy = yDelta * yScrollDir;
@@ -146,7 +146,7 @@ ValueView : View {
 	}
 
 	// overwrite default View method to retain freeing dependants
-	onClose_ {|func|
+	onClose_ { |func|
 		var newFunc = { |...args|
 			layers.do(_.removeDependant(this));
 			func.(*args)
@@ -165,7 +165,7 @@ ValueView : View {
 
 	drawFunc { this.subclassResponsibility(thisMethod) }
 
-	value_ {|val|
+	value_ { |val|
 		var oldValue = value;
 		// TODO: should wrap option be default behavior?
 		// or should subclass add this via method override
@@ -206,19 +206,20 @@ ValueView : View {
 
 	broadcastState { |newValue=true|
 		// update the value and input in layers' properties list
+		// note: because this sets p values directly, it doesn't trigger an update
 		layers.do({|l| l.p.val = value; l.p.input = input});
 
-		// TODO: add a notify flag instead of automatically notifying?
-		// TODO: consider making this a global flag, e.g. broadcastNewOnly
-		// the risk of only broadcasting new values is that a new listener may not be updated
-		// if value doesn't change for a while... but is this the listener's responsibility to
-		// get an initial state?
-
 		// notify dependants
-		this.changed(\value, value);
-		this.changed(\input, input);
-		// TODO: consider making this a global flag, e.g. refreshNewOnly
-		if (newValue) {this.refresh};
+		if (newValue) {
+				this.changed(\value, value);
+				this.changed(\input, input);
+				this.refresh; // TODO: consider making this a global flag, e.g. refreshNewOnly
+		} {
+			if (broadcastNewOnly.not) {
+				this.changed(\value, value);
+				this.changed(\input, input);
+			}
+		}
 	}
 
 	action_ { |actionFunc|
@@ -246,7 +247,6 @@ ValueView : View {
 		};
 	}
 
-	// refresh { userView.refresh }
 	refresh {
 		if (limitRefresh) {
 			if (allowUpdate) {
@@ -269,8 +269,10 @@ ValueView : View {
 	}
 
 	rangeInPixels_ { |px|
-		valuePerPixel = spec.range/px;
+		valuePerPixel = spec.range / px;
 	}
+
+	rangeInPixels { ^spec.range / valuePerPixel }
 
 	maxRefreshRate_ { |hz|
 		maxRefreshRate = hz;
