@@ -1,6 +1,6 @@
 // ValuesView: a wrapper to make custom widgets
 // that hold an array of mapped 'values' and normalized 'inputs',
-// and draws custom layers in a UserView, with mouse/arrow interaction
+// and draws custom layers in a UserView, with mouse/arrow key interaction
 
 ValuesView : View {
 	// to be set and accessed by subclasses
@@ -17,7 +17,7 @@ ValuesView : View {
 	var <>valuesPerPixel;
 
 	var <userView;
-	var <layers; // array of drawing layers which respond to .properties
+	var <layers;   // array of drawing layers which respond to .properties
 
 	// number of values inferred from number of intiVals
 	*new { |parent, bounds, specs, initVals |
@@ -34,13 +34,12 @@ ValuesView : View {
 		numVals = initVals.size;
 		specs = argSpecs ?? numVals.collect{ \unipolar.asSpec.copy };
         numSpecs = specs.size;
-        // if there are less specs than initVals, it's assumed the values wrap
-        // around the spec list
+        // if there are less specs than initVals, it's
+        // assumed the values wrap around the spec list
 		values = initVals.collect{ |val,i| val ?? { specs[i%numSpecs].default } };
-		inputs = values.collect{ |v,i| specs[i%numSpecs].unmap(v) };
-
+		inputs = values.collect{ |v,i| specs[i % numSpecs].unmap(v) };
 		action = { };
-		wrap = numVals.collect{false };
+		wrap = numVals.collect{ false };
 		valuesPerPixel = specs.collect{ |spec| spec.range / 200 }; // for interaction: movement range in pixels to cover full spec range
 		updateWait = maxRefreshRate.reciprocal;
 

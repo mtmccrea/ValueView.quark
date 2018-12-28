@@ -1,42 +1,6 @@
 // ValueView: a wrapper to make custom widgets
 // that hold a mapped 'value' and normalized 'input',
-// and draws custom layers in a UserView, with mouse/arrow interaction
-
-// TODO
-// reconsider: input_ remap input back to it's stepped with the value
-// ^^ this has muddled what the input resolution can be, made step=0 a problem,
-// and somehow circular dragging broke (see radial dial example)
-// when stroking the outside of the range, fix the line termination
-
-// Knob behavior to port:
-// - k.enabled = false; // disables interaction, dims the knob
-// add shift_scale, ctl_scale, alt_scale
-// add modelUpdateOnly flag, which if true interacting with the view doesn't
-//     update the display (does action with value without updating ui), expecting the
-//     model to update it
-// have an inputStep and valueStep, which are exclusive of one another
-//     so if the spec is non-linear, the step can apply to the input rather than the output
-
-// double check the arrow key IDs - compare to Knob
-
-// add a visual cue when widget is focussed
-
-// NOTE: as the value of spec.step increases, scrolling become less practical,
-// and in fact if the scrollStep is any significant value below the step (as a normalized value)
-// it won't work (spec.step will always constrain the scrolling amount back to it's current position)
-
-
-// TODO: annular wedge and arc stroke shows buggy artifact at
-// start point when position isn't at a 90 degree position
-// and annular wedge start/endpoints don't join for some reason (see Pen.joinStyle = 0,1,2)
-// although the example for Pen.joinStyle looks OK
-
-// consider adding easy way to make bezier curves instead of squared off stuff
-// e.g. on the arrow, consider *path, *curveTo, or *quadCurveTo
-// https://www.toptal.com/c-plus-plus/rounded-corners-bezier-curves-qpainter
-
-// TODO: should maxRefreshRate be optional?
-
+// and draws custom layers in a UserView, with mouse/arrow key interaction
 
 ValueView : View {
 	var <spec, <value, <input, <action;
@@ -69,7 +33,7 @@ ValueView : View {
 	var <layers;                   // array of drawing layers which respond to .properties
 
 	*new { |parent, bounds, spec, initVal |
-		^super.new(parent, bounds).superInit(spec, initVal); //.init(*args)
+		^super.new(parent, bounds).superInit(spec, initVal);
 	}
 
 	superInit { |argSpec, initVal|
@@ -279,3 +243,37 @@ ValueView : View {
 		updateWait = maxRefreshRate.reciprocal;
 	}
 }
+
+
+// TODO
+// reconsider: input_ remap input back to it's stepped with the value
+// ^^ this has muddled what the input resolution can be, made step=0 a problem,
+// and somehow circular dragging broke (see radial dial example)
+// when stroking the outside of the range, fix the line termination
+
+// Knob behavior to port:
+// - k.enabled = false; // disables interaction, dims the knob
+// add shift_scale, ctl_scale, alt_scale
+// add modelUpdateOnly flag, which if true interacting with the view doesn't
+//     update the display (does action with value without updating ui), expecting the
+//     model to update it
+// have an inputStep and valueStep, which are exclusive of one another
+//     so if the spec is non-linear, the step can apply to the input rather than the output
+
+// double check the arrow key IDs - compare to Knob
+
+// add a visual cue when widget is focussed
+
+// NOTE: as the value of spec.step increases, scrolling become less practical,
+// and in fact if the scrollStep is any significant value below the step (as a normalized value)
+// it won't work (spec.step will always constrain the scrolling amount back to it's current position)
+
+
+// TODO: annular wedge and arc stroke shows buggy artifact at
+// start point when position isn't at a 90 degree position
+// and annular wedge start/endpoints don't join for some reason (see Pen.joinStyle = 0,1,2)
+// although the example for Pen.joinStyle looks OK
+
+// consider adding easy way to make bezier curves instead of squared off stuff
+// e.g. on the arrow, consider *path, *curveTo, or *quadCurveTo
+// https://www.toptal.com/c-plus-plus/rounded-corners-bezier-curves-qpainter
