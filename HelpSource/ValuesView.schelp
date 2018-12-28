@@ -1,0 +1,325 @@
+TITLE:: ValuesView
+summary:: A customizable UI view associated with multiple values and an assignable action.
+categories:: GUI>Views
+related:: Classes/ValueViewLayer, Classes/XYScaleView, Classes/ValuesView
+
+DESCRIPTION::
+Create a customizable UI view associated with values and assignable actions.
+Like link::Classes/ValueView::, which is a view associated with just one value,
+link::Classes/ValuesView:: stores multiple values and will draw a representation
+of those value in whatever way you choose, updating when those values change and
+notifying dependents of changed values. It uses Pen's drawing methods
+using a link::Classes/UserView:: internally. The view can
+optionally be made interactive to change the value as well as perform an action
+when the value changes. Update rates can be limited and repeated actions can be
+suppressed.
+
+
+CLASSMETHODS::
+
+METHOD:: new
+Create a new link::Classes/ValuesView::.
+
+ARGUMENT:: parent
+A link::Classes/Window::, link::Classes/View::, in which to embed this view.
+If code::nil::, a window will be created to hold the view.
+
+ARGUMENT:: bounds
+A Rect describing the bounds of this view within its strong::parent::.
+
+ARGUMENT:: specs
+An Array of link::Classes/ControlSpec::s that will control the range and
+warping of your values. link::#-inputs:: are the unmapped link::#-values::.
+If the array size differs from the number of strong::initVals::, it's assumed
+that values' index wrap around the array of specs. If code::nil::, a
+code::\unipolar:: spec is created for each of the strong::initVals::.
+
+ARGUMENT:: initVals
+An Array of initial link::#-values:: when the view is first drawn. The size of
+the array determines how many values this view represents
+
+returns:: A link::Classes/ValuesView::.
+
+
+INSTANCEMETHODS::
+
+COPYMETHOD:: ValueView -layers
+
+
+METHOD:: specAt
+Get/set the link::Classes/ControlSpec:: used to both map the input and
+constrain the value at the strong::index:: of the array of link::#-values::.
+
+ARGUMENT:: index
+The index of the value to which this spec is assigned.
+
+ARGUMENT:: controlSpec
+A link::Classes/ControlSpec::.
+
+ARGUMENT:: updateValue
+A link::Classes/Boolean:: specifying whether the corresponding value should be
+updated when the new strong::controlSpec:: is set. Default is code::true::.
+
+METHOD:: valueAtAction
+Set the value at strong::index:: of the value array and perform the
+link::#-action::. This also updates the link::#-inputAt:: by unmapping from the
+link::#-specAt::.
+
+ARGUMENT:: index
+The strong::index:: of the value array to set.
+
+ARGUMENT:: value
+A link::Classes/Number:: in the range of the link::#-specAt::. Out-of-range
+values will be clipped to the link::#-specAt:: range, unless link::#-wrap:: is
+code::true::, in which case the strong::value:: is wrapped into range.
+
+
+METHOD:: valuesPerPixel
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+METHOD:: specs
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: valuesAction
+(describe method here)
+
+ARGUMENT::  ... newValues
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: doAction
+Perform the link::#-action::. Usually called through
+link::#-valueAtAction::, link::#-inputAtAction::, etc.
+
+ARGUMENT:: newValue
+A link::Classes/Boolean:: determining whether the actions is performed. Default
+is code::true::. (When calling this method directly, the argument is
+redundant.)
+
+
+METHOD:: valueAt
+Get/set the value at strong::index:: of the value array without performing the
+link::#-action::. This also updates the link::#-inputAt:: by unmapping from the
+link::#-specAt::.
+
+ARGUMENT:: index
+The strong::index:: of the value array to set.
+
+ARGUMENT:: value
+A link::Classes/Number:: in the range of the link::#-specAt::. Out-of-range
+values will be clipped to the link::#-specAt:: range, unless link::#-wrap:: is
+code::true::, in which case the strong::value:: is wrapped into range.
+
+ARGUMENT:: broadcast
+A link::Classes/Boolean:: indicating whether the new value should be broadcast.
+Default is code::true::, which is the common behavior. In exceptional cases you
+may want to link::#-broadcastState:: only after setting multiple values so the
+view isn't redrawn with each value update. (This is how link::#-valuesAction::
+behaves internally.)
+
+
+METHOD:: refresh
+Refresh the view. If link::#-limitRefresh:: is code::true:: the view will only
+update at link::#-maxRefreshRate::.
+
+
+METHOD:: inputAtAction
+Set the input at strong::index:: of the input array and perform the
+link::#-action::. This also updates the link::#-valueAt:: by mapping through
+the link::#-specAt::.
+
+ARGUMENT:: index
+The strong::index:: of the value array to set.
+
+ARGUMENT:: normInput
+A value from code::(0..1)::.
+
+
+METHOD:: action
+Get/set the action to be performed by the view when link::#-valueAtAction::,
+link::#-valuesAction::, link::#-inputAtAction::, link::#-inputsAction::,
+or link::#-doAction:: are called.
+
+ARGUMENT:: actionFunc
+A link::Classes/Function:: which will be
+passed code::[this, this.values, this.inputs]:: as arguments.
+
+
+METHOD:: rangeInPixelsAt
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+ARGUMENT:: px
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: userView
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: wrapAt
+(describe method here)
+
+ARGUMENT:: index
+(describe argument here)
+
+ARGUMENT:: bool
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: onClose
+(describe method here)
+
+ARGUMENT:: func
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+
+
+METHOD:: autoRefresh
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+
+METHOD:: wrap
+A link::Classes/Boolean:: determining whether setting out-of-range values are
+wrapped within the link::#-spec:: or clipped to its range. Default
+is code::false:: (values are clipped).
+
+
+
+
+METHOD:: values
+(describe method here)
+
+ARGUMENT::  ... vals
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+METHOD:: mouseMoveAction
+Get/set the link::Classes/Function:: performed as the mouse moves over the
+view after being pressed. The function is passed
+code::[this, x, y, modifiers]:: as arguments (see
+link::Classes/View#Mouse actions::).
+
+
+METHOD:: mouseDownAction
+Get/set the link::Classes/Function:: performed when the mouse is pressed in
+the view. The function is passed
+code::[v, x, y, modifiers, buttonNumber, clickCount]:: as arguments (see
+link::Classes/View#Mouse actions::).
+
+
+METHOD:: mouseUpAction
+Get/set the link::Classes/Function:: performed when the mouse button is
+released. The function is passed
+code::[this, x, y, modifiers, buttonNumber]:: as arguments (see
+link::Classes/View#Mouse actions::).
+
+
+METHOD:: limitRefresh
+Get/set the link::Classes/Boolean:: indicating whether the refresh rate should
+be limited to link::#-maxRefreshRate::.
+
+
+METHOD:: maxRefreshRate
+Get/set the maximum refresh rate of the view when link::#-limitRefresh:: is
+code::true::.
+
+ARGUMENT:: hz
+A link::Classes/Number:: that is the max refresh rate of the view.
+
+
+METHOD:: inputs
+Get/set the inputs held by the view, which are the unmapped counterpart
+of the link::#-values:: (via the link::#-specs::), i.e. a value from (0..1).
+This is useful for updating other UI elements which are often set through
+normalized values, like link::Classes/Slider::s.
+
+The new inputs and corresponding link::#-values:: will be broadcast to
+dependents, via code::\inputs:: and code::\valuesPerPixel:: messages,
+respectively, every time either is set, unless link::#-broadcastNewOnly:: is
+code::true::, in which case the values are only broadcast if they differ from their previous state.
+
+ARGUMENT::  ... normInputs
+link::Classes/Number::s in the range code::(0..1)::, which will be mapped by
+the link::#-specs:: to set the values.
+
+
+METHOD:: inputsAction
+Set the inputs, and perform the link::#-action::. (See link::#-inputs::.)
+
+ARGUMENT::  ... normInputs
+link::Classes/Number::s in the range code::(0..1)::, which will be mapped by
+the link::#-specs:: to set the values.
+
+
+METHOD:: inputAt
+Get/set a single input at strong::index:: of the input array without performing
+the link::#-action::. This also updates the link::#-valueAt:: by mapping thorugh
+the link::#-specAt::.
+
+ARGUMENT:: index
+The strong::index:: of the input array to set.
+
+ARGUMENT:: normInput
+A link::Classes/Number:: in the range of (0..1). Out-of-range inputs will be
+clipped to the range, unless link::#-wrap:: is code::true::, in which case
+the strong::normValue:: is wrapped into range.
+
+ARGUMENT:: broadcast
+A link::Classes/Boolean:: indicating whether the new state should be broadcast.
+Default is code::true::, which is the common behavior. In exceptional cases you
+may want to link::#-broadcastState:: only after setting multiple inputs so the
+view isn't redrawn with each input update. (This is how link::#-inputsAction::
+behaves internally.)
+
+
+METHOD:: broadcastNewOnly
+Get/set the link::Classes/Boolean:: determining whether dependents are
+notified when the link::#-inputs:: or link::#-values:: are set but havn't
+changed from their previous state. An advantage is that there's less throughput
+if your view's (unchanged) state is updated rapidly. The disadvantage is that
+if a new dependent is added, it won't necessarily know the state of the view
+until the value changes (in which case it would need to access
+this view's link::#-values:: and/or link::#-inputs:: when it's initialized).
+
+Default is code::false::, i.e. the value and input are always broadcast when
+set even if the values haven't changed.
+
+Dependents can listen for strong::.changed:: messages with the keys
+code::\values:: and code::\inputs::.
+
+
+METHOD:: suppressRepeatedAction
+Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
+performed only when a newly set value differs from its previous state. This
+applies when calling link::#-valueAction::, link::#-inputAction::,
+or link::#-doAction::. Default is code::true:: (repeated actions are
+suppressed).
+
+
+PRIVATE:: update, drawFunc, superInit, broadcastState
+
+EXAMPLES::
+
+code::
+(some example code)
+::

@@ -1,13 +1,14 @@
 TITLE:: ValueView
-summary:: Create customizable UI views associated with values and assignable actions.
-categories:: Undocumented classes
-related:: Classes/ValueViewLayer, Classes/RotaryView, Classes/XYScaleView, Classes/ValuesView
+summary:: A customizable UI view associated with a value and an assignable action.
+categories:: GUI>Views
+related:: Classes/ValueViewLayer, Classes/RotaryView, Classes/ValuesView
 
 DESCRIPTION::
 Create customizable UI views associated with values and assignable actions.
 A link::Classes/ValueView:: stores a value and will draw a representation of
-that value in whatever way you choose, using Pen's drawing methods
-(link::Classes/ValueView:: uses a link::Classes/UserView:: internally). The
+that value in whatever way you choose, updating when those values change and
+notifying dependents of changed values. It uses Pen's drawing methods
+using a link::Classes/UserView:: internally. The
 view automatically updates when the value is set, and the view can
 optionally be made interactive to change the value as well as perform an action
 when the value changes. Update rates can be limited and repeated actions can be
@@ -41,7 +42,8 @@ A Rect describing the bounds of this view within its strong::parent::.
 
 ARGUMENT:: spec
 A link::Classes/ControlSpec:: that will control the range and warping of your
-value. link::#-input:: is the unmapped link::#-value::.
+value. link::#-input:: is the unmapped link::#-value::. If code::nil::, a
+code::\unipolar:: spec is created.
 
 ARGUMENT:: initVal
 The initial link::#-value:: when the view is first drawn.
@@ -61,11 +63,11 @@ A link::Classes/Function::. It will be passed this view as an argument.
 METHOD:: broadcastNewOnly
 Get/set the link::Classes/Boolean:: determining whether dependents are
 notified when the link::#-input:: or link::#-value:: is set but hasn't changed
-from its previous value. An advantage is that less throughput if your view's
-state is updated rapidly. The disadvantage is that if a new listener is added,
-it won't necessarily know the state of the view until the value changes (in
-which case it would need to access its link::#-value::
-and/or link::#-input:: when it's initialized).
+from its previous value.  An advantage is that there's less throughput
+if your view's (unchanged) state is updated rapidly. The disadvantage is that
+if a new dependent is added, it won't necessarily know the state of the view
+until the value changes (in which case it would need to access
+this view's link::#-value:: and/or link::#-input:: when it's initialized).
 
 Default is code::false::, i.e. the value and input are always broadcast when
 set even if the values haven't changed.
@@ -142,9 +144,9 @@ ARGUMENT:: controlSpec
 A link::Classes/ControlSpec::.
 
 ARGUMENT:: updateValue
-A link::Classes/Boolean:: specifying whether the link::#-value:: should be
-updated when the new strong::controlSpec:: is set (link::#-input:: is re-mapped
-to a new link::#-value::). Default is code::true::.
+A link::Classes/Boolean:: specifying whether the link::#-value::
+(and link::#-input::) should be updated when the new strong::controlSpec:: is
+set. Default is code::true::.
 
 
 METHOD:: xScrollDir
@@ -184,7 +186,7 @@ Set the input value of the view and perform the link::#-action::. This also
 updates the link::#-value:: by mapping through the link::#-spec::.
 
 ARGUMENT:: normValue
-A link::Classes/Number:: in the range of (0..1). Out-of-range values will be
+A link::Classes/Number:: in the range of (0..1). Out-of-range inputs will be
 clipped to the range, unless link::#-wrap:: is code::true::, in which case
 the strong::normValue:: is wrapped into range.
 
@@ -194,7 +196,7 @@ Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
 performed only when a newly set value differs from its previous state. This
 applies when calling link::#-valueAction::, link::#-inputAction::,
 or link::#-doAction::. Default is code::true:: (repeated actions are
-    suppressed).
+suppressed).
 
 
 METHOD:: refresh
@@ -203,12 +205,12 @@ update at link::#-maxRefreshRate::.
 
 
 METHOD:: input
-Get/set the strong::input:: held by the view, which is the unmapped counterpart
+Get/set the input held by the view, which is the unmapped counterpart
 of the link::#-value:: (via the link::#-spec::), i.e. a value from (0..1). This
 is useful for updating other UI elements which are often set through normalized
 values, like link::Classes/Slider::s.
 
-The new strong::input:: and corresponding link::#-value:: will be broadcast to
+The new input and corresponding link::#-value:: will be broadcast to
 dependents, via code::\input:: and code::\value:: messages, respectively, every
 time either is set, unless link::#-broadcastNewOnly:: is code::true::, in which
 case the values are only broadcast if they differ from their previous state.
