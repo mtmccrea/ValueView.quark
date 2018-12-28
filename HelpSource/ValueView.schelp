@@ -5,274 +5,276 @@ related:: Classes/ValueViewLayer, Classes/RotaryView, Classes/XYScaleView, Class
 
 DESCRIPTION::
 Create customizable UI views associated with values and assignable actions.
-A ValueView stores a value and will draw a representation of that value
-in whatever way you choose, using Pen's drawing methods (ValueView uses a UserView
-internally). The view automatically updates when the value is set, and the view can
+A link::Classes/ValueView:: stores a value and will draw a representation of
+that value in whatever way you choose, using Pen's drawing methods
+(link::Classes/ValueView:: uses a link::Classes/UserView:: internally). The
+view automatically updates when the value is set, and the view can
 optionally be made interactive to change the value as well as perform an action
 when the value changes. Update rates can be limited and repeated actions can be
 suppressed.
 
-The class isn't quite plug-and-play — ValueView is meant to be subclassed to author a new
-view/value representation, along with authoring ValueViewLayers which define drawing layers.
-RotaryView is an elaborate example of how a value can be displayed
-in various ways akin to a rotary encoder or "knob" control.
+The class isn't quite plug-and-play — link::Classes/ValueView:: is meant to be
+subclassed to author a new view/value representation, along with
+authoring link::Classes/ValueViewLayer::s which define drawing layers.
+link::Classes/RotaryView:: is an elaborate example of how a value can be
+displayed in various ways in the style of a rotary encoder or "knob" control.
 
-To represent more than one value associated in a single view, use ValuesView.
+Dependents can listen for strong::.changed:: messages with the keys
+code::\value:: and code::\input:: (the link::#-iinput:: is the link::#-value::
+unmapped by the link::#-spec::).
+
+To represent more than one value associated with a single view,
+use link::Classes/ValuesView::.
 
 
 CLASSMETHODS::
 
 METHOD:: new
-(describe method here)
+Create a new link::Classes/ValueView::.
 
 ARGUMENT:: parent
-(describe argument here)
+A link::Classes/Window::, link::Classes/View::, in which to embed this view.
+If code::nil::, a window will be created to hold the view.
 
 ARGUMENT:: bounds
-(describe argument here)
+A Rect describing the bounds of this view within its strong::parent::.
 
 ARGUMENT:: spec
-(describe argument here)
+A link::Classes/ControlSpec:: that will control the range and warping of your
+value. link::#-input:: is the unmapped link::#-value::.
 
 ARGUMENT:: initVal
-(describe argument here)
+The initial link::#-value:: when the view is first drawn.
 
-returns:: (describe returnvalue here)
+returns:: A link::Classes/ValueView::.
 
 
 INSTANCEMETHODS::
 
 METHOD:: onClose
-(describe method here)
+Set the link::Classes/Function:: to be executed when the view closes.
 
 ARGUMENT:: func
-(describe argument here)
+A link::Classes/Function::. It will be passed this view as an argument.
 
-returns:: (describe returnvalue here)
 
-METHOD:: mouseUpAction
-(describe method here)
+METHOD:: broadcastNewOnly
+Get/set the link::Classes/Boolean:: determining whether dependents are
+notified when the link::#-input:: or link::#-value:: is set but hasn't changed
+from its previous value. An advantage is that less throughput if your view's
+state is updated rapidly. The disadvantage is that if a new listener is added,
+it won't necessarily know the state of the view until the value changes (in
+which case it would need to access its link::#-value::
+and/or link::#-input:: when it's initialized).
 
-returns:: (describe returnvalue here)
+Default is code::false::, i.e. the value and input are always broadcast when
+set even if the values haven't changed.
+
+Dependents can listen for strong::.changed:: messages with the keys
+code::\value:: and code::\input::.
+
 
 METHOD:: layers
-(describe method here)
+Return the drawing layer objects used by this view. Useful for recalling what
+drawing layers have been designed for the view, though each layer is more
+likely more conveniently accessed by its instance variable name (which should
+be designed into the class—see source code for this class).
 
-returns:: (describe returnvalue here)
 
 METHOD:: userView
-(describe method here)
+Return the link::Classes/UserView:: used internally.
 
-returns:: (describe returnvalue here)
 
 METHOD:: value
-(describe method here)
+Get/set the strong::value:: held by the view, which is the mapped counterpart
+of the link::#-input:: (via the link::#-spec::).
+
+The new strong::value:: and corresponding link::#-input:: will be broadcast to
+dependents, via code::\value:: and code::\iinput:: messages, respectively,
+every time either is set, unless link::#-broadcastNewOnly:: is code::true::, in
+ which case the values are only broadcast if they differ from their previous
+ state.
 
 ARGUMENT:: val
-(describe argument here)
+A link::Classes/Number::. The number will either be emphasis::constrained:: or
+emphasis::wrapped:: within the view's link::#-spec::, depending on the state of
+link::#-wrap:: (default is code::false::, i.e. constrained to the spec.).
 
-returns:: (describe returnvalue here)
 
 METHOD:: action
-(describe method here)
+Get/set the action to be performed by the view when link::#-valueAction::,
+link::#-inputAction::, or link::#-doAction:: are called.
 
 ARGUMENT:: actionFunc
-(describe argument here)
+A link::Classes/Function:: which will be
+passed code::[this, this.value, this.input]:: as arguments.
 
-returns:: (describe returnvalue here)
-
-METHOD:: drawFunc
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: superInit
-(describe method here)
-
-ARGUMENT:: argSpec
-(describe argument here)
-
-ARGUMENT:: initVal
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: rangeInPixels
-(describe method here)
-
-ARGUMENT:: px
-(describe argument here)
-
-returns:: (describe returnvalue here)
 
 METHOD:: keyStep
-(describe method here)
+Get/set the step amount of each arrow key press, as a percentage of the range
+of the spec. E.g. strong::keyStep:: of code::30.reciprocal:: (the default)
+means it takes 30 key strokes to cover the full value range (warped according
+to the link::#-spec::).
 
-returns:: (describe returnvalue here)
 
 METHOD:: scrollStep
-(describe method here)
+Get/set the step amount when scrolling. Default is code::100.reciprocal::.
 
-returns:: (describe returnvalue here)
-
-METHOD:: broadcastState
-(describe method here)
-
-ARGUMENT:: newValue
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: update
-(describe method here)
-
-ARGUMENT:: changer
-(describe argument here)
-
-ARGUMENT:: what
-(describe argument here)
-
-ARGUMENT::  ... args
-(describe argument here)
-
-returns:: (describe returnvalue here)
 
 METHOD:: limitRefresh
-(describe method here)
+Get/set the link::Classes/Boolean:: indicating whether the refresh rate should
+be limited to link::#-maxRefreshRate::.
 
-returns:: (describe returnvalue here)
-
-METHOD:: yScrollDir
-(describe method here)
-
-returns:: (describe returnvalue here)
 
 METHOD:: maxRefreshRate
-(describe method here)
+Get/set the maximum refresh rate of the view when link::#-limitRefresh:: is
+code::true::.
 
 ARGUMENT:: hz
-(describe argument here)
+A link::Classes/Number:: that is the max refresh rate of the view.
 
-returns:: (describe returnvalue here)
 
 METHOD:: spec
-(describe method here)
+Get/set the link::Classes/ControlSpec:: used to both map the
+link::#-input:: and constrain the link::#-value::.
 
 ARGUMENT:: controlSpec
-(describe argument here)
+A link::Classes/ControlSpec::.
 
 ARGUMENT:: updateValue
-(describe argument here)
+A link::Classes/Boolean:: specifying whether the link::#-value:: should be
+updated when the new strong::controlSpec:: is set (link::#-input:: is re-mapped
+to a new link::#-value::). Default is code::true::.
 
-returns:: (describe returnvalue here)
 
 METHOD:: xScrollDir
-(describe method here)
+Get/set the x scroll direction. code::1:: is left to right scrolling
+(default), code::-1:: is the reverse.
 
-returns:: (describe returnvalue here)
 
-METHOD:: keyDirUD
-(describe method here)
+METHOD:: yScrollDir
+Get/set the y scroll direction. code::-1:: is "natural" scrolling (default),
+code::1:: is the reverse.
 
-returns:: (describe returnvalue here)
-
-METHOD:: valueAction
-(describe method here)
-
-ARGUMENT:: val
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: inputAction
-(describe method here)
-
-ARGUMENT:: normValue
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: suppressRepeatedAction
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: refresh
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: mouseMoveAction
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: stepByArrowKey
-(describe method here)
-
-ARGUMENT:: key
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: input
-(describe method here)
-
-ARGUMENT:: normValue
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: wrap
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: doAction
-(describe method here)
-
-ARGUMENT:: newValue
-(describe argument here)
-
-returns:: (describe returnvalue here)
 
 METHOD:: keyDirLR
-(describe method here)
+Get/set the step direction of Left/Right arrow keys. code::1:: = right
+increments, left decrements (default). code::-1:: = left increments, right
+decrements.
 
-returns:: (describe returnvalue here)
 
-METHOD:: stepByScroll
-(describe method here)
+METHOD:: keyDirUD
+Get/set the step direction of Up/Down arrow keys. code::1:: = up increments,
+down decrements (default). code::-1:: = down increments, up decrements.
 
-ARGUMENT:: v
-(describe argument here)
 
-ARGUMENT:: x
-(describe argument here)
+METHOD:: valueAction
+Set the value of the view and perform the link::#-action::. This also updates
+the link::#-input:: by unmapping from the link::#-spec::.
 
-ARGUMENT:: y
-(describe argument here)
+ARGUMENT:: val
+A link::Classes/Number:: in the range of the link::#-spec::. Out-of-range
+values will be clipped to the range of the link::#-spec::,
+unless link::#-wrap:: is code::true::, in which case the strong::val:: is
+wrapped into range.
 
-ARGUMENT:: modifiers
-(describe argument here)
 
-ARGUMENT:: xDelta
-(describe argument here)
+METHOD:: inputAction
+Set the input value of the view and perform the link::#-action::. This also
+updates the link::#-value:: by mapping through the link::#-spec::.
 
-ARGUMENT:: yDelta
-(describe argument here)
+ARGUMENT:: normValue
+A link::Classes/Number:: in the range of (0..1). Out-of-range values will be
+clipped to the range, unless link::#-wrap:: is code::true::, in which case
+the strong::normValue:: is wrapped into range.
 
-returns:: (describe returnvalue here)
+
+METHOD:: suppressRepeatedAction
+Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
+performed only when a newly set value differs from its previous state. This
+applies when calling link::#-valueAction::, link::#-inputAction::,
+or link::#-doAction::. Default is code::true:: (repeated actions are
+    suppressed).
+
+
+METHOD:: refresh
+Refresh the view. If link::#-limitRefresh:: is code::true:: the view will only
+update at link::#-maxRefreshRate::.
+
+
+METHOD:: input
+Get/set the strong::input:: held by the view, which is the unmapped counterpart
+of the link::#-value:: (via the link::#-spec::), i.e. a value from (0..1). This
+is useful for updating other UI elements which are often set through normalized
+values, like link::Classes/Slider::s.
+
+The new strong::input:: and corresponding link::#-value:: will be broadcast to
+dependents, via code::\input:: and code::\value:: messages, respectively, every
+time either is set, unless link::#-broadcastNewOnly:: is code::true::, in which
+case the values are only broadcast if they differ from their previous state.
+
+ARGUMENT:: normValue
+A link::Classes/Number:: in the range code::(0..1)::, which will be mapped by
+the link::#-spec:: to set the value.
+
+
+METHOD:: wrap
+A link::Classes/Boolean:: determining whether setting out-of-range values are
+wrapped within the link::#-spec:: or clipped to its range. Default
+is code::false:: (values are clipped).
+
+
+METHOD:: doAction
+Perform the link::#-action::. Usually called through
+link::#-valueDoAction:: or link::#-inputDoAction::.
+
+ARGUMENT:: newValue
+A link::Classes/Boolean:: determining whether the actions is performed. Default
+is code::true::. (In the underlying implementation
+of link::#-valueDoAction:: and link::#-inputDoAction::, this argument is passed
+the result of code::newValue != oldValue::, i.e. whether the value has changed
+to signal whether the action should be suppressed according
+to link::#-supressRepearedAction::, hence the name strong::newValue::. When
+calling this method directly, the argument is redundant.)
+
+
+METHOD:: mouseMoveAction
+Get/set the link::Classes/Function:: performed as the mouse moves over the
+view after being pressed. The function is passed
+code::[this, x, y, modifiers]:: as arguments (see
+link::Classes/View#Mouse actions::).
+
 
 METHOD:: mouseDownAction
-(describe method here)
+Get/set the link::Classes/Function:: performed when the mouse is pressed in
+the view. The function is passed
+code::[v, x, y, modifiers, buttonNumber, clickCount]:: as arguments (see
+link::Classes/View#Mouse actions::).
 
-returns:: (describe returnvalue here)
+
+METHOD:: mouseUpAction
+Get/set the link::Classes/Function:: performed when the mouse button is
+released. The function is passed
+code::[this, x, y, modifiers, buttonNumber]:: as arguments (see
+link::Classes/View#Mouse actions::).
+
+
+METHOD:: rangeInPixels
+Get/set the sensitivity of mouse interaction (and output resolution) by
+specifying the number of pixels over which the whole view's value range can be
+covered. Default is code::200::, i.e. the entire range of possible values will
+be covered in 200 pixels of movement. This can also be set
+by link::#-valuePerPixel.
+
 
 METHOD:: valuePerPixel
-(describe method here)
+Get/set the sensitivity of mouse interaction (and output resolution) by
+specifying the value change per pixel when interacting with the view through
+mouse movement. Default is code::spec.range / 200::, i.e. the entire range of
+possible values will be covered in 200 pixels of movement. This can also be set
+by link::#-rangeInPixels.
 
-returns:: (describe returnvalue here)
+PRIVATE:: stepByScroll, stepByArrowKey, update, drawFunc, superInit, broadcastState
 
 
 EXAMPLES::
