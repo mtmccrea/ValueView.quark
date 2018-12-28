@@ -16,7 +16,7 @@ ValuesView : View {
 	var <>valuesPerPixel;
 
 	var <userView;
-	var <layers;                   // array of drawing layers which respond to .properties
+	var <layers; // array of drawing layers which respond to .properties
 
 	// number of values inferred from number of intiVals
 	*new { |parent, bounds, specs, initVals |
@@ -143,25 +143,25 @@ ValuesView : View {
 
 	inputAt { |index| ^inputs[index] }
 
-	valueAtDoAction_ { |index, val|
+	valueAtAction_ { |index, val|
 		var oldValue = values[index];
 		this.valueAt_(index, val);
 		this.doAction(oldValue!=values[index]);
 	}
 
-	inputAtDoAction_ { |index, normInput|
+	inputAtAction_ { |index, normInput|
 		var oldValue = inputs[index];
 		this.input_(index, normInput);
 		this.doAction(oldValue!=inputs[index]);
 	}
 
-	valuesDoAction_ { |...newValues|
+	valuesAction_ { |...newValues|
 		var changed = (newValues != values);
 		this.values_(*newValues);
 		this.doAction(changed);
 	}
 
-	inputsDoAction_ { |...normInputs|
+	inputsAction_ { |...normInputs|
 		var changed = (normInputs != inputs);
 		this.inputs_(*normInputs);
 		this.doAction(changed);
@@ -215,7 +215,7 @@ ValuesView : View {
 				allowUpdate = false;
 				AppClock.sched(updateWait, {
 
-					if (updateHeld) {			// perform deferred refresh
+					if (updateHeld) { // perform deferred refresh
 						userView.refresh;
 						updateHeld = false;
 					 };

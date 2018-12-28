@@ -226,12 +226,12 @@ is code::false:: (values are clipped).
 
 METHOD:: doAction
 Perform the link::#-action::. Usually called through
-link::#-valueDoAction:: or link::#-inputDoAction::.
+link::#-valueAction:: or link::#-inputAction::.
 
 ARGUMENT:: newValue
 A link::Classes/Boolean:: determining whether the actions is performed. Default
 is code::true::. (In the underlying implementation
-of link::#-valueDoAction:: and link::#-inputDoAction::, this argument is passed
+of link::#-valueAction:: and link::#-inputAction::, this argument is passed
 the result of code::newValue != oldValue::, i.e. whether the value has changed
 to signal whether the action should be suppressed according
 to link::#-supressRepearedAction::, hence the name strong::newValue::. When

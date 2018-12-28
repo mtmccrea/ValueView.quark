@@ -75,7 +75,7 @@ XYScaleView : ValuesView {
 				if (moveRelative) {
 					var delta; // normalized change
 					delta = mouseMovePnt - mouseDownPnt / (canvas.width@canvas.height.neg);
-					this.inputsDoAction_(*(delta + stInputsPnt).asArray);
+					this.inputsAction_(*(delta + stInputsPnt).asArray);
 				} { // folow absolute position
 					this.setAbsPosInput(mouseMovePnt);
 				}
@@ -90,7 +90,7 @@ XYScaleView : ValuesView {
 		pxRel = mPnt - canvas.leftTop;
 		normX = pxRel.x/canvas.width;
 		normY = (canvas.height - pxRel.y)/canvas.height;
-		this.inputsDoAction_(normX, normY);
+		this.inputsAction_(normX, normY);
 	}
 
 	fixSquare_ { |bool|
