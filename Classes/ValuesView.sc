@@ -8,7 +8,8 @@ ValuesView : View {
 
 	var <>limitRefresh = false, <maxRefreshRate=25, updateWait, allowUpdate=true, updateHeld=false;
 	var <>suppressRepeatedAction = true;
-	var <>autoRefresh=true; // refresh automatically when layer properties are updated
+	var <>autoRefresh=true;          // refresh automatically when layer properties are updated
+	var <>broadcastNewOnly = false;  // only notify dependents on input/value update if new value, otherwise anytime value is set
 
 	// interaction
 	var mouseDownPnt, mouseUpPnt, mouseMovePnt;
@@ -143,9 +144,9 @@ ValuesView : View {
 
 	inputAt { |index| ^inputs[index] }
 
-	valueAtAction_ { |index, val|
+	valueAtAction_ { |index, value|
 		var oldValue = values[index];
-		this.valueAt_(index, val);
+		this.valueAt_(index, value);
 		this.doAction(oldValue!=values[index]);
 	}
 
@@ -168,21 +169,22 @@ ValuesView : View {
 	}
 
 
-	broadcastState { |newValue=true|
+	broadcastState { |newValue = true|
 		// update the value and input in layers' properties list
-		layers.do({ |l| l.p.vals = values; l.p.inputs = inputs});
-
-		// TODO: add a notify flag instead of automatically notifying?
-		// TODO: consider making this a global flag, e.g. broadcastNewOnly
-		// the risk of only broadcasting new values is that a new listener may not be updated
-		// if value doesn't change for a while... but is this the listener's responsibility to
-		// get an initial state?
+		// note: because this sets p values directly, it doesn't trigger an update
+		layers.do({ |l| l.p.vals = values; l.p.inputs = inputs });
 
 		// notify dependants
-		this.changed(\values, values);
-		this.changed(\inputs, inputs);
-		// TODO: consider making this a global flag, e.g. refreshNewOnly
-		if (newValue) { this.refresh };
+		if (newValue) {
+			this.changed(\values, values);
+			this.changed(\inputs, inputs);
+			this.refresh; // TODO: consider making this a global flag, e.g. refreshNewOnly
+		} {
+			if (broadcastNewOnly.not) {
+				this.changed(\values, values);
+				this.changed(\inputs, inputs);
+			}
+		}
 	}
 
 	action_ { |actionFunc|
