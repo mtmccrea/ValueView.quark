@@ -34,6 +34,7 @@ ValuesView : View {
 		numVals = initVals.size;
 		specs = argSpecs ?? numVals.collect{ \unipolar.asSpec.copy };
         numSpecs = specs.size;
+
         // if there are less specs than initVals, it's
         // assumed the values wrap around the spec list
 		values = initVals.collect{ |val,i| val ?? { specs[i%numSpecs].default } };
@@ -156,14 +157,16 @@ ValuesView : View {
 	}
 
 	valuesAction_ { |...newValues|
-		var changed = (newValues != values);
-		this.values_(*newValues);
+		var changed = newValues.collect({ |nv, i| nv != values[i] }).any(_ == true);
+		newValues.do({ |val, i| this.valueAt_(i, val, false) });
+		this.broadcastState(changed);
 		this.doAction(changed);
 	}
 
 	inputsAction_ { |...normInputs|
-		var changed = (normInputs != inputs);
-		this.inputs_(*normInputs);
+		var changed = normInputs.collect({ |ni, i| ni != inputs[i] }).any(_ == true);
+		normInputs.do({ |in, i| this.inputAt_(i, in, false) });
+		this.broadcastState(changed);
 		this.doAction(changed);
 	}
 
