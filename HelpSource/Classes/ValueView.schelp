@@ -33,19 +33,19 @@ CLASSMETHODS::
 METHOD:: new
 Create a new link::Classes/ValueView::.
 
-ARGUMENT:: parent
+argument:: parent
 A link::Classes/Window::, link::Classes/View::, in which to embed this view.
 If code::nil::, a window will be created to hold the view.
 
-ARGUMENT:: bounds
+argument:: bounds
 A Rect describing the bounds of this view within its strong::parent::.
 
-ARGUMENT:: spec
+argument:: spec
 A link::Classes/ControlSpec:: that will control the range and warping of your
 value. link::#-input:: is the unmapped link::#-value::. If code::nil::, a
 code::\unipolar:: spec is created.
 
-ARGUMENT:: initVal
+argument:: initVal
 The initial link::#-value:: when the view is first drawn.
 
 returns:: A link::Classes/ValueView::.
@@ -56,7 +56,7 @@ INSTANCEMETHODS::
 METHOD:: onClose
 Set the link::Classes/Function:: to be executed when the view closes.
 
-ARGUMENT:: func
+argument:: func
 A link::Classes/Function::. It will be passed this view as an argument.
 
 
@@ -97,7 +97,7 @@ every time either is set, unless link::#-broadcastNewOnly:: is code::true::, in
  which case the values are only broadcast if they differ from their previous
  state.
 
-ARGUMENT:: val
+argument:: val
 A link::Classes/Number::. The number will either be emphasis::constrained:: or
 emphasis::wrapped:: within the view's link::#-spec::, depending on the state of
 link::#-wrap:: (default is code::false::, i.e. constrained to the spec.).
@@ -107,7 +107,7 @@ METHOD:: action
 Get/set the action to be performed by the view when link::#-valueAction::,
 link::#-inputAction::, or link::#-doAction:: are called.
 
-ARGUMENT:: actionFunc
+argument:: actionFunc
 A link::Classes/Function:: which will be
 passed code::[this, this.value, this.input]:: as arguments.
 
@@ -132,18 +132,23 @@ METHOD:: maxRefreshRate
 Get/set the maximum refresh rate of the view when link::#-limitRefresh:: is
 code::true::.
 
-ARGUMENT:: hz
+argument:: hz
 A link::Classes/Number:: that is the max refresh rate of the view.
+
+
+METHOD:: autoRefresh
+A link::Classes/Boolean:: determining whether the view is refreshed when
+drawing layer properties are set. Default is code::true::
 
 
 METHOD:: spec
 Get/set the link::Classes/ControlSpec:: used to both map the
 link::#-input:: and constrain the link::#-value::.
 
-ARGUMENT:: controlSpec
+argument:: controlSpec
 A link::Classes/ControlSpec::.
 
-ARGUMENT:: updateValue
+argument:: updateValue
 A link::Classes/Boolean:: specifying whether the link::#-value::
 (and link::#-input::) should be updated when the new strong::controlSpec:: is
 set. Default is code::true::.
@@ -174,7 +179,7 @@ METHOD:: valueAction
 Set the value of the view and perform the link::#-action::. This also updates
 the link::#-input:: by unmapping from the link::#-spec::.
 
-ARGUMENT:: val
+argument:: val
 A link::Classes/Number:: in the range of the link::#-spec::. Out-of-range
 values will be clipped to the range of the link::#-spec::,
 unless link::#-wrap:: is code::true::, in which case the strong::val:: is
@@ -185,7 +190,7 @@ METHOD:: inputAction
 Set the input value of the view and perform the link::#-action::. This also
 updates the link::#-value:: by mapping through the link::#-spec::.
 
-ARGUMENT:: normValue
+argument:: normValue
 A link::Classes/Number:: in the range of (0..1). Out-of-range inputs will be
 clipped to the range, unless link::#-wrap:: is code::true::, in which case
 the strong::normValue:: is wrapped into range.
@@ -215,7 +220,7 @@ dependents, via code::\input:: and code::\value:: messages, respectively, every
 time either is set, unless link::#-broadcastNewOnly:: is code::true::, in which
 case the values are only broadcast if they differ from their previous state.
 
-ARGUMENT:: normValue
+argument:: normValue
 A link::Classes/Number:: in the range code::(0..1)::, which will be mapped by
 the link::#-spec:: to set the value.
 
@@ -230,7 +235,7 @@ METHOD:: doAction
 Perform the link::#-action::. Usually called through
 link::#-valueAction:: or link::#-inputAction::.
 
-ARGUMENT:: newValue
+argument:: newValue
 A link::Classes/Boolean:: determining whether the actions is performed. Default
 is code::true::. (In the underlying implementation
 of link::#-valueAction:: and link::#-inputAction::, this argument is passed
@@ -266,7 +271,7 @@ Get/set the sensitivity of mouse interaction (and output resolution) by
 specifying the number of pixels over which the whole view's value range can be
 covered. Default is code::200::, i.e. the entire range of possible values will
 be covered in 200 pixels of movement. This can also be set
-by link::#-valuePerPixel.
+by link::#-valuePerPixel::.
 
 
 METHOD:: valuePerPixel
@@ -274,7 +279,7 @@ Get/set the sensitivity of mouse interaction (and output resolution) by
 specifying the value change per pixel when interacting with the view through
 mouse movement. Default is code::spec.range / 200::, i.e. the entire range of
 possible values will be covered in 200 pixels of movement. This can also be set
-by link::#-rangeInPixels.
+by link::#-rangeInPixels::.
 
 PRIVATE:: stepByScroll, stepByArrowKey, update, drawFunc, superInit, broadcastState
 
