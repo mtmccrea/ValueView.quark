@@ -34,10 +34,7 @@ RotaryView : ValueView {
 		#range, level, text, ticks, handle, outline = [
 			RotaryRangeLayer, RotaryLevelLayer, RotaryTextLayer,
 			RotaryTickLayer, RotaryHandleLayer, RotaryOutlineLayer
-		].collect({
-			|class|
-			class.new(this, class.properties)
-		});
+		].collect({ |class| class.new(this) });
 
 		// convenience variable to access a list of the layers
 		layers = [range, level, text, ticks, handle, outline];

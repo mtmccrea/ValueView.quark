@@ -17,10 +17,8 @@ XYScaleView : ValuesView {
 		// initialize layer classes and save them to vars
 		#background, range, levels = [
 			XYBackgroundLayer, XYRangeLayer, XYLevelsLayer
-		].collect({
-			|class|
-			class.new(this, class.properties)
-		});
+		].collect({ |class| class.new(this) });
+
 		// convenience variable to access a list of the layers
 		layers = [background, range, levels];
 

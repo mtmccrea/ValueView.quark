@@ -8,7 +8,14 @@ ValueViewLayer {
 	var view, <>p; // properties
 
 	*new { |valueView, initProperties|
-		^super.newCopyArgs(valueView, initProperties).register
+		^super.newCopyArgs(valueView).init(initProperties)
+	}
+
+	*properties { this.subclassResponsibility(thisMethod) }
+
+	init { |initProperties|
+		p = initProperties ?? { this.class.properties };
+		this.register;
 	}
 
 	register {
