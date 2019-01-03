@@ -1,0 +1,78 @@
+TITLE:: ValueViewLayer
+summary:: A class for drawing a layer of an interactive view subclassed from ValueView or ValuesView
+categories:: GUI>Views
+related:: Classes/ValueView, Classes/ValuesView, Classes/RotaryViewLayer, Guides/Subclassing-ValueView
+
+DESCRIPTION::
+link::Classes/ValueView:: and link::Classes/ValuesView:: are customizable UI
+views associated with values and assignable actions. This class is at the core
+of how those views draw their user interfaces. Each
+link::Classes/ValueViewLayer:: encapsulates a drawing layer if your UI, with a
+set of properties that will automatically update when changed. Within
+link::Classes/ValueView::, multiple layers are drawn in succession to form your
+final visualization.
+link::Classes/ValueViewLayer:: is meant to be subclassed once for each layer in
+your UI. For example you may have one for a background layer, a middle layer, a
+top layer, and a text overlay layer, each with different properties like font,
+color, stroke/fill, line width, etc.
+
+CLASSMETHODS::
+
+METHOD:: new
+Create a new link::Classes/ValueViewLayer::.
+
+argument:: valueView
+A link::Classes/ValueView::, or link::Classes/ValuesView:: which uses this
+layer.
+
+argument:: initProperties
+An link::Classes/Event::, which contains key/value pairs of this drawing layer
+properties. This is typically code::this.properties::, which is a default
+prototype set of properties and initial values.
+
+returns:: A link::Classes/ValueViewLayer::.
+
+METHOD:: properties
+Returns the link::Classes/Event:: comprised of property keys and default
+values. These are distinguished from the instance variable
+link::#-properties::, which are actually used and updated by the view.
+If you'd like to initialize your link::Classes/ValueViewLayer::'s properties
+with defaults other than those provided in this prototype, you can get this,
+modify it, and pass it back into the link::*new:: method's
+strong::initProperties:: argument.
+
+
+INSTANCEMETHODS::
+
+
+METHOD:: properties
+Get the link::Classes/Event:: that stores the properties of the instance. In
+your drawing methods, you access these properties for setting your drawing
+behavior, e.g. code::Pen:: state. For brevity you can use the synonym
+link::#-p::.
+
+
+METHOD:: p
+A short synonym for link::#-properties::, for convenience in your drawing
+methods.
+
+
+METHOD:: getJoinIndex
+A convenience to look up the code::Pen.joinStyle:: by keyword.
+
+argument:: style
+A Symbol: code::\miter::, code::\round::, code::\bevel::.
+
+
+METHOD:: getCapIndex
+(describe method here)
+
+argument:: style
+A Symbol: code::\butt::, code::\round::, code::\square::.
+
+
+SECTION:: Composing your subclass
+How-to
+
+
+PRIVATE:: register, doesNotUnderstand

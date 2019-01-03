@@ -25,7 +25,10 @@ A link::Classes/Window::, link::Classes/View::, in which to embed this view.
 If code::nil::, a window will be created to hold the view.
 
 argument:: bounds
-A Rect describing the bounds of this view within its strong::parent::.
+A link::Classes/Rect:: describing the bounds of this view within its
+strong::parent::. If strong::parent:: is code::nil::, the
+link::Classes/Rect:: specifies the dimensions of the newly created
+link::Classes/Window:: and its location on the screen.
 
 argument:: specs
 An Array of link::Classes/ControlSpec::s that will control the range and

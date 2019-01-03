@@ -1,0 +1,397 @@
+TITLE:: Subclassing ValueView
+summary:: A guide to creating your own view with ValueView
+categories:: GUI>Views
+related:: Classes/ValueView, Classes/ValuesView, Classes/ValueViewLayer, Classes/RotaryViewLayer, Classes/XYScaleView
+
+
+SECTION:: Getting Started
+link::Classes/ValueView:: is subclassed to create your own view. The
+basic design is this: the link::Classes/ValueView:: is the object that holds
+the state of the view and its associated value(s), and manages user
+interaction. Internally it uses drawing layers—subclasses of
+link::Classes/ValueViewLayer::—which are drawn successively to form the final
+appearance of the view. Each drawing layer is independent, with its own
+properties that a user can change and the view will automatically update.
+
+
+SECTION:: Composing a ValueView subclass
+
+
+SUBSECTION:: The *new {} method
+Your code::*new {}:: method should include arguments code::parent::,
+code::bounds::, code::spec::, and code::initVal::, and they should be
+passed to code::super:: in that order:
+code::
+^super.new(parent, bounds, spec, initVal, ... otherArgs).init(otherArgs)
+::
+
+You can of course have more arguments than that, but you need to include these
+as well. Here is the ValueView code::*new:: method, and the descriptions of the
+above arguments you'll need to include:
+COPYMETHOD:: ValueView *new
+
+
+SUBSECTION:: The init {} method
+Notice the call to code::init:: in the link::#The *new {} method:: above.
+You need to anclude an code::init {}:: method that will initialize your drawing
+layers.
+
+First, you'll want to create an instance variable for each one of your
+drawing layers. Give getters to each of these drawing layer variables, that's
+how you'll access them to change their properties.
+
+Then, in your code::init {}:: method, initialize the drawing layer objects and
+assign them, like this snippet from the link::Classes/RotaryView:: class file:
+code::
+init {
+
+		// Required in init:
+		// Initialize drawing layers, assign them to instance vars
+		#range, level, text, ticks, handle, outline = [
+			RotaryRangeLayer,
+			RotaryLevelLayer,
+			RotaryTextLayer,
+			RotaryTickLayer,
+			RotaryHandleLayer,
+			RotaryOutlineLayer
+		].collect({ |class|
+			class.new(this)
+		});
+
+		// optionally include a convenience variable 'layers'
+		// to access a list of the layers
+		layers = [range, level, text, ticks, handle, outline];
+
+		//... perform any other initialization you need
+
+}
+::
+
+Notice the assignment of the code::layers:: variable, with an array of your
+drawing layers—this variable is already defined in ValueView with a getter
+and is a convenience for returning all of your drawing layers at once.
+
+Looking ahead, here's an example of how the user will get/set layer properties
+through these variables:
+code::
+myView.outline.strokeColor = Color.red;
+::
+This would set the rotary's outline layer to draw the outline in red.
+This returns the code::outline:: layer of code::myView::, then calls a
+pseudo-method (a key in the internal link::Classes/Event:: storing that layer's
+properties) code::strokeColor::, sets that property and triggers a view
+refresh.
+
+SUBSECTION:: The drawFunc {} method
+The code::drawFunc:: method is where you'll define and strong::return:: the
+function to be used by the internal link::Classes/UserView::. It won't actually
+do any drawing, that happens in your drawing layer classes, but it's where
+you'll update any instance variables useful for drawing—such as view
+dimensions, it's center, etc.—and which you'll want your drawing layers to
+access. This is so you don't calculate the same thing multiple times within
+each drawing layer.
+
+An example, again from the link::Classes/RotaryView:: class file:
+code::
+drawFunc {
+	^{ |v|
+		// instance vars, accessed by ValueViewLayers
+		bnds = v.bounds;
+		cen  = bnds.center;
+		maxRadius = min(cen.x, cen.y) - boarderPx;
+		outerRadius = maxRadius * outerRadiusRatio;
+		innerRadius = maxRadius * innerRadiusRatio;
+		wedgeWidth = outerRadius - innerRadius;
+		levelSweepLength = if (bipolar, { input - centerNorm }, { input }) * prSweepLength;
+
+		this.drawInThisOrder; // then call the method to draw your layers
+	}
+}
+::
+
+In this case, the variables code::bnds::, code::cen::, code::maxRadius::,
+code::outerRadius::, code::innerRadius::, code::wedgeWidth::, and
+code::levelSweepLength:: are all instance variables defined in
+link::Classes/RotaryView::, importantly, with strong::getters::, so that their
+values can be accessed by drawing layers. So each value is calculated just once
+here before going on to draw the layers, which is done with the last line:
+code::
+this.drawInThisOrder;
+::
+
+SUBSECTION:: The drawInThisOrder {} method
+The last of the required methods is code::drawInThisOrder {}::. Strictly
+speaking, it could be called anything, and its contents could be moved to
+code::drawFunc::, but it's useful to separate this out as your high-level
+recipe of how your drawing layers are composed.
+
+From link::RotaryView::'s class file':
+code::
+drawInThisOrder {
+	if (outline.p.show and: outline.p.fill) { outline.fill };
+	if (range.p.show and: range.p.fill) { range.fill };
+	if (level.p.show and: level.p.fill) { level.fill };
+	if (ticks.p.show) { ticks.fill; ticks.stroke };
+	if (range.p.show and: range.p.stroke) { range.stroke };
+	if (level.p.show and: level.p.stroke) { level.stroke };
+	if (handle.p.show) { handle.stroke };
+	if (outline.p.show and: outline.p.stroke) { outline.stroke };
+	if (text.p.show) { text.fill; text.stroke };
+}
+::
+
+We see here that each line is responsible for drawing a layer of our view.
+The order defines which layer is drawn first, and because link::Classes/Pen::'s
+default drawing mode is to successively draw over anything previously drawn,
+this order represents a bottom-up layering.
+
+This example is actually a fairly complex layering, notice that the
+code::outline:: layer's code::fill:: method is called first (if it's property
+states code::show:: and code::fill:: are code::true::), but numerous other
+layers are then drawn before the code::outline:: layer's code::stroke:: method
+is called. In this case that is to ensure none of the other layers overlap on
+the outline of the rotary illustration, giving it a clean edge. Text is drawn
+last, as it has a high priority in terms of being visible and unobstructed.
+
+The convention you see of code::layer.p.show:: is calling the the
+code::show:: property if the drawing layer (layer properties are stored in the
+code::p:: variable) to determine if that layer's code::fill:: and/or
+code::stroke:: method should be called. We'll see more about that in
+link::#Composing a ValueViewLayer subclass::.
+
+SUBSECTION:: An example subclass of ValueView
+To show a partially complete example, here's a reduced version of the
+link::RotaryView:: source:
+code::
+RotaryView : ValueView { // subclassing ValueView
+
+	// Drawing layers. Add getters to get/set individual properties by '.p'
+	var <range, <level, <text, <ticks, <handle, <outline;
+
+	// Instance variables used by drawing layers (with getters).
+	// These are updated in drawFunc {}, so are updated every refresh.
+	var <bnds, <cen, <maxRadius, <innerRadius, <outerRadius, <wedgeWidth, <levelSweepLength;
+
+	// some other vars specific to this rotary illustration
+	var <majTicks, <minTicks, majTickVals, minTickVals;
+
+	*new {
+		|parent, bounds, spec, initVal, otherArg1, otherArg2|
+		// parent, bounds, spec, initVal are forwarded to the
+		// superclass for initialization and storage
+		^super.new(parent, bounds, spec, initVal).init(otherArg1, otherArg2);
+	}
+
+	init { |initArg1, initArg2|
+
+		// Required in init:
+		// Initialize drawing layers, assign them to instance vars
+		#range, level, text, ticks, handle, outline = [
+			RotaryRangeLayer,
+			RotaryLevelLayer,
+			RotaryTextLayer,
+			RotaryTickLayer,
+			RotaryHandleLayer,
+			RotaryOutlineLayer
+		].collect({ |class|
+			class.new(this)
+		});
+
+		// optionally include a convenience variable 'layers'
+		// to access a list of the layers
+		layers = [range, level, text, ticks, handle, outline];
+
+		// ... perform any other initialization you need
+
+		// intialize the state of other vars
+		state1 = initArg1;
+		state2 = initArg2;
+		// call fictional method that defines mouse actions
+		this.defineMouseActions;
+	}
+
+	drawFunc {
+		^{ |v|
+			// instance vars, accessed by ValueViewLayers
+			bnds = v.bounds;
+			cen  = bnds.center;
+			maxRadius = min(cen.x, cen.y) - boarderPx;
+			outerRadius = maxRadius * outerRadiusRatio;
+			innerRadius = maxRadius * innerRadiusRatio;
+			wedgeWidth = outerRadius - innerRadius;
+			levelSweepLength = if (bipolar, { input - centerNorm }, { input }) * prSweepLength;
+
+			this.drawInThisOrder; // then call the method to draw your layers
+		}
+	}
+
+	drawInThisOrder {
+		if (outline.p.show and: outline.p.fill) { outline.fill };
+		if (range.p.show and: range.p.fill) { range.fill };
+		if (level.p.show and: level.p.fill) { level.fill };
+		if (ticks.p.show) { ticks.fill; ticks.stroke };
+		if (range.p.show and: range.p.stroke) { range.stroke };
+		if (level.p.show and: level.p.stroke) { level.stroke };
+		if (handle.p.show) { handle.stroke };
+		if (outline.p.show and: outline.p.stroke) { outline.stroke };
+		if (text.p.show) { text.fill; text.stroke };
+	}
+
+	// an example setter method:
+	// set position of the "ticks" of the rotary control
+	ticksAt_ { |majorRadPositions, minorRadPositions|
+		majorRadPositions !? {
+			majTicks = majorRadPositions;
+			// map radian positions to control's range by the spec
+			majTickVals = spec.map(majTicks / sweepLength);
+		};
+		minorRadPositions !? {
+			minTickVals = spec.map(minTicks / sweepLength);
+			minTicks = minorRadPositions;
+		};
+
+		this.refresh; // after the state vars are updated, refresh the view
+	}
+}
+::
+
+SECTION:: Composing a ValueViewLayer subclass
+
+SUBSECTION:: The *properties {} method
+The code::*properties:: method is where you'll define and strong::return:: the
+link::Classes/Event:: storing the properties of this drawing layer in
+key/value pairs. You'll both get and set these properties via their key, and
+your code::fill {}:: and code::stroke {}:: methods access them when rendering
+the layer. You can have as many or few properties as are needed for this layer
+but it's a good idea to provide at least a code::show:: property so that the
+layer can be "switched" off or on easily.
+Other common properties might be code::fill:: and code::stroke:::
+link::Classes/Boolean::s that determine if a code::fill {}:: and
+code::stroke {}:: methods should be called (in your
+link::#The drawInThisOrder {} method#ValueView : drawInThisOrder:: method).
+Also code::strokeWidth::, code::strokeColor::, code::fillColor::, etc.
+
+If your properties are related to sizes/lengths of your drawing figures, it's a
+good idea to make them normalized scalar values so that they scale nicely
+when your view is resized. For example, if you're drawing an arc that you
+want to cover half of the view's width, make that property something like
+code::
+arcScale: 0.5
+::
+then use this property in combination with code::view.bounds.width:: to get
+the actual pixel radius at the time of drawing.
+
+You can access the current state of the properties with the method
+link::Classes/ValueViewLayer#-p::.
+code::
+myView.outline.p // the properties for the 'outline' drawing layer
+::
+
+You can set and get these parameters directly by omitting the code::p:: and
+use the key directly as a pseudo-method of the
+link::Classes/ValueViewLayer:: (the superclass handles the key lookup for you).
+code::
+myView.outline.fillColor = Color.green; // set it
+myView.outline.fillColor;               // get it
+::
+
+See the code::RotaryOutlineLayer:: example below.
+
+SUBSECTION:: The fill {} and stroke {} methods
+Your code::fill {}:: and code::stroke {}:: methods do the actual work of
+drawing with code::Pen:: methods, in the same way you use them in
+link::Classes/UserView#-drawFunc::.
+
+Within these methods, you'll first want to use code::Pen.push:: in the
+beginning, and code::Pen.pop:: at the end, so that any translating, rotating,
+etc. that you do in the method are local to the method and reset once it has
+finished.
+
+When accessing layer properties defined in
+link::Classes/ValueViewLayer#*properties::, use
+link::Classes/ValueViewLayer#-p:: followed by the key as a pseudo-method. E.g.
+code::
+Pen.strokeColor = p.strokeColor;
+::
+(Note: you could use code::this.strokeColor::, but calling it from code::p::
+directly will save a bit of overhead and be more explicit that you're
+accessing drawing properties).
+
+To access properties of the link::Classes/ValueView:: using this layer, use
+the instance variable code::view::, which is passed in when the object is
+instantiated. See the following example. It's a good idea to use the view's
+dimensions to calculate your lines, arcs, etc. so that your respresentation
+scales when the view is resized.
+
+SUBSECTION:: An example subclass of ValueViewLayer
+Here's an example from link::Classes/RotaryOutlineLayer:::
+code::
+RotaryOutlineLayer : ValueViewLayer {
+
+	*properties {
+		^(  // all of the drawing layer's properties and their default values
+			show: false,
+			radius: 1,
+			fill: false,
+			fillColor: Color.white,
+			stroke: true,
+			strokeColor: Color.black,
+			strokeWidth: 2,
+			rangeOnly: false,
+			capStyle: \flat,
+		)
+	}
+
+	stroke {
+		var r, d, rect, strokeWidth;
+
+		// push first!
+		Pen.push;
+
+		// scale the oval radius by view's outerRadius
+		// and the draying layer's radius property
+		r = view.outerRadius * p.radius;
+
+		strokeWidth = if (p.strokeWidth < 1) {
+			p.strokeWidth * view.maxRadius
+		} {
+			p.strokeWidth
+		};
+
+		Pen.strokeColor_(p.strokeColor).width_(strokeWidth);
+
+		if (p.rangeOnly) {
+			// draw only an arc across the range
+			Pen.capStyle_(
+                this.getCapIndex(p.capStyle) // call the inherited getCapIndex method
+            );
+            // using the view's dimensions and variables for your drawing
+            // will make the graphics scale when resized
+			Pen.addArc(
+                view.cen, r, view.prStartAngle, view.prSweepLength
+            );
+			Pen.stroke;
+		} {
+			d = r * 2;
+			rect = Size(d, d).asRect;
+			rect = rect.center_(view.cen);   // get the view's center
+
+			if (p.fill) {                    // if fill property is true,
+				Pen.fillColor = p.fillColor; // use fillColor property for Pen's fillColor
+				Pen.fillOval(rect)           // fill the oval
+			};
+			if (p.stroke) {
+				Pen.width_(strokeWidth);    // if stroke property is true,
+				Pen.strokeColor = p.strokeColor;
+				Pen.strokeOval(rect)        // stroke the oval
+			};
+		};
+
+		// ...pop at the end
+		Pen.pop;
+	}
+
+	// fill isn't needed for this layer, so it's an empty function.
+	fill {  }
+}
+::
