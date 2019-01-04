@@ -1,7 +1,7 @@
 TITLE:: ValueView
 summary:: A customizable UI view associated with a value and an assignable action.
 categories:: GUI>Views
-related:: Classes/ValueViewLayer, Classes/RotaryView, Classes/ValuesView
+related:: Classes/ValueViewLayer, Classes/RotaryView, Classes/ValuesView, Guides/Subclassing-ValueView
 
 DESCRIPTION::
 Create customizable UI views associated with values and assignable actions.
@@ -17,8 +17,8 @@ suppressed.
 The class isn't quite plug-and-play — link::Classes/ValueView:: is meant to be
 subclassed to author a new view/value representation, along with
 authoring link::Classes/ValueViewLayer::s which define drawing layers.
-link::Classes/RotaryView:: is an elaborate example of how a value can be
-displayed in various ways in the style of a rotary encoder or "knob" control.
+
+See link::Guides/Subclassing-ValueView::.
 
 Dependents can listen for strong::.changed:: messages with the keys
 code::\value:: and code::\input:: (the link::#-iinput:: is the link::#-value::
@@ -34,7 +34,7 @@ METHOD:: new
 Create a new link::Classes/ValueView::.
 
 argument:: parent
-A link::Classes/Window::, link::Classes/View::, in which to embed this view.
+A link::Classes/Window:: or link::Classes/View::, in which to embed this view.
 If code::nil::, a window will be created to hold the view.
 
 argument:: bounds

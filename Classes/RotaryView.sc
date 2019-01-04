@@ -20,13 +20,13 @@ RotaryView : ValueView {
 	var <range, <level, <text, <ticks, <handle, <outline;
 
 	*new {
-		|parent, bounds, spec, initVal, startAngle=0, sweepLength=2pi, innerRadiusRatio=0, outerRadiusRatio=1|
-		^super.new(parent, bounds, spec, initVal).init(startAngle, sweepLength, innerRadiusRatio, outerRadiusRatio);
+		|parent, bounds, spec, initVal, startAngle=0, sweepLength=2pi, innerRadiusRatio=0, outerRadiusRatio=1, direction=\cw|
+		^super.new(parent, bounds, spec, initVal).init(startAngle, sweepLength, innerRadiusRatio, outerRadiusRatio, direction);
 	}
 
 
 	init {
-		|argStartAngle, argSweepLength, argInnerRadiusRatio, argOuterRadiusRatio|
+		|argStartAngle, argSweepLength, argInnerRadiusRatio, argOuterRadiusRatio, argDirection|
 
 		// REQUIRED: in subclass init, initialize drawing layers
 
@@ -41,8 +41,8 @@ RotaryView : ValueView {
 
 		startAngle = argStartAngle; // reference 0 is UP
 		sweepLength = argSweepLength;
-		direction = \cw;
-		dirFlag = 1;
+		direction = argDirection;
+		dirFlag = switch (direction, \cw, { 1 }, \ccw, { -1 });
 		orientation = \vertical;
 		wrap = false;
 		clickMode = \relative; // or \absolute
@@ -69,6 +69,7 @@ RotaryView : ValueView {
 
 		this.defineMouseActions;
 		this.direction_(direction); // this initializes prStarAngle and prSweepLength
+		this.value_(value);         // set the value explicity to update drawing layers' p.val
 	}
 
 	drawFunc {
@@ -163,7 +164,7 @@ RotaryView : ValueView {
 
 	startAngle_ { |radians=0|
 		startAngle = radians;
-		prStartAngle = -0.5pi + startAngle; // start angle always relative to 0 is up, cw
+		prStartAngle = -0.5pi + (startAngle * dirFlag); // start angle always relative to 0 is up, cw
 		this.setPrCenter;
 		this.ticksAtValues_(majTickVals, minTickVals, false); // refresh the list of maj/minTicks positions
 	}
@@ -219,6 +220,11 @@ RotaryView : ValueView {
 		this.refresh;
 	}
 
+
+	ticksEvery_ { |radienHop, majorEvery=2|
+		this.refresh;
+	}
+
 	// ticks at values unmapped by spec
 	ticksAtValues_ { |majorVals, minorVals|
 		majorVals !? {
@@ -242,11 +248,6 @@ RotaryView : ValueView {
 		minList = List(num-numMaj);
 		ticks.do{ |val, i| if ((i % majorEvery) == 0, { majList.add(val) }, { minList.add(val) }) };
 		this.ticksAt_(majList, minList);
-		this.refresh;
-	}
-
-
-	ticksEvery_ { |radienHop, majorEvery=2|
 		this.refresh;
 	}
 

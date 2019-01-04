@@ -1,0 +1,277 @@
+TITLE:: RotaryView
+summary:: A UI view that mimics a rotary-style encoder.
+categories:: GUI>Views
+related:: Classes/ValueView, Classes/Knob
+
+DESCRIPTION::
+A GUI view that mimics a rotary-style encoder, similar to link::Classes/Knob::,
+but fully customizable, including optionally a full 360-degree continuous range.
+
+The view works in much the same was at other SC widgets, but has additional
+capabilities to notify dependents of changes, and the appearance is extensively
+customizable via numerous drawing layers with settable properties.
+
+CLASSMETHODS::
+
+METHOD:: new
+Create a new link::Classes/RotaryView::.
+
+argument:: parent
+A link::Classes/Window:: or link::Classes/View::, in which to embed this view.
+If code::nil::, a window will be created to hold the view.
+
+argument:: bounds
+A link::Classes/Rect:: describing the bounds of this view within its
+strong::parent::. If strong::parent:: is code::nil::, the
+link::Classes/Rect:: specifies the dimensions of the newly created
+link::Classes/Window:: and its location on the screen.
+
+argument:: spec
+A link::Classes/ControlSpec:: that will control the range and warping of your
+value. link::#-input:: is the unmapped link::#-value::. If code::nil::, a
+code::\unipolar:: spec is created.
+
+argument:: initVal
+The initial link::#-value:: within range of the strong::spec:: when the view
+is first drawn.
+
+argument:: startAngle
+The angular position of the start of the rotary's range, in radians. Default
+is code::0::. Can be negative.
+Reference code::0:: position is up, 12 o'clock, and advances according to
+strong::direction:: (default clockwise).
+
+argument:: sweepLength
+The range of motion of the rotary, in radians. Default is code::2pi::.
+
+argument:: innerRadiusRatio
+A value from code::(0..1):: determining radius of the the inner edge of the
+rotary. Default is code::0::.
+
+argument:: outerRadiusRatio
+A value from code::(0..1):: determining radius of the the outer edge of the
+rotary, where code::1:: is the maximum radius given the size of the view.
+Default is code::1::.
+
+argument:: direction
+A link::Classes/Symbol::, code::\cw:: or code::\ccw::, clockwise and
+counterclockwise, respectively, indicating the direction of positive movement,
+for both value changes as well as affecting how strong::startAngle:: is
+determined.
+
+returns:: A link::Classes/RotaryView::.
+
+
+INSTANCEMETHODS::
+
+
+METHOD:: centerValue
+Get/set the link::Classes/Number:: that is the "center" of the bipolar axis.
+
+argument:: value
+A link::Classes/Number:: in the range of the link::#-spec::.
+
+
+METHOD:: direction
+Get/set the direction of positive movement, for both value changes as well as
+affecting how link::#-startAngle:: is determined.
+
+argument:: dir
+A link::Classes/Symbol::, code::\cw:: or code::\ccw::, clockwise and
+counterclockwise, respectively.
+
+
+METHOD:: startAngle
+Get/set the angular position of the start of the rotary's range, in radians.
+Reference code::0:: position is up, 12 o'clock, and advances according to
+link::#-direction::.
+
+argument:: radians
+A link::Classes/Number:: in radians, can be negative.
+
+
+
+METHOD:: outerRadiusRatio
+Set/get the radius of the the outer edge of the rotary, where code::1:: is the
+maximum radius given the size of the view.
+
+argument:: ratio
+A value from code::(0..1)::
+
+
+METHOD:: ticksAt
+Set the position of major and minor ticks, in radians.
+
+argument:: majorRadPositions
+An link::Classes/Array:: of radian values, relative to link::#-startAngle:: and
+link::#-direction::, for the major ticks.
+
+argument:: minorRadPositions
+An link::Classes/Array:: of radian values, relative to link::#-startAngle:: and
+link::#-direction::, for the minor ticks.
+
+
+METHOD:: clickMode
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: orientation
+(describe method here)
+
+argument:: vertHorizOrCirc
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+METHOD:: boarderPad
+(describe method here)
+
+returns:: (describe returnvalue here)
+
+
+
+
+METHOD:: ticksEvery
+(describe method here)
+
+argument:: radienHop
+(describe argument here)
+
+argument:: majorEvery
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+
+METHOD:: spec
+(describe method here)
+
+argument:: controlSpec
+(describe argument here)
+
+argument:: updateValue
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: numTicks
+(describe method here)
+
+argument:: num
+(describe argument here)
+
+argument:: majorEvery
+(describe argument here)
+
+argument:: endTick
+(describe argument here)
+
+returns:: (describe returnvalue here)
+
+METHOD:: ticksEveryVal
+Set the ticks at an even interval, in the units of your
+link::#-spec::, specifying the steps between each major tick.
+
+argument:: valueHop
+A link::Classes/Number:: specifying the interval, or "hop", between each tick.
+
+argument:: majorEvery
+An link::Classes/Integer:: specifying the steps of major ticks.
+
+
+METHOD:: bipolar
+Get/set how the rotary fills the color up to the current value. If
+code::false::, the color is always filled from the minumum value in the range
+up to the current value. If code::true::, the color is filled from the
+link::#-centerValue:: to the current value.
+
+argument:: bool
+A link::Classes/Boolean::.
+
+
+METHOD:: sweepLength
+Get/set the range of motion of the rotary, in radians. Default is code::2pi::.
+
+argument:: radians
+A A link::Classes/Number:: in radians.
+
+
+
+METHOD:: ticksAtValues
+Set the position of major and minor ticks, in the units of your
+link::#-spec::.
+
+argument:: majorVals
+An link::Classes/Array:: of values for the major ticks, within the range of
+your link::#-spec::.
+
+argument:: minorVals
+An link::Classes/Array:: of values for the minor ticks, within the range of
+your link::#-spec::.
+
+
+METHOD:: dirFlag
+Get the value corresponding to the rotary's direction: clockwise = code::1::,
+counterclockwise = code::-1::.
+
+
+
+METHOD:: innerRadiusRatio
+Set/get the radius of the the inner edge of the rotary.
+
+argument:: ratio
+A value from code::(0..1)::.
+
+returns:: (describe returnvalue here)
+
+
+METHOD:: range
+(describe method here)
+METHOD:: level
+(describe method here)
+METHOD:: text
+(describe method here)
+METHOD:: ticks
+(describe method here)
+METHOD:: handle
+(describe method here)
+METHOD:: outline
+(describe method here)
+
+
+PRIVATE:: prStartAngle, prSweepLength, prCenterAngle, setPrCenter, levelSweepLength, drawInThisOrder, respondToAbsoluteClick, init, respondToLinearMove, drawFunc, defineMouseActions, bnds, cen, maxRadius, innerRadius, outerRadius, wedgeWidth, respondToCircularMove, minTicks, majTicks, centerNorm
+
+
+EXAMPLES::
+SUBSECTION:: bipolar mode, ticks, text alignment
+code::
+// bipolar rotary for "gain" control
+(
+var setupRot, numRots = 8;
+r = RotaryView(bounds: Size(300, 300).asRect,
+	spec: [-90, 12, \db].asSpec,
+	initVal: 0,
+	startAngle: pi, sweepLength:  pi,
+	innerRadiusRatio: 0.3,
+	outerRadiusRatio: 0.95
+).front;
+r.clickMode_(\absolute);
+r.bipolar = true;
+r.centerValue_(0); // bipolar center at 0dB
+
+r.range.fillColor_(Color.new(0.9,0.9,0.9));
+// assign bipolar colors
+r.level.strokeColor = { |p| if (p.val < 0) { Color.red } { Color.green } };
+r.level.fillColor = { |p| if (p.val < 0) { Color.red.alpha_(0.2) } { Color.green.alpha_(0.2) } };
+r.level.strokeType_(\outside).strokeWidth_(0.05);
+
+r.handle.strokeColor_(Color.gray.alpha_(0.4)).anchor_(1).length_(1);
+
+r.text.fontSize_(0.2).align_(0.65@0.5).color_(Color(*0.6!3));
+
+r.ticks.show_(true).majorColor_(Color.gray).majorWidth_(0.05).minorWidth_(0.02).capStyle_(\round);
+r.ticksAtValues_([0], (-24, -21 .. 12));
+)
+::

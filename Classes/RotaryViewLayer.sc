@@ -81,7 +81,7 @@ RotaryRangeLayer : RotaryArcWedgeLayer {
                                      // TODO: rename this?
 			fill:        true,       // if annularWedge
 			fillColor:   Color.gray.alpha_(0.3),
-			stroke:      true,
+			stroke:      false,
 			strokeColor: Color.gray,
 			strokeType:  \around,    // if style: \wedge; \inside, \outside, or \around
 			strokeWidth: 1,          // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
@@ -153,21 +153,25 @@ RotaryTextLayer : ValueViewLayer {
 			show: true,
 			align: \center, // \top, \bottom, \center, \left, \right, or Point()
 			fontSize: 12,
-			font: {|me| Font("Helvetica", me.fontSize)},
+			fontName: "Helvetica",
 			color: Color.black,
 			round: 0.1,
 		)
 	}
 
 	fill {
-		var v, bnds, rect, half;
+		var v, bnds, rect, half, font;
 		v = view.value.round(p.round).asString;
 		bnds = view.bnds;
+		font = Font(
+			p.fontName,
+			if (p.fontSize < 1) { p.fontSize * view.maxRadius * 2 } { p.fontSize }
+		);
 		Pen.push;
 		Pen.fillColor_(p.color);
 		if (p.align.isKindOf(Point)) {
 			rect = bnds.center_(bnds.extent*p.align);
-			Pen.stringCenteredIn(v, rect, p.font, p.color);
+			Pen.stringCenteredIn(v, rect, font, p.color);
 		} {
 			rect = switch (p.align,
 				\center, {bnds},
@@ -182,7 +186,7 @@ RotaryTextLayer : ValueViewLayer {
 					bnds.height_(half).top_(half)
 				},
 			);
-			Pen.stringCenteredIn(v, rect, p.font, p.color)
+			Pen.stringCenteredIn(v, rect, font, p.color)
 		};
 		Pen.fill;
 		Pen.pop;
@@ -196,8 +200,8 @@ RotaryTickLayer : ValueViewLayer {
 	*properties {
 		^(
 			show:        false,      // show ticks or not
-			anchor:      1,          // position/radius where the ticks are "anchored", relative to wedgeWidth
-			align:       \outside,   // specifies the direction the tick is drawn from anchor; \inside, \outside, or \center
+			anchor:      0.97,       // position/radius where the ticks are "anchored", relative to wedgeWidth
+			align:       \inside,    // specifies the direction the tick is drawn from anchor; \inside, \outside, or \center
 			majorLength: 0.25,       // length of major ticks, realtive to maxRadius (0..1)
 			minorLength: 0.1,        // length of minor ticks, realtive to maxRadius (0..1)
 			majorWidth:  0.05,       // width of major tick, in pixels, TODO: this could be relative to windowSize if < 1

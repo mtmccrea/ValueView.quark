@@ -1,18 +1,21 @@
 TITLE:: ValuesView
 summary:: A customizable UI view associated with multiple values and an assignable action.
 categories:: GUI>Views
-related:: Classes/ValueViewLayer, Classes/XYScaleView, Classes/ValuesView
+related:: Classes/ValueViewLayer, Classes/XYScaleView, Classes/ValuesView, Guides/Subclassing-ValueView
 
 DESCRIPTION::
-Create a customizable UI view associated with values and assignable actions.
+Create a customizable GUI associated with values and assignable actions.
 Like link::Classes/ValueView::, which is a view associated with just one value,
 link::Classes/ValuesView:: stores multiple values and will draw a representation
 of those value in whatever way you choose, updating when those values change and
-notifying dependents of changed values. It uses Pen's drawing methods
-using a link::Classes/UserView:: internally. The view can
-optionally be made interactive to change the value as well as perform an action
-when the value changes. Update rates can be limited and repeated actions can be
-suppressed.
+notifying dependents of changed values. The view can optionally be made
+interactive to change the value as well as perform an action when the value
+changes. Update rates can be limited and repeated actions can be suppressed.
+
+To use this class for creating your own GUI, see
+link::Guides/Subclassing-ValueView::, which explains how to
+sublcass link::Classes/ValueView::, though the process is the same for
+link::Classes/ValuesView::.
 
 
 CLASSMETHODS::
@@ -21,7 +24,7 @@ METHOD:: new
 Create a new link::Classes/ValuesView::.
 
 argument:: parent
-A link::Classes/Window::, link::Classes/View::, in which to embed this view.
+A link::Classes/Window:: or link::Classes/View::, in which to embed this view.
 If code::nil::, a window will be created to hold the view.
 
 argument:: bounds
