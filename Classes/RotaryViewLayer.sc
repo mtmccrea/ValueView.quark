@@ -118,7 +118,7 @@ RotaryLevelLayer : RotaryArcWedgeLayer {
             fill:           true,       // if style: \wedge
             fillColor:      Color.white,
             stroke:         true,
-            strokeColor:    Color.green,
+            strokeColor:    Color.gray,
             strokeType:     \around,    // if style: \wedge; \inside, \outside, or \around
             strokeWidth:    0.05,       // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
             capStyle:       0,          // if style: \arc or \wedge with strokeType != \around
@@ -154,7 +154,7 @@ RotaryTextLayer : ValueViewLayer {
 			align: \center, // \top, \bottom, \center, \left, \right, or Point()
 			fontSize: 12,
 			fontName: "Helvetica",
-			color: Color.black,
+			color: Color.gray,
 			round: 0.1,
 		)
 	}
@@ -204,11 +204,11 @@ RotaryTickLayer : ValueViewLayer {
 			align:       \inside,    // specifies the direction the tick is drawn from anchor; \inside, \outside, or \center
 			majorLength: 0.25,       // length of major ticks, realtive to maxRadius (0..1)
 			minorLength: 0.1,        // length of minor ticks, realtive to maxRadius (0..1)
-			majorWidth:  0.05,       // width of major tick, in pixels, TODO: this could be relative to windowSize if < 1
+			majorWidth:  0.05,       // width of major tick, in pixels
 			minorWidth:  0.025,      // width of minor tick, realtive to majorWidth
 			majorColor:  Color.black,
 			minorColor:  Color.gray,
-			capStyle:\round
+			capStyle:    \round
 		)
 	}
 
@@ -267,8 +267,8 @@ RotaryHandleLayer : ValueViewLayer {
 			fillColor:   Color.red,
 			stroke:      true,       // if style = \circle or \arrow
 			strokeColor: Color.black,
-			strokeWidth: 2,          // if style = \line or \circle
-			radius:      3,          // if style = \circle; if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
+			strokeWidth: 2,          // if style = \line or \circle,  if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
+			radius:      0.1,        // if style = \circle; if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
 			length:      0.3,        // if style = \line or \arrow
 			width:       0.6,        // if style = \arrow, relative to length (width of 1 = length)
 			anchor:      0.9,        // where the outer end of the handle is anchored, 0>1, relative to wedgeWidth

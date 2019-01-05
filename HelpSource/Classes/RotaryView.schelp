@@ -62,7 +62,77 @@ determined.
 returns:: A link::Classes/RotaryView::.
 
 
+
 INSTANCEMETHODS::
+
+
+COPYMETHOD:: ValueView -value
+COPYMETHOD:: ValueView -input
+
+COPYMETHOD:: ValueView -valueAction
+COPYMETHOD:: ValueView -inputAction
+COPYMETHOD:: ValueView -doAction
+
+COPYMETHOD:: ValueView -spec
+
+
+
+SUBSECTION:: User interaction
+
+
+METHOD:: continuous
+A link::Classes/Boolean:: which determines if the rotary behaves like a
+continuous encoder, wrapping values around its link::#-spec:: range when
+crossing min/max values. Useful for full code::2pi:: range rotary controls.
+Synonym for link::#-wrap::. Default is code::false:: (values are clipped to
+range).
+
+
+METHOD:: clickMode
+Set how mouse clicking changes the rotary position:
+argument:: value
+table::
+## code::\absolute:: || jumps to the  value where it is clicked
+## code::\relative:: || the value changes relative to the
+
+mouse movement once clicked.
+::
+
+
+METHOD:: orientation
+Set how mouse dragging changes moves the rotary position.
+
+argument:: vertHorizOrCirc
+table::
+## code::\vertical:: || value changes according to vertical mouse movement
+## code::\horizontal:: || value changes according to horizontal mouse movement
+## code::\circular:: || value follows the radial movement around the rotary
+::
+
+
+COPYMETHOD:: ValueView -rangeInPixels
+COPYMETHOD:: ValueView -valuePerPixel
+
+COPYMETHOD:: ValueView -keyStep
+COPYMETHOD:: ValueView -keyDirLR
+COPYMETHOD:: ValueView -keyDirUD
+
+COPYMETHOD:: ValueView -scrollStep
+COPYMETHOD:: ValueView -xScrollDir
+COPYMETHOD:: ValueView -yScrollDir
+
+
+
+SUBSECTION:: Bipolar mode
+
+METHOD:: bipolar
+Get/set how the rotary fills the color up to the current value. If
+code::false::, the color is always filled from the minumum value in the range
+up to the current value. If code::true::, the color is filled from the
+link::#-centerValue:: to the current value.
+
+argument:: bool
+A link::Classes/Boolean::.
 
 
 METHOD:: centerValue
@@ -72,31 +142,27 @@ argument:: value
 A link::Classes/Number:: in the range of the link::#-spec::.
 
 
-METHOD:: direction
-Get/set the direction of positive movement, for both value changes as well as
-affecting how link::#-startAngle:: is determined.
 
-argument:: dir
-A link::Classes/Symbol::, code::\cw:: or code::\ccw::, clockwise and
-counterclockwise, respectively.
+SUBSECTION:: Ticks
 
 
-METHOD:: startAngle
-Get/set the angular position of the start of the rotary's range, in radians.
-Reference code::0:: position is up, 12 o'clock, and advances according to
-link::#-direction::.
+METHOD:: numTicks
+Set the number of ticks to be displayed evenly across the full range of the
+rotary.
 
-argument:: radians
-A link::Classes/Number:: in radians, can be negative.
+argument:: num
+An link::Classes/Integer::. The total number of ticks (major and minor).
 
+argument:: majorEvery
+An link::Classes/Integer::. Frequency of major ticks. E.g.
+strong::majorEvery:: = code::3:: would make a tick pattern of
+major-minor-minor-major-minor-minor-etc. See link::#-ticks:: layer for
+setting other properties about ticks.
 
-
-METHOD:: outerRadiusRatio
-Set/get the radius of the the outer edge of the rotary, where code::1:: is the
-maximum radius given the size of the view.
-
-argument:: ratio
-A value from code::(0..1)::
+argument:: endTick
+A link::Classes/Boolean::, whether the last tick should be drawn. E.g. If the
+link::#-sweepLength:: is code::2pi::, you wouldn't need to draw the last tick,
+as it would overlap with the first.
 
 
 METHOD:: ticksAt
@@ -109,94 +175,6 @@ link::#-direction::, for the major ticks.
 argument:: minorRadPositions
 An link::Classes/Array:: of radian values, relative to link::#-startAngle:: and
 link::#-direction::, for the minor ticks.
-
-
-METHOD:: clickMode
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: orientation
-(describe method here)
-
-argument:: vertHorizOrCirc
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-
-METHOD:: boarderPad
-(describe method here)
-
-returns:: (describe returnvalue here)
-
-
-
-
-METHOD:: ticksEvery
-(describe method here)
-
-argument:: radienHop
-(describe argument here)
-
-argument:: majorEvery
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-
-METHOD:: spec
-(describe method here)
-
-argument:: controlSpec
-(describe argument here)
-
-argument:: updateValue
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: numTicks
-(describe method here)
-
-argument:: num
-(describe argument here)
-
-argument:: majorEvery
-(describe argument here)
-
-argument:: endTick
-(describe argument here)
-
-returns:: (describe returnvalue here)
-
-METHOD:: ticksEveryVal
-Set the ticks at an even interval, in the units of your
-link::#-spec::, specifying the steps between each major tick.
-
-argument:: valueHop
-A link::Classes/Number:: specifying the interval, or "hop", between each tick.
-
-argument:: majorEvery
-An link::Classes/Integer:: specifying the steps of major ticks.
-
-
-METHOD:: bipolar
-Get/set how the rotary fills the color up to the current value. If
-code::false::, the color is always filled from the minumum value in the range
-up to the current value. If code::true::, the color is filled from the
-link::#-centerValue:: to the current value.
-
-argument:: bool
-A link::Classes/Boolean::.
-
-
-METHOD:: sweepLength
-Get/set the range of motion of the rotary, in radians. Default is code::2pi::.
-
-argument:: radians
-A A link::Classes/Number:: in radians.
-
 
 
 METHOD:: ticksAtValues
@@ -212,10 +190,33 @@ An link::Classes/Array:: of values for the minor ticks, within the range of
 your link::#-spec::.
 
 
+METHOD:: ticksEveryVal
+Set the ticks at an even interval, in the units of your
+link::#-spec::, specifying the steps between each major tick.
+
+argument:: valueHop
+A link::Classes/Number:: specifying the interval, or "hop", between each tick.
+
+argument:: majorEvery
+An link::Classes/Integer:: specifying the steps of major ticks.
+
+
+
+SUBSECTION:: Layout
+
+
+METHOD:: direction
+Get/set the direction of positive movement, for both value changes as well as
+affecting how link::#-startAngle:: is determined.
+
+argument:: dir
+A link::Classes/Symbol::, code::\cw:: or code::\ccw::, clockwise and
+counterclockwise, respectively.
+
+
 METHOD:: dirFlag
 Get the value corresponding to the rotary's direction: clockwise = code::1::,
 counterclockwise = code::-1::.
-
 
 
 METHOD:: innerRadiusRatio
@@ -224,24 +225,207 @@ Set/get the radius of the the inner edge of the rotary.
 argument:: ratio
 A value from code::(0..1)::.
 
-returns:: (describe returnvalue here)
 
+METHOD:: outerRadiusRatio
+Set/get the radius of the the outer edge of the rotary, where code::1:: is the
+maximum radius given the size of the view.
+
+argument:: ratio
+A value from code::(0..1)::
+
+
+METHOD:: startAngle
+Get/set the angular position of the start of the rotary's range, in radians.
+Reference code::0:: position is up, 12 o'clock, and advances according to
+link::#-direction::.
+
+argument:: radians
+A link::Classes/Number:: in radians, can be negative.
+
+
+METHOD:: sweepLength
+Get/set the range of motion of the rotary, in radians. Default is code::2pi::.
+
+argument:: radians
+A A link::Classes/Number:: in radians.
+
+
+SUBSECTION:: Drawing layers: fine tuning appearance
+
+The rotary is comprised of multiple layers, each with their own settable
+attributes: range, level, text, ticks, handle, and outline. Each drawing
+layer has a code::*properties:: list (an link::Classes/Event::), the keys of
+which can be accessed as pseudo-methods for getting and setting their values.
+Setting an attribute automatically refreshes the view. For example:
+code::
+// assuming you've created a RotaryView 'myRotary'
+myRotary.handle.style = \arrow;  // make the rotary's "handle" an arrow
+myRotary.text.show = false;      // hide the text of the rotary's value
+::
 
 METHOD:: range
-(describe method here)
+The layer showing the range of the rotary. Some parameters apply only for a
+certain code::style::. If code::style == \wedge::, an annularWedge is drawn
+for the range. If code::style == \arc:: a stroked arc is used.
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show        || code::true:: || show the range layer or not
+## style       || code::\wedge:: || code::\arc:: or code::\wedge:: (an annularWedge); if code::\arc::, the width
+
+follows strong::width::, not strong::strokeWidth::
+## radius      || code::1:: || code::(0..1)::, radius of outer edge of the wedge or arc
+## width       || code::1:: || code::(0..1):: width of range display, relative to code::wedgeWidth::
+
+(code::outerRadiusRatio - innerRadiusRatio::)
+## fill        || code::true:: || fill the range or not
+## fillColor   || code::Color.gray.alpha_(0.3):: || color to fill the range
+## stroke      || code::false:: || stroke the range or not
+## strokeType  || code::\around:: || if strong::style:: code::== \wedge::; code::\inside::, code::\outside::, code::\around::, or code::\insideOutside::
+## strokeColor || code::Color:: || stroke color of the range
+## strokeWidth || code::1:: || if strong::style:: code::== \wedge::; if code::< 1::, assumed to be a normalized value
+
+and changes with view size, else treated as a pixel value
+## joinStyle   || code::0:: || if strong::style:: code::== \wedge::; code::\miter::; code::\round::, code::\bevel::, or
+
+an link::Classes/Integer:: of the link::Classes/Pen#*joinStyle::
+## capStyle    || code::\round:: || if strong::style:: code::== \arc::; code::\butt::, code::\flat::, code::\round::, code::\square::, or
+
+an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
+::
+
+
 METHOD:: level
-(describe method here)
+The layer showing the level of the rotary. If code::style == \wedge::, an
+annularWedge is drawn for the range. If code::style == \arc:: a stroked arc
+is used.
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show        || code::true:: || show the level layer or not
+## style       || code::\wedge:: || code::\arc:: or code::\wedge:: (an annularWedge); if code::\arc::, the width
+
+follows strong::width::, not strong::strokeWidth::
+## radius      || code::1:: || code::(0..1)::, radius of outer edge of the wedge or arc
+## width       || code::1:: || code::(0..1):: width of range display, relative to code::wedgeWidth::
+## fill        || code::true:: || fill the level or not
+## fillColor   || code::Color.white:: || color to fill the level;
+## stroke      || code::true:: || stroke the level or not
+## strokeType  || code::\around:: ||  if strong::style:: code::== \wedge::; code::\inside::, code::\outside::, code::\around::, or code::\insideOutside::
+## strokeColor || code::Color.gray:: || stroke color of the level
+## strokeWidth || code::0.05:: || if strong::style:: code::== \wedge::; if code::< 1::, assumed to be a normalized value
+## joinStyle   || code::0:: || if strong::style:: code::== \wedge::; code::\miter::; code::\round::, code::\bevel::, or
+
+an link::Classes/Integer:: of the link::Classes/Pen#*joinStyle::
+
+and changes with view size, else treated as a pixel value
+## capStyle    || code::0:: || if strong::style:: code::== \arc::; code::\butt::, code::\flat::, code::\round::, code::\square::, or
+
+an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
+::
+
+
 METHOD:: text
-(describe method here)
+The layer showing the text of the rotary's current value.
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show     || code::true:: || show the text layer or not
+## align    || code::\center:: || code::\top::, code::\bottom::, code::\center::, code::\left::, code::\right::, or a link::Classes/Point:: on which
+
+to center the text, in a range of code::(0..1)::
+
+where top-left is code::0@0::, bottom-right is code::1@1::
+## round    || code::0.1:: || a link::Classes/Number:: to round the value display to
+## fontSize || code::12:: || font size
+## fontName || code::"Helvetica":: || a link::Classes/String::, the font name
+## color    || code::Color.gray:: || link::Classes/Color:: of the text
+::
+
+
+
 METHOD:: ticks
-(describe method here)
+The layer showing the ticks of the rotary. The number and position of ticks
+are set through link::#-numTicks::, link::#-ticksAt::, link::#-ticksAtValues::,
+or link::#-ticksEveryVal::.
+
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show        || code::false:: || show the tick layer or not
+## anchor      || code::0.97:: || code::(0..1):: position/radius where the ticks are "anchored",
+
+relative to outer edge of rotary
+## align       || code::\inside:: || the position of the ticks relative to strong::anchor::;
+
+code::\inside::, code::\outside::, or code::\center::
+## majorLength || code::0.25:: || length of major ticks, code::(0..1):: realtive to code::maxRadius::
+## minorLength || code::0.1:: || length of major ticks, code::(0..1):: realtive to code::maxRadius::
+## majorWidth  || code::0.05:: || width of major tick, in pixels unless code::< 1::,
+
+in which case relative to radius
+## minorWidth  || code::0.025:: || width of major tick, in pixels unless code::< 1::,
+
+in which case relative to radius
+## majorColor  || code::Color.black:: || link::Classes/Color:: of the major ticks
+## minorColor  || code::Color.gray:: || link::Classes/Color:: of the minor ticks
+## capStyle    || code::\round:: || code::\butt::, code::\flat::, code::\round::, code::\square::,
+
+or an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
+::
+
+
 METHOD:: handle
-(describe method here)
+The layer showing the "handle" of the rotary. Some properties are only valid
+for certain strong::style::s.
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show        || code::true:: || show the handle layer or not
+## style       || code::'line':: || code::\line::, code::\circle::, or code::\arrow::
+## anchor      || code::0.9:: || reference radius of for drawing the anchor strong::align::, code::(0..1)::
+## align       || code::'inside':: || code::\inside::, code::\outside::, or code::\center:: on the strong::anchor::
+## length      || code::0.3:: || if strong::style:: code::== \line:: or code::== \arrow::, code::(0..1):: relative to radius
+## width       || code::0.6:: || if strong::style:: code::== \arrow::, code::(0..1):: relative to strong::length::
+## stroke      || code::true:: || if strong::style:: code::== \circle:: or code::== \arrow::, stroke the handle or not
+## strokeColor || code::Color.black:: || stroke link::Classes/Color:: of the handle
+## fill        || code::true:: || if strong::style:: code::== \circle:: or code::== \arrow::, fill the handle or not
+## fillColor   || code::Color.red:: || fill link::Classes/Color:: of the handle
+## joinStyle   || code::'round':: || if strong::style:: code::== \arrow::, code::\miter::, code::\round::, code::\bevel::,
+
+or an link::Classes/Integer:: of the link::Classes/Pen#*joinStyle::
+## radius      || code::0.1:: || if strong::style:: code::== \circle::, in pixels unless code::< 1::,
+
+in which case relative to radius
+## capStyle    || code::'round':: || if strong::style:: code::== \line::, code::\butt::, code::\flat::, code::\round::, code::\square::,
+
+or an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
+## strokeWidth || code::2:: ||  width of stroke, in pixels unless code::< 1::,
+
+in which case relative to radius
+::
+
+
 METHOD:: outline
-(describe method here)
+The layer showing the outline of the rotary. It's called "outline", but need
+not be on the perimeter—it's essentially a circle of variable size/fill that
+can serve as an outline or visual accent. It's the topmost layer.
+table::
+## strong::attribute:: || strong::default:: || strong::description::
+## show        || code::false:: || show the outline layer or not
+## radius      || code::1:: || code::(0..1)::, relative to radius
+## stroke      || code::true:: || stroke or not
+## strokeColor || code::Color.black:: || stroke link::Classes/Color:: of the outline
+## strokeWidth || code::2:: || in pixels unless code::< 1::,
+
+in which case relative to radius
+## rangeOnly   || code::false:: || a link::Classes/Boolean:: whether outline is constrained
+
+to the rotary's range, or is a full circle
+## capStyle    || code::flat:: || if strong::rangeOnly:: code::== \true::, code::\butt::, code::\flat::, code::\round::, code::\square::,
+
+or an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
+## fill        || code::false:: || fill or not
+## fillColor   || code::Color.white:: || fill link::Classes/Color:: of the outline layer
+::
 
 
-PRIVATE:: prStartAngle, prSweepLength, prCenterAngle, setPrCenter, levelSweepLength, drawInThisOrder, respondToAbsoluteClick, init, respondToLinearMove, drawFunc, defineMouseActions, bnds, cen, maxRadius, innerRadius, outerRadius, wedgeWidth, respondToCircularMove, minTicks, majTicks, centerNorm
+PRIVATE:: spec, prStartAngle, prSweepLength, prCenterAngle, setPrCenter, levelSweepLength, drawInThisOrder, respondToAbsoluteClick, init, respondToLinearMove, drawFunc, defineMouseActions, bnds, cen, maxRadius, innerRadius, outerRadius, wedgeWidth, respondToCircularMove, minTicks, majTicks, centerNorm
 
 
 EXAMPLES::

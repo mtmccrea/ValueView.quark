@@ -2,7 +2,7 @@
 
 RotaryView : ValueView {
 
-	var <innerRadiusRatio, <outerRadiusRatio, boarderPx, <boarderPad;
+	var <innerRadiusRatio, <outerRadiusRatio, borderPx, borderPad;
 	var stValue, stInput, >clickMode;
 
 	// create variables with getters which you want
@@ -46,8 +46,8 @@ RotaryView : ValueView {
 		orientation = \vertical;
 		wrap = false;
 		clickMode = \relative; // or \absolute
-		boarderPad = 1;
-		boarderPx = boarderPad;
+		borderPad = 1;
+		borderPx = borderPad;
 
 		this.innerRadiusRatio_(argInnerRadiusRatio); // set innerRadiusRatio with setter to check sweepLength condition
 		this.outerRadiusRatio_(argOuterRadiusRatio);
@@ -77,7 +77,7 @@ RotaryView : ValueView {
 			// "global" instance vars, accessed by ValueViewLayers
 			bnds = v.bounds;
 			cen  = bnds.center;
-			maxRadius = min(cen.x, cen.y) - boarderPx;
+			maxRadius = min(cen.x, cen.y) - borderPx;
 			outerRadius = maxRadius * outerRadiusRatio;
 			innerRadius = maxRadius * innerRadiusRatio;
 			wedgeWidth = outerRadius - innerRadius;
@@ -220,10 +220,6 @@ RotaryView : ValueView {
 		this.refresh;
 	}
 
-
-	ticksEvery_ { |radienHop, majorEvery=2|
-		this.refresh;
-	}
 
 	// ticks at values unmapped by spec
 	ticksAtValues_ { |majorVals, minorVals|
