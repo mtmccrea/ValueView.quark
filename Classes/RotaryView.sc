@@ -154,6 +154,9 @@ RotaryView : ValueView {
 
 	/* Orientation and Movement */
 
+	continuous_ { |bool| this.wrap_(bool) }
+	continuous { ^this.wrap }
+
 	direction_ { |dir=\cw|
 		direction = dir;
 		dirFlag = switch (direction, \cw, { 1 }, \ccw, { -1 });
