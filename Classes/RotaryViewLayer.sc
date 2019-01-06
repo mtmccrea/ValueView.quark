@@ -316,7 +316,7 @@ RotaryHandleLayer : ValueViewLayer {
 
 	drawCircle {
 		var rad, d, rect, anchor;
-		rad = if (p.radius < 1) { p.radius*view.maxRadius } { p.radius };
+		rad = if (p.radius < 1) { p.radius*view.wedgeWidth/2 } { p.radius };
 		d = rad*2;
 		anchor = view.wedgeWidth * p.anchor;
 		anchor = anchor + switch(p.align,
