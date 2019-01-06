@@ -237,23 +237,29 @@ RotaryView : ValueView {
 		this.refresh;
 	}
 
+
 	// ticks values by value hop, unmapped by spec
 	ticksEveryVal_ { |valueHop, majorEvery=2|
-		var num, ticks, numMaj, majList, minList;
-		num = (spec.range / valueHop).floor.asInt;
-		ticks = num.collect{ |i| spec.unmap(i * valueHop) * sweepLength };
-		numMaj = num/majorEvery;
+		var numSteps, step, ticks, numMaj, majList, minList;
+		numSteps = (spec.range / valueHop).asInt;
+		step = numSteps.reciprocal;
+		ticks = (0..numSteps) * step * sweepLength;
+		if ((ticks.first % 2pi) == (ticks.last % 2pi)) {
+			// first and last tick are the same, discard last
+			ticks = ticks[0..numSteps-1];
+		};
+		numMaj = (numSteps/majorEvery).asInt;
 		majList = List(numMaj);
-		minList = List(num-numMaj);
+		minList = List(numSteps-numMaj);
 		ticks.do{ |val, i| if ((i % majorEvery) == 0, { majList.add(val) }, { minList.add(val) }) };
 		this.ticksAt_(majList, minList);
 		this.refresh;
 	}
 
 	// evenly distribute ticks
-	numTicks_ { |num, majorEvery=2, endTick=true|
+	numTicks_ { |num, majorEvery=2, startAndEnd=true|
 		var hop, ticks, numMaj, majList, minList;
-		hop = if (endTick, { sweepLength / (num-1) }, { sweepLength / num });
+		hop = if (startAndEnd, { sweepLength / (num-1) }, { sweepLength / num });
 		ticks = num.asInt.collect{ |i| i * hop };
 		numMaj = num/majorEvery;
 		majList = List(numMaj);
