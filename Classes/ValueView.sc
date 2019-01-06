@@ -14,6 +14,7 @@ ValueView : View {
 	var mouseDownPnt, mouseUpPnt, mouseMovePnt;
 	var <>mouseDownAction, <>mouseUpAction, <>mouseMoveAction;
 	var <>valuePerPixel;
+	var <>scroll = true;
 
 	/*
 	 * step vars describe the step amount
@@ -73,7 +74,9 @@ ValueView : View {
 		// key inc/decrement capability
 		userView.mouseWheelAction_({
 			|v, x, y, modifiers, xDelta, yDelta|
-			this.stepByScroll(v, x, y, modifiers, xDelta, yDelta);
+			if (scroll) {
+				this.stepByScroll(v, x, y, modifiers, xDelta, yDelta);
+			};
 		});
 
 		userView.keyDownAction_ ({
