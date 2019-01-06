@@ -20,7 +20,7 @@ RotaryView : ValueView {
 	var <range, <level, <text, <ticks, <handle, <outline;
 
 	*new {
-		|parent, bounds, spec, initVal, startAngle=0, sweepLength=2pi, innerRadiusRatio=0, outerRadiusRatio=1, direction=\cw|
+		|parent, bounds, spec, initVal, startAngle=0, sweepLength=2pi, innerRadiusRatio=0.25, outerRadiusRatio=1, direction=\cw|
 		^super.new(parent, bounds, spec, initVal).init(startAngle, sweepLength, innerRadiusRatio, outerRadiusRatio, direction);
 	}
 
@@ -43,9 +43,9 @@ RotaryView : ValueView {
 		sweepLength = argSweepLength;
 		direction = argDirection;
 		dirFlag = switch (direction, \cw, { 1 }, \ccw, { -1 });
-		orientation = \vertical;
 		wrap = false;
-		clickMode = \relative; // or \absolute
+		orientation = \circular;  // \circular, \vertical, \horizontal
+		clickMode = \absolute;    // \relative or \absolute
 		borderPad = 1;
 		borderPx = borderPad;
 
@@ -131,9 +131,10 @@ RotaryView : ValueView {
 		pos = (mMovePnt - cen);
 		rad = atan2(pos.y,pos.x);       // radian position, relative 0 at 3 o'clock
 		radRel = rad + 0.5pi * dirFlag; // relative 0 at 12 o'clock, clockwise
-		radRel = (radRel - (startAngle*dirFlag)).wrap(0, 2pi); // relative to start position
+		// radRel =  (radRel - (startAngle*dirFlag)).wrap(0, 2pi); // relative to start position
+		radRel = (radRel - (startAngle * dirFlag)).wrap(0, 2pi); // relative to start position
 		if (radRel.inRange(0, sweepLength)) {
-			this.inputAction_(radRel/sweepLength); // triggers refresh
+			this.inputAction_(radRel / sweepLength); // triggers refresh
 			stValue = value;
 			stInput = input;
 		};

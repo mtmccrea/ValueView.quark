@@ -42,6 +42,7 @@ RotaryArcWedgeLayer : ValueViewLayer {
 		Pen.width_(strokeWidth);
 		// inset accounts for pen width overshooting the outer radius
 		inset = strokeWidth*0.5;
+
 		Pen.capStyle_(this.getCapIndex(p.capStyle));
 		switch (p.strokeType,
 			\around, {
@@ -120,7 +121,7 @@ RotaryLevelLayer : RotaryArcWedgeLayer {
             stroke:         true,
             strokeColor:    Color.gray,
             strokeType:     \around,    // if style: \wedge; \inside, \outside, or \around
-            strokeWidth:    0.05,       // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+            strokeWidth:    0.025,      // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
             capStyle:       0,          // if style: \arc or \wedge with strokeType != \around
             joinStyle:      0,          // if style: \wedge; 0=flat
         )
@@ -152,7 +153,7 @@ RotaryTextLayer : ValueViewLayer {
 		^(
 			show: true,
 			align: \center, // \top, \bottom, \center, \left, \right, or Point()
-			fontSize: 12,
+			fontSize: 0.1,
 			fontName: "Helvetica",
 			color: Color.gray,
 			round: 0.1,
