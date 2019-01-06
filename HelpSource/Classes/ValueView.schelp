@@ -47,6 +47,12 @@ argument:: spec
 A link::Classes/ControlSpec:: that will control the range and warping of your
 value. link::#-input:: is the unmapped link::#-value::. If code::nil::, a
 code::\unipolar:: spec is created.
+Note::: The strong::step:: of
+the provided link::Classes/ControlSpec:: will determine the step resolution of
+the rotary when changing the value with a mouse or arrow key (default is
+code::0::, i.e. highest step resolution possible).
+See link::Classes/RotaryView#Example: radio dial::.
+::
 
 argument:: initVal
 The initial link::#-value:: when the view is first drawn.
@@ -126,6 +132,11 @@ METHOD:: scrollStep
 Get/set the step amount when scrolling. Default is code::100.reciprocal::.
 
 
+METHOD:: scroll
+Get/set the link::Classes/Boolean:: indicating whether the value changes with
+mouse scrolling. Default is code::true::.
+
+
 METHOD:: limitRefresh
 Get/set the link::Classes/Boolean:: indicating whether the refresh rate should
 be limited to link::#-maxRefreshRate::.
@@ -146,7 +157,10 @@ drawing layer properties are set. Default is code::true::
 
 METHOD:: spec
 Get/set the link::Classes/ControlSpec:: used to both map the
-link::#-input:: and constrain the link::#-value::.
+link::#-input:: and constrain the link::#-value::. Strong::Note::: the
+strong::step:: of the provided strong::controlSpec:: will determine the
+step resolution of the view when changing the value with a mouse or arrow key
+(default is code::0::, i.e. highest step resolution possible).
 
 argument:: controlSpec
 A link::Classes/ControlSpec::.
@@ -204,7 +218,7 @@ Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
 performed only when a newly set value differs from its previous state. This
 applies when calling link::#-valueAction::, link::#-inputAction::,
 or link::#-doAction::. Default is code::true:: (repeated actions are
-suppressed).
+suppressed). See link::Classes/RotaryView#Example: radio dial::.
 
 
 METHOD:: refresh

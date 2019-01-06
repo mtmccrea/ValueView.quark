@@ -30,6 +30,12 @@ argument:: spec
 A link::Classes/ControlSpec:: that will control the range and warping of your
 value. link::#-input:: is the unmapped link::#-value::. If code::nil::, a
 code::\unipolar:: spec is created.
+Note::: The strong::step:: of
+the provided link::Classes/ControlSpec:: will determine the step resolution of
+the rotary when changing the value with a mouse or arrow key (default is
+code::0::, i.e. highest step resolution possible).
+See link::Classes/RotaryView#Example: radio dial::.
+::
 
 argument:: initVal
 The initial link::#-value:: within range of the strong::spec:: when the view
@@ -72,8 +78,22 @@ COPYMETHOD:: ValueView -input
 COPYMETHOD:: ValueView -valueAction
 COPYMETHOD:: ValueView -inputAction
 COPYMETHOD:: ValueView -doAction
+COPYMETHOD:: ValueView -suppressRepeatedAction
 
-COPYMETHOD:: ValueView -spec
+
+METHOD:: spec
+Get/set the link::Classes/ControlSpec:: used to both map the
+link::#-input:: and constrain the link::#-value::. Note: the strong::step:: of
+the provided strong::controlSpec:: will determine the step resolution of the
+rotary.
+
+argument:: controlSpec
+A link::Classes/ControlSpec::.
+
+argument:: updateValue
+A link::Classes/Boolean:: specifying whether the link::#-value::
+(and link::#-input::) should be updated when the new strong::controlSpec:: is
+set. Default is code::true::.
 
 
 
@@ -86,6 +106,9 @@ continuous encoder, wrapping values around its link::#-spec:: range when
 crossing min/max values. Useful for full code::2pi:: range rotary controls.
 Synonym for link::#-wrap::. Default is code::false:: (values are clipped to
 range).
+Note:: If link::#-orientation:: is code::\circular:: the rotary behavior is
+always continuous, even if link::#-continuous:: is code::false::.
+::
 
 
 METHOD:: clickMode
@@ -101,6 +124,9 @@ mouse movement once clicked.
 
 METHOD:: orientation
 Set how mouse dragging changes moves the rotary position.
+Note:: If link::#-orientation:: is code::\circular:: the rotary behavior is
+always continuous, even if link::#-continuous:: is code::false::.
+::
 
 argument:: vertHorizOrCirc
 table::
@@ -113,23 +139,26 @@ table::
 COPYMETHOD:: ValueView -rangeInPixels
 COPYMETHOD:: ValueView -valuePerPixel
 
-COPYMETHOD:: ValueView -keyStep
-COPYMETHOD:: ValueView -keyDirLR
-COPYMETHOD:: ValueView -keyDirUD
-
+COPYMETHOD:: ValueView -scroll
 COPYMETHOD:: ValueView -scrollStep
 COPYMETHOD:: ValueView -xScrollDir
 COPYMETHOD:: ValueView -yScrollDir
 
+COPYMETHOD:: ValueView -keyStep
+COPYMETHOD:: ValueView -keyDirLR
+COPYMETHOD:: ValueView -keyDirUD
 
 
 SUBSECTION:: Bipolar mode
+
 
 METHOD:: bipolar
 Get/set how the rotary fills the color up to the current value. If
 code::false::, the color is always filled from the minumum value in the range
 up to the current value. If code::true::, the color is filled from the
-link::#-centerValue:: to the current value.
+link::#-centerValue:: to the current value. See
+link::Classes/RotaryView#Example: bipolar mode:: and
+link::#Example: continuous encoder::.
 
 argument:: bool
 A link::Classes/Boolean::.
@@ -137,6 +166,8 @@ A link::Classes/Boolean::.
 
 METHOD:: centerValue
 Get/set the link::Classes/Number:: that is the "center" of the bipolar axis.
+See link::Classes/RotaryView#Example: bipolar mode:: and
+link::#Example: continuous encoder::.
 
 argument:: value
 A link::Classes/Number:: in the range of the link::#-spec::.
@@ -148,7 +179,8 @@ SUBSECTION:: Ticks
 
 METHOD:: numTicks
 Set the number of ticks to be displayed evenly across the full range of the
-rotary.
+rotary. See link::#Examples: radio dial:: and
+link::#Example: continuous encoder::.
 
 argument:: num
 An link::Classes/Integer::. The total number of ticks (major and minor).
@@ -159,10 +191,11 @@ strong::majorEvery:: = code::3:: would make a tick pattern of
 major-minor-minor-major-minor-minor-etc. See link::#-ticks:: layer for
 setting other properties about ticks.
 
-argument:: endTick
-A link::Classes/Boolean::, whether the last tick should be drawn. E.g. If the
-link::#-sweepLength:: is code::2pi::, you wouldn't need to draw the last tick,
-as it would overlap with the first.
+argument:: startAndEnd
+A link::Classes/Boolean::, whether the first and last tick fall at the start
+and end of the range. E.g. If the link::#-sweepLength:: is code::2pi::, you
+wouldn't want the last tick to fall at the end of the range, as it would
+overlap with the first. See link::#Example: continuous encoder::.
 
 
 METHOD:: ticksAt
@@ -179,7 +212,7 @@ link::#-direction::, for the minor ticks.
 
 METHOD:: ticksAtValues
 Set the position of major and minor ticks, in the units of your
-link::#-spec::.
+link::#-spec::. See link::#Examples: bipolar mode::.
 
 argument:: majorVals
 An link::Classes/Array:: of values for the major ticks, within the range of
@@ -193,6 +226,7 @@ your link::#-spec::.
 METHOD:: ticksEveryVal
 Set the ticks at an even interval, in the units of your
 link::#-spec::, specifying the steps between each major tick.
+See link::#Example: continuous encoder::.
 
 argument:: valueHop
 A link::Classes/Number:: specifying the interval, or "hop", between each tick.
@@ -311,7 +345,7 @@ follows strong::width::, not strong::strokeWidth::
 ## stroke      || code::true:: || stroke the level or not
 ## strokeType  || code::\around:: ||  if strong::style:: code::== \wedge::; code::\inside::, code::\outside::, code::\around::, or code::\insideOutside::
 ## strokeColor || code::Color.gray:: || stroke color of the level
-## strokeWidth || code::0.05:: || if strong::style:: code::== \wedge::; if code::< 1::, assumed to be a normalized value
+## strokeWidth || code::0.025:: || if strong::style:: code::== \wedge::; if code::< 1::, assumed to be a normalized value
 ## joinStyle   || code::0:: || if strong::style:: code::== \wedge::; code::\miter::; code::\round::, code::\bevel::, or
 
 an link::Classes/Integer:: of the link::Classes/Pen#*joinStyle::
@@ -334,7 +368,7 @@ to center the text, in a range of code::(0..1)::
 
 where top-left is code::0@0::, bottom-right is code::1@1::
 ## round    || code::0.1:: || a link::Classes/Number:: to round the value display to
-## fontSize || code::12:: || font size
+## fontSize || code::0.1:: || font size
 ## fontName || code::"Helvetica":: || a link::Classes/String::, the font name
 ## color    || code::Color.gray:: || link::Classes/Color:: of the text
 ::
@@ -425,13 +459,14 @@ or an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
 ::
 
 
-PRIVATE:: spec, prStartAngle, prSweepLength, prCenterAngle, setPrCenter, levelSweepLength, drawInThisOrder, respondToAbsoluteClick, init, respondToLinearMove, drawFunc, defineMouseActions, bnds, cen, maxRadius, innerRadius, outerRadius, wedgeWidth, respondToCircularMove, minTicks, majTicks, centerNorm
+PRIVATE:: prStartAngle, prSweepLength, prCenterAngle, setPrCenter, levelSweepLength, drawInThisOrder, respondToAbsoluteClick, init, respondToLinearMove, drawFunc, defineMouseActions, bnds, cen, maxRadius, innerRadius, outerRadius, wedgeWidth, respondToCircularMove, minTicks, majTicks, centerNorm
 
 
-EXAMPLES::
-SUBSECTION:: bipolar mode, ticks, text alignment
+SECTION:: Examples
+
+SUBSECTION:: Example: bipolar mode
 code::
-// bipolar rotary for "gain" control
+// bipolar rotary for gain control: boost (green) and cut (red)
 (
 var setupRot, numRots = 8;
 r = RotaryView(bounds: Size(300, 300).asRect,
@@ -457,5 +492,208 @@ r.text.fontSize_(0.2).align_(0.65@0.5).color_(Color(*0.6!3));
 
 r.ticks.show_(true).majorColor_(Color.gray).majorWidth_(0.05).minorWidth_(0.02).capStyle_(\round);
 r.ticksAtValues_([0], (-24, -21 .. 12));
+)
+::
+
+SUBSECTION:: Example: radio dial
+code::
+/* radio dial */
+(
+r = RotaryView(bounds: Size(300, 300).asRect,
+	spec: ControlSpec(1,5),
+	startAngle: -0.7pi,
+	sweepLength: 1.4pi,
+	innerRadiusRatio: 0.2,
+	outerRadiusRatio: 0.9,
+).front;
+
+// action: post self, value, and normalized input
+r.action = {|v, value, input| [v, value, input].postln};
+
+// handle style: arrow
+r.handle.style_(\arrow).joinStyle_(\ropund);
+r.handle.length_(0.5).width_(0.6).anchor_(0.95).strokeColor_(Color.red.val_(0.5));
+
+// appearance
+r.level.show = false; // turn off the level display
+r.numTicks_(5, majorEvery: 1); // 5 positions
+r.ticks.show_(true).majorLength_(0.3).majorWidth_(1.5).majorColor_(Color(*0.5.dup(3)));
+r.text.align_(0.5@0.8).fontName_("Monaco").fontSize_(0.18);
+
+// behavior
+r.spec.step = 1; // spec's step determins how the dial clicks into each position
+r.clickMode = \absolute;   // value follows mouse down position (default)
+r.orientation = \circular; // makes sense for a radio dial (default)
+)
+
+// a variation: handle, outline, level
+(
+r.range.fill_(false).stroke_(true).strokeType_(\insideOutside);
+r.handle.style_(\line).capStyle_(\round).anchor_(0.5).align_(\center).length_(0.45).strokeWidth_(0.04);
+r.ticks.majorLength_(0.1).anchor_(0.5).align_(\center);
+r.level.show_(true).stroke_(false).fill_(true).fillColor_(Color.red.alpha_(0.2));
+)
+
+// a variation: handle, function for a property
+(
+r.innerRadiusRatio_(0); // no center gap
+r.range.fill_(false).stroke_(true).strokeWidth_(0.025).strokeType_(\outside).strokeColor_(Color(*0.5.dup(4)));
+r.ticks.majorLength_(0.1).anchor_(0.7).align_(\center).majorColor_(Color(*0.5.dup(4)));
+r.handle.style_(\circle).radius_(0.33);
+r.handle.anchor_(0.7).align_(\center);
+r.handle.fill_(true).stroke_(false);
+r.handle.fillColor = { |p|
+	Color.hsv(p.input * 0.999, 0.9, 1, 0.4) // color changes with position
+};
+r.text.show = false;
+r.level.show = false;
+)
+
+// another: change steps/ticks
+(
+r.spec.step = 0.5;
+r.numTicks_(9, majorEvery: 2, startAndEnd: true);
+r.ticks.majorLength_(0.3).minorLength_(0.2);
+r.ticks.majorColor_(Color(*0.5.dup(4))).minorColor_(Color(*0.2.dup(4)));
+r.ticks.majorWidth_(0.03).minorWidth_(0.01);
+)
+
+// default behavior is to perform the action only if the value is new:
+r.suppressRepeatedAction; // >> true
+// this filtering can be turned off so the action will be performed
+// on every mouse move, even if it's the same value
+r.suppressRepeatedAction = false; // observe output while dragging
+::
+
+SUBSECTION:: Example: continuous encoder
+code::
+/* continuous encoder: output degrees */
+(
+var col = Color.hsv(0.6,1,1);
+r = RotaryView(bounds: Size(300, 300).asRect,
+	spec: [0, 360].asSpec,
+	innerRadiusRatio: 0,
+	direction: \ccw
+).front;
+
+// Note: numTicks is a view method, not ticks layer property
+r.numTicks_(16, 2, startAndEnd: false);
+
+r.action = { |view, val, input| "new value: %\n".postf(val) };
+
+r.clickMode = \absolute;   // (default)
+r.orientation = \circular; // (default)
+r.continuous = true;       // wrap through the zero crossing
+r.scrollStep_(0.01);       // percentage of the full range for each scroll step
+r.keyStep_(20.reciprocal); // percentage of the full range for each key step,
+                           // i.e. 20 keystrokes over the full range
+// range
+r.range.show_(true).stroke_(false).fillColor_(Color(0.9,0.9,0.9));
+
+// level
+r.level.fill_(false);
+r.level.show_(true).strokeWidth_(0.02).strokeColor_(col).strokeType_(\outside);
+
+// handle
+r.handle.style_(\line).anchor_(0.9).align_(\inside).length_(0.3);
+r.handle.strokeWidth_(0.1).strokeColor_(col);
+
+// value text
+r.text.fontSize_(0.2).color_(col);
+r.text.align = 0.5@0.51;  // slightly better center position
+r.text.round = 0.1;       // round the value of the displayed text
+
+// ticks
+r.ticks.show_(true).anchor_(0.9).align_(\inside).capStyle_(\round);
+r.ticks.majorLength_(0.1);
+r.ticks.majorWidth_(0.02).minorWidth_(0.015);
+r.ticks.minorColor_(col.copy.alpha_(0.2)).majorColor_(col);
+
+// set the value
+r.value = 270;
+)
+
+// a bipolar variation
+(
+r.spec = ControlSpec(-180, 180);
+r.bipolar = true;
+r.centerValue = 0;
+r.startAngle = pi;
+r.sweepLength = 2pi;
+r.ticksEveryVal_(22.5, 2); // Note: ticksEveryVal is a view method
+r.ticks.majorColor_(       // while majorColor is a property of ticks layer
+    Color.hsv(0.6,1,1,0.4)
+);
+)
+::
+
+code::
+/* another continuous encoder: simple, good for small size */
+(
+r = RotaryView(
+	bounds: Size(100, 100).asRect,
+	spec: [0, 2pi].asSpec,
+	innerRadiusRatio: 0
+).front;
+
+r.action = { |view, val, input| [val, input].postln };
+
+// range
+r.range.stroke_(false);
+r.range.fillColor = Color.new(0.9,0.9,0.9).alpha_(0.8);
+
+// handle
+r.handle.show_(true).strokeColor_(Color.green);
+r.handle.style_(\arrow).length_(0.6).anchor_(0.65);
+r.handle.stroke_(true).strokeWidth_(0.05).joinStyle_(\round);
+r.handle.strokeColor = Color.hsv(0.27, 0.9, 0.8);
+r.handle.fillColor = Color.hsv(0.27, 1, 0.8);
+
+// level
+r.level.show = false;
+
+// value text
+r.text.show = false;
+r.text.round = 0.1;  // round the value of the displayed text
+
+// ticks
+r.numTicks_(360/22.5, 2, startAndEnd: false); // Note: numTicks is a view method
+r.ticks.show_(true).capStyle_(\round).anchor_(0.9);
+r.ticks.minorColor_(Color.new255(*200!3)).majorColor_(Color.new255(*150!3));
+r.ticks.majorLength_(0.1).minorLength_(0.08);
+r.ticks.majorWidth_(0.09);
+
+// outline to create an inner circle
+r.outline.show_(true).radius_(0.7).strokeWidth_(0.015);
+)
+::
+
+SUBSECTION:: Example: level dial
+code::
+/* like SC's Knob */
+(
+r = RotaryView(
+	bounds: Size(300, 300).asRect,
+	innerRadiusRatio: 0,
+	startAngle: -0.8pi,
+	sweepLength: 1.6pi
+).front;
+
+r.action = { |view, val, input| [val, input].postln };
+
+// outline used as inner circle, note radius
+r.outline.show_(true).radius_(0.75);
+r.outline.fill_(true).fillColor_(Color.white.alpha_(0.3));
+r.outline.stroke_(true).strokeColor_(Color.gray).strokeWidth_(0.04);
+
+// note anchor is inside the outline's radius (0.75)
+r.handle.style_(\line).capStyle_(\round).strokeWidth_(0.13).anchor_(0.55).length_(0.45);
+
+// range and level form the level "meter"
+// with arc style instead of an annular wedge
+r.level.style_(\arc).width_(0.1).capStyle_(\round).fillColor_(Color.green);
+r.range.style_(\arc).width_(0.1).capStyle_(\round).fillColor_(Color.white);
+
+r.text.show = false;
 )
 ::
