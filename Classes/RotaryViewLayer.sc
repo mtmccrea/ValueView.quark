@@ -81,7 +81,7 @@ RotaryRangeLayer : RotaryArcWedgeLayer {
 			radius:      1,          // outer edge of the wedge or arc; relative to maxRadius
                                      // TODO: rename this?
 			fill:        true,       // if annularWedge
-			fillColor:   Color.gray.alpha_(0.3),
+			fillColor:   Color(0.9,0.9,0.9),
 			stroke:      false,
 			strokeColor: Color.gray,
 			strokeType:  \around,    // if style: \wedge; \inside, \outside, or \around
@@ -207,7 +207,7 @@ RotaryTickLayer : ValueViewLayer {
 			minorLength: 0.1,        // length of minor ticks, realtive to maxRadius (0..1)
 			majorWidth:  0.05,       // width of major tick, in pixels
 			minorWidth:  0.025,      // width of minor tick, realtive to majorWidth
-			majorColor:  Color.black,
+			majorColor:  Color.gray,
 			minorColor:  Color.gray,
 			capStyle:    \round
 		)
@@ -268,7 +268,7 @@ RotaryHandleLayer : ValueViewLayer {
 			fillColor:   Color.red,
 			stroke:      true,       // if style = \circle or \arrow
 			strokeColor: Color.black,
-			strokeWidth: 2,          // if style = \line or \circle,  if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
+			strokeWidth: 0.05,       // if style = \line or \circle,  if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
 			radius:      0.1,        // if style = \circle; if < 1, normalized to min(w, h) & changes with view size, else treated as a pixel value
 			length:      0.3,        // if style = \line or \arrow
 			width:       0.6,        // if style = \arrow, relative to length (width of 1 = length)

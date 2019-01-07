@@ -312,7 +312,7 @@ follows strong::width::, not strong::strokeWidth::
 
 (code::outerRadiusRatio - innerRadiusRatio::)
 ## fill        || code::true:: || fill the range or not
-## fillColor   || code::Color.gray.alpha_(0.3):: || color to fill the range
+## fillColor   || code::Color(0.9,0.9,0.9):: || color to fill the range
 ## stroke      || code::false:: || stroke the range or not
 ## strokeType  || code::\around:: || if strong::style:: code::== \wedge::; code::\inside::, code::\outside::, code::\around::, or code::\insideOutside::
 ## strokeColor || code::Color:: || stroke color of the range
@@ -397,7 +397,7 @@ in which case relative to radius
 ## minorWidth  || code::0.025:: || width of major tick, in pixels unless code::< 1::,
 
 in which case relative to radius
-## majorColor  || code::Color.black:: || link::Classes/Color:: of the major ticks
+## majorColor  || code::Color.gray:: || link::Classes/Color:: of the major ticks
 ## minorColor  || code::Color.gray:: || link::Classes/Color:: of the minor ticks
 ## capStyle    || code::\round:: || code::\butt::, code::\flat::, code::\round::, code::\square::,
 
@@ -429,7 +429,7 @@ in which case relative to radius
 ## capStyle    || code::'round':: || if strong::style:: code::== \line::, code::\butt::, code::\flat::, code::\round::, code::\square::,
 
 or an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
-## strokeWidth || code::2:: ||  width of stroke, in pixels unless code::< 1::,
+## strokeWidth || code::0.05:: ||  width of stroke, in pixels, unless code::< 1::, then relative to radius
 
 in which case relative to radius
 ::
@@ -476,20 +476,24 @@ r = RotaryView(bounds: Size(300, 300).asRect,
 	innerRadiusRatio: 0.3,
 	outerRadiusRatio: 0.95
 ).front;
-r.clickMode_(\absolute);
-r.bipolar = true;
-r.centerValue_(0); // bipolar center at 0dB
 
+r.bipolar_(true).centerValue_(0); // bipolar center at 0dB
+
+// range
 r.range.fillColor_(Color.new(0.9,0.9,0.9));
+
 // assign bipolar colors
 r.level.strokeColor = { |p| if (p.val < 0) { Color.red } { Color.green } };
 r.level.fillColor = { |p| if (p.val < 0) { Color.red.alpha_(0.2) } { Color.green.alpha_(0.2) } };
 r.level.strokeType_(\outside).strokeWidth_(0.05);
 
+// handle
 r.handle.strokeColor_(Color.gray.alpha_(0.4)).anchor_(1).length_(1);
 
+// text
 r.text.fontSize_(0.2).align_(0.65@0.5).color_(Color(*0.6!3));
 
+// ticks
 r.ticks.show_(true).majorColor_(Color.gray).majorWidth_(0.05).minorWidth_(0.02).capStyle_(\round);
 r.ticksAtValues_([0], (-24, -21 .. 12));
 )
@@ -526,7 +530,8 @@ r.clickMode = \absolute;   // value follows mouse down position (default)
 r.orientation = \circular; // makes sense for a radio dial (default)
 )
 
-// a variation: handle, outline, level
+
+/* a variation: handle, outline, level */
 (
 r.range.fill_(false).stroke_(true).strokeType_(\insideOutside);
 r.handle.style_(\line).capStyle_(\round).anchor_(0.5).align_(\center).length_(0.45).strokeWidth_(0.04);
@@ -534,7 +539,8 @@ r.ticks.majorLength_(0.1).anchor_(0.5).align_(\center);
 r.level.show_(true).stroke_(false).fill_(true).fillColor_(Color.red.alpha_(0.2));
 )
 
-// a variation: handle, function for a property
+
+/* a variation: handle, function for a property */
 (
 r.innerRadiusRatio_(0); // no center gap
 r.range.fill_(false).stroke_(true).strokeWidth_(0.025).strokeType_(\outside).strokeColor_(Color(*0.5.dup(4)));
@@ -549,7 +555,8 @@ r.text.show = false;
 r.level.show = false;
 )
 
-// another: change steps/ticks
+
+/* a variation: change steps/ticks */
 (
 r.spec.step = 0.5;
 r.numTicks_(9, majorEvery: 2, startAndEnd: true);
@@ -622,7 +629,7 @@ r.startAngle = pi;
 r.sweepLength = 2pi;
 r.ticksEveryVal_(22.5, 2); // Note: ticksEveryVal is a view method
 r.ticks.majorColor_(       // while majorColor is a property of ticks layer
-    Color.hsv(0.6,1,1,0.4)
+	Color.hsv(0.6,1,1,0.4)
 );
 )
 ::
@@ -700,30 +707,35 @@ r.text.show = false;
 
 SUBSECTION:: Example: panner
 code::
-// Example: pan control
 (
 r = RotaryView(
 		bounds: Size(300, 300).asRect,
 		spec: [-1, 1].asSpec,
+		initVal: -0.3,
 		startAngle: -pi/2,
 		sweepLength: pi,
 		innerRadiusRatio: 0.3
 	).front;
 
-r.orientation = \horizontal; // mouse interaction: horizontal
+r.dragMode = \horizontal; // mouse interaction: horizontal
 r.bipolar_(true).centerValue_(0);
 
+// level
 r.level.strokeColor = {|p| if (p.val>=0) {Color.hsv(0.13,1,0.9)}{Color.green.alpha_(0.8)}};
 r.level.fillColor = {|p| if (p.val>=0) {Color.hsv(0.13, 0.8, 0.92, 0.5)}{Color.green.alpha_(0.3)}};
 r.level.stroke_(true).strokeWidth_(0.05).strokeType_(\outside);
 
+// handle
 r.handle.show_(true).anchor_(1).length_(1);
 r.handle.strokeColor_(Color.gray.alpha_(0.4));
 
+// text
 r.text.fontSize_(0.15).align_(\center);
 
+// ticks
 r.ticks.show_(true).anchor_(0.9).capStyle_(\round);
 r.ticksAtValues_(2/[-2, -4, 4, 2], 2/[-6, -3, 3, 6]);
+
 )
 ::
 
@@ -743,17 +755,22 @@ setupRot = { |col|
 		innerRadiusRatio: 0.1,
 	).front;
 
+	// range
 	r.range.fillColor_(Color.new(0.9,0.9,0.9));
 	r.range.stroke_(false);
 
+	// level
 	r.level.strokeColor_(col).strokeType_(\outside);
 	r.level.fillColor_(col.copy.alpha_(0.2));
 
+	// handle
 	r.handle.strokeColor_(col);
 	r.handle.length_(0.95).anchor_(0.97).strokeWidth_(0.05);
 
+	// text
 	r.text.fontSize_(0.15).align_(\right);
 
+	// ticks
 	r.numTicks_(15, 5);
 	r.ticks.show_(true);
 	r.ticks.majorWidth_(0.05).minorWidth_(0.025);
