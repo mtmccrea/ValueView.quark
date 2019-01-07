@@ -697,3 +697,81 @@ r.range.style_(\arc).width_(0.1).capStyle_(\round).fillColor_(Color.white);
 r.text.show = false;
 )
 ::
+
+SUBSECTION:: Example: panner
+code::
+// Example: pan control
+(
+r = RotaryView(
+		bounds: Size(300, 300).asRect,
+		spec: [-1, 1].asSpec,
+		startAngle: -pi/2,
+		sweepLength: pi,
+		innerRadiusRatio: 0.3
+	).front;
+
+r.orientation = \horizontal; // mouse interaction: horizontal
+r.bipolar_(true).centerValue_(0);
+
+r.level.strokeColor = {|p| if (p.val>=0) {Color.hsv(0.13,1,0.9)}{Color.green.alpha_(0.8)}};
+r.level.fillColor = {|p| if (p.val>=0) {Color.hsv(0.13, 0.8, 0.92, 0.5)}{Color.green.alpha_(0.3)}};
+r.level.stroke_(true).strokeWidth_(0.05).strokeType_(\outside);
+
+r.handle.show_(true).anchor_(1).length_(1);
+r.handle.strokeColor_(Color.gray.alpha_(0.4));
+
+r.text.fontSize_(0.15).align_(\center);
+
+r.ticks.show_(true).anchor_(0.9).capStyle_(\round);
+r.ticksAtValues_(2/[-2, -4, 4, 2], 2/[-6, -3, 3, 6]);
+)
+::
+
+SUBSECTION:: Example: in a layout
+Multiple rotaries in a layout.
+code::
+(
+var num = 8;
+var setupRot;
+
+setupRot = { |col|
+	var r = RotaryView(
+		bounds: Size(300, 300).asRect,
+		spec: [10, 100, \lin].asSpec,
+		startAngle: 0.75pi,
+		sweepLength: 1.5pi,
+		innerRadiusRatio: 0.1,
+	).front;
+
+	r.range.fillColor_(Color.new(0.9,0.9,0.9));
+	r.range.stroke_(false);
+
+	r.level.strokeColor_(col).strokeType_(\outside);
+	r.level.fillColor_(col.copy.alpha_(0.2));
+
+	r.handle.strokeColor_(col);
+	r.handle.length_(0.95).anchor_(0.97).strokeWidth_(0.05);
+
+	r.text.fontSize_(0.15).align_(\right);
+
+	r.numTicks_(15, 5);
+	r.ticks.show_(true);
+	r.ticks.majorWidth_(0.05).minorWidth_(0.025);
+	r.ticks.anchor_(0.9).capStyle_(\flat);
+
+	r.action = { |v, val, in| [v, val, in].postln };
+	r.value_(rrand(r.spec.minval, r.spec.maxval));
+};
+
+Window(
+	bounds: Rect(100,100, 140 * 8, 150)
+).front.layout_(
+	HLayout(
+		*num.collect({ |i| setupRot.(
+			Color.hsv(num.reciprocal*i, 1,1,1)
+		)
+		})
+	)
+)
+)
+::
