@@ -106,7 +106,7 @@ continuous encoder, wrapping values around its link::#-spec:: range when
 crossing min/max values. Useful for full code::2pi:: range rotary controls.
 Synonym for link::#-wrap::. Default is code::false:: (values are clipped to
 range).
-Note:: If link::#-orientation:: is code::\circular:: the rotary behavior is
+Note:: If link::#-dragMode:: is code::\circular:: the rotary behavior is
 always continuous, even if link::#-continuous:: is code::false::.
 ::
 
@@ -122,9 +122,9 @@ mouse movement once clicked.
 ::
 
 
-METHOD:: orientation
+METHOD:: dragMode
 Set how mouse dragging changes moves the rotary position.
-Note:: If link::#-orientation:: is code::\circular:: the rotary behavior is
+Note:: If link::#-dragMode:: is code::\circular:: the rotary behavior is
 always continuous, even if link::#-continuous:: is code::false::.
 ::
 
@@ -527,7 +527,7 @@ r.text.align_(0.5@0.8).fontName_("Monaco").fontSize_(0.18);
 // behavior
 r.spec.step = 1; // spec's step determins how the dial clicks into each position
 r.clickMode = \absolute;   // value follows mouse down position (default)
-r.orientation = \circular; // makes sense for a radio dial (default)
+r.dragMode = \circular; // makes sense for a radio dial (default)
 )
 
 
@@ -589,7 +589,7 @@ r.numTicks_(16, 2, startAndEnd: false);
 r.action = { |view, val, input| "new value: %\n".postf(val) };
 
 r.clickMode = \absolute;   // (default)
-r.orientation = \circular; // (default)
+r.dragMode = \circular;    // (default)
 r.continuous = true;       // wrap through the zero crossing
 r.scrollStep_(0.01);       // percentage of the full range for each scroll step
 r.keyStep_(20.reciprocal); // percentage of the full range for each key step,

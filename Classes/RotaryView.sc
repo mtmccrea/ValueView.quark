@@ -7,7 +7,7 @@ RotaryView : ValueView {
 
 	// create variables with getters which you want
 	// the drawing layers to access
-	var <direction, <orientation, <bipolar, <startAngle, <sweepLength;
+	var <direction, <dragMode, <bipolar, <startAngle, <sweepLength;
 	var <prCenterAngle, <centerNorm, <centerValue;
 	var <bnds, <cen, <maxRadius, <innerRadius, <outerRadius, <wedgeWidth;  // units: pixels, set in drawFunc
 	var <dirFlag;           // cw=1, ccw=-1
@@ -44,7 +44,7 @@ RotaryView : ValueView {
 		direction = argDirection;
 		dirFlag = switch (direction, \cw, { 1 }, \ccw, { -1 });
 		wrap = false;
-		orientation = \circular;  // \circular, \vertical, \horizontal
+		dragMode = \circular;  // \circular, \vertical, \horizontal
 		clickMode = \absolute;    // \relative or \absolute
 		borderPad = 1;
 		borderPx = borderPad;
@@ -110,7 +110,7 @@ RotaryView : ValueView {
 
 		mouseMoveAction = {
 			|v, x, y|
-			switch (orientation,
+			switch (dragMode,
 				\vertical, { this.respondToLinearMove(mouseDownPnt.y-y) },
 				\horizontal, { this.respondToLinearMove(x-mouseDownPnt.x) },
 				\circular, { this.respondToCircularMove(x@y) }
@@ -192,8 +192,8 @@ RotaryView : ValueView {
 		this.ticksAtValues_(majTickVals, minTickVals, false); // refresh the list of maj/minTicks positions
 	}
 
-	orientation_ { |vertHorizOrCirc = \vertical|
-		orientation = vertHorizOrCirc;
+	dragMode_ { |vertHorizOrCirc = \vertical|
+		dragMode = vertHorizOrCirc;
 	}
 
 	innerRadiusRatio_ { |ratio|
