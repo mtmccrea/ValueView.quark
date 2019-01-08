@@ -2,22 +2,22 @@ XYRangeLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:         true,
-			strokeXColor: Color.blue.alpha_(0.5),
-			strokeYColor: Color.red.alpha_(0.5),
-			strokeWidth:  0.03,						// if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			fontSize:     11,
+			show:            true,
+			strokeXColor:    Color.blue.alpha_(0.5),
+			strokeYColor:    Color.red.alpha_(0.5),
+			strokeWidth:     0.03, // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			showRangeLabels: true,
+			fontName:        "Helvetica",
+			fontSize:        0.07, // pixels or relative to smallest view dimension
 		)
 	}
 
 	stroke {
-		var strokeWidth, sw_h, txtRect, tmp, w, h, font;
+		var strokeWidth, sw_h, txtRect, tmp, w, h, font, str1, str2;
 		strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.minDim}{p.strokeWidth};
 		sw_h = strokeWidth * 0.5;
-		txtRect = Size(45,p.fontSize+2).asRect;
 		w = view.canvas.width;
 		h = view.canvas.height;
-		font = Font("Helvetica", p.fontSize);
 
 		Pen.push;
 		// bottom axis
@@ -27,18 +27,28 @@ XYRangeLayer : ValueViewLayer {
 		Pen.moveTo(0@tmp);
 		Pen.lineTo(w@tmp);
 		Pen.stroke;
-		// txt labels
-		tmp = h-strokeWidth;
-		Pen.stringInRect(
-			view.specs[0].minval.asString,
-			txtRect.left_(0).bottom_(tmp),
-			font, p.strokeXColor, QAlignment(\left)
-		);
-		Pen.stringInRect(
-			view.specs[0].maxval.asString,
-			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth-txtRect.height),
-			font, p.strokeXColor, QAlignment(\right)
-		);
+		if (p.showRangeLabels) {
+			str1 = view.specs[0].minval.asString;
+			str2 = view.specs[0].maxval.asString;
+			font = Font(
+				p.fontName,
+				if (p.fontSize < 1) { p.fontSize * view.minDim } { p.fontSize }
+			);
+			txtRect = (str1++str2).bounds(font);
+
+			// txt labels
+			tmp = h-strokeWidth;
+			Pen.stringInRect(
+				str1,
+				txtRect.left_(0).bottom_(tmp),
+				font, p.strokeXColor, QAlignment(\left)
+			);
+			Pen.stringInRect(
+				str2,
+				txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth-txtRect.height),
+				font, p.strokeXColor, QAlignment(\right)
+			);
+		};
 
 		// right axis
 		Pen.strokeColor_(p.strokeYColor);
@@ -46,18 +56,21 @@ XYRangeLayer : ValueViewLayer {
 		Pen.moveTo(tmp@h);
 		Pen.lineTo(tmp@0);
 		Pen.stroke;
-		// txt labels
-		Pen.stringInRect(
-			view.specs[1].minval.asString,
-			txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth),
-			font, p.strokeYColor, QAlignment(\right)
-		);
-		Pen.stringInRect(
-			view.specs[1].maxval.asString,
-			txtRect.right_(w-strokeWidth).top_(0),
-			font, p.strokeYColor, QAlignment(\right)
-		);
-
+		if (p.showRangeLabels) {
+			str1 = view.specs[1].minval.asString;
+			str2 = view.specs[1].maxval.asString;
+			// txt labels
+			Pen.stringInRect(
+				str1,
+				txtRect.right_(w-strokeWidth).bottom_(h-strokeWidth),
+				font, p.strokeYColor, QAlignment(\right)
+			);
+			Pen.stringInRect(
+				str2,
+				txtRect.right_(w-strokeWidth).top_(0),
+				font, p.strokeYColor, QAlignment(\right)
+			);
+		};
 		Pen.pop;
 	}
 
@@ -68,42 +81,68 @@ XYLevelsLayer : ValueViewLayer {
 
 	*properties {
 		^(
-			show:         true,
-			showText:     true,
-			strokeXColor: Color.blue.alpha_(0.5),
-			strokeYColor: Color.red.alpha_(0.5),
-			strokeWidth:  2,  // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
-			fontSize:     14,
+			show:           true,
+			showCrosshairs: true,
+			showPoint:      true,
+			pointSize:      0.05,
+			pointColor:     nil, // nil blends strokex and strokey colors
+			showText:       true,
+			strokeXColor:   Color.blue.alpha_(0.5),
+			strokeYColor:   Color.red.alpha_(0.5),
+			strokeWidth:    0.01,  // if style: \wedge, if < 1, assumed to be a normalized value and changes with view size, else treated as a pixel value
+			fontName:       "Helvetica",
+			fontSize:       0.07, // pixels or relative to smallest view dimension
+			round:          0.1,
 		)
 	}
 
 	stroke {
-		var strokeWidth, txtSize, c, xpx, ypx;
-		var txtRect, txtRect1, txtRect2, font, align;
-		strokeWidth = if (p.strokeWidth<1){p.strokeWidth*view.minDim}{p.strokeWidth};
-		txtSize = Size(45@25);
+		var strokeWidth, txtSize, c, xpx, ypx, psize;
+		var str1, str2, txtRect, txtRect1, txtRect2, font, align;
+
+		strokeWidth = if (p.strokeWidth < 1) {
+			p.strokeWidth * view.minDim
+		} {
+			p.strokeWidth
+		};
 		c = view.canvas;
 		#xpx, ypx = view.inputs * [c.width, c.height];
 		ypx = c.height - ypx; // invert y for upward positive
-		font = Font("Helvetica", p.fontSize);
 
 		Pen.push;
-		// x value
-		Pen.strokeColor_(p.strokeXColor);
-		Pen.moveTo(xpx@c.height);
-		Pen.lineTo(xpx@0);
-		Pen.stroke;
-		// y value
-		Pen.strokeColor_(p.strokeYColor);
-		Pen.moveTo(0@ypx);
-		Pen.lineTo(c.width@ypx);
-		Pen.stroke;
 
-		Pen.fillColor_(p.strokeXColor.blend(p.strokeYColor, 0.5));
-		Pen.fillOval(Size(6,6).asRect.origin_(xpx@ypx-3@3));
+		if (p.showCrosshairs) {
+			// x value
+			Pen.strokeColor_(p.strokeXColor);
+			Pen.moveTo(xpx@c.height);
+			Pen.lineTo(xpx@0);
+			Pen.stroke;
+			// y value
+			Pen.strokeColor_(p.strokeYColor);
+			Pen.moveTo(0@ypx);
+			Pen.lineTo(c.width@ypx);
+			Pen.stroke;
+		};
+
+		if (p.showPoint) {
+			psize = if (p.pointSize < 1) { p.pointSize * view.minDim } { p.pointSize * 2 };
+			Pen.fillColor_(
+				p.pointColor ?? {p.strokeXColor.blend(p.strokeYColor, 0.5)}
+			);
+			Pen.fillOval(Size(psize, psize).asRect.center_(xpx@ypx));
+		};
 
 		if (p.showText) {
-			txtRect = Size(45,p.fontSize+2).asRect;
+			str1 = view.values[0].round(p.round).asString;
+			str2 = view.values[1].round(p.round).asString;
+			font = Font(
+				p.fontName,
+				if (p.fontSize < 1) { p.fontSize * view.minDim } { p.fontSize }
+			);
+			txtRect = [str1, str2].at(
+				[str1.size, str2.size].maxIndex
+			).bounds(font);
+
 			// find left bound
 			if (xpx < txtRect.width) {
 				txtRect = txtRect.left_(xpx+4);
@@ -121,15 +160,9 @@ XYLevelsLayer : ValueViewLayer {
 				txtRect2 = txtRect.bottom_(ypx-2); // y val rect
 			};
 			// x value
-			Pen.stringInRect(
-				view.values[0].round(0.1).asString, txtRect1,
-				font, p.strokeXColor, QAlignment(align)
-			);
+			Pen.stringInRect(str1, txtRect1, font, p.strokeXColor, QAlignment(align));
 			// y value
-			Pen.stringInRect(
-				view.values[1].round(0.1).asString, txtRect2,
-				font, p.strokeYColor, QAlignment(align)
-			);
+			Pen.stringInRect(str2, txtRect2, font, p.strokeYColor, QAlignment(align));
 		};
 
 		Pen.pop;
@@ -160,7 +193,9 @@ XYBackgroundLayer : ValueViewLayer {
 			Pen.push;
 			Pen.strokeColor_(p.strokeXColor);
 			Pen.width_(strokeWidth);
-			Pen.strokeRect(Size(c.width-sw_h, c.height-sw_h).asRect.top_(c.top+sw_h).left_(c.left+sw_h));
+			Pen.strokeRect(
+				Rect(sw_h, sw_h, c.width-strokeWidth, c.height-strokeWidth) //.center_((view.bnds.width/2)@(view.bnds.height/2))
+			);
 			Pen.pop;
 		}
 	}

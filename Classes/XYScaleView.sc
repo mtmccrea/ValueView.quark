@@ -1,6 +1,6 @@
 XYScaleView : ValuesView {
 	var <>moveRelative, <fixSquare = true;
-	var <background, <range, <levels;
+	var <backgrnd, <range, <levels;
 	var <bnds, <cen, <minDim, <canvas; // set in drawFunc, for access by drawing layers
 	var mDownInCanvas, stInputsPnt;
 
@@ -15,12 +15,12 @@ XYScaleView : ValuesView {
 
 		// REQUIRED: in subclass init, initialize drawing layers
 		// initialize layer classes and save them to vars
-		#background, range, levels = [
+		#backgrnd, range, levels = [
 			XYBackgroundLayer, XYRangeLayer, XYLevelsLayer
 		].collect({ |class| class.new(this) });
 
 		// convenience variable to access a list of the layers
-		layers = [background, range, levels];
+		layers = [backgrnd, range, levels];
 
 		this.defineMouseActions;
 	}
@@ -44,10 +44,10 @@ XYScaleView : ValuesView {
 	drawInThisOrder {
 		// tranlate to top left of drawing area
 		Pen.translate(canvas.leftTop.x, canvas.leftTop.y);
-		if (background.p.show) {background.fill};
+		if (backgrnd.p.show) {backgrnd.fill};
 		if (range.p.show) {range.stroke};
 		if (levels.p.show) {levels.stroke};
-		if (background.p.show) {background.stroke};
+		if (backgrnd.p.show) {backgrnd.stroke};
 	}
 
 	defineMouseActions {
