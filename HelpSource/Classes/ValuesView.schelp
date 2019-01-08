@@ -1,7 +1,7 @@
 TITLE:: ValuesView
 summary:: A customizable UI view associated with multiple values and an assignable action.
 categories:: GUI>Views
-related:: Classes/ValueViewLayer, Classes/XYScaleView, Classes/ValuesView, Guides/Subclassing-ValueView
+related::  Guides/Subclassing-ValueView, Classes/ValueViewLayer, Classes/XYScaleView, Classes/ValuesView
 
 DESCRIPTION::
 Create a customizable GUI associated with values and assignable actions.
@@ -50,174 +50,6 @@ returns:: A link::Classes/ValuesView::.
 INSTANCEMETHODS::
 
 
-
-METHOD::specAt
-Get/set the link::Classes/ControlSpec:: used to both map the input and
-constrain the value at the strong::index:: of the array of link::#-values::.
-
-argument:: index
-The index of the value to which this spec is assigned.
-
-argument:: controlSpec
-A link::Classes/ControlSpec::.
-
-argument:: updateValue
-A link::Classes/Boolean:: specifying whether the corresponding value should be
-updated when the new strong::controlSpec:: is set. Default is code::true::.
-
-
-
-METHOD:: specs
-Get the link::Classes/Array:: that holds all of the
-link::Classes/ControlSpec::s used to both map the link::#-inputs:: and
-constrain the link::#-values::.
-
-
-COPYMETHOD:: ValueView -layers
-
-COPYMETHOD:: ValueView -onClose
-
-COPYMETHOD:: ValueView -mouseMoveAction
-
-
-COPYMETHOD:: ValueView -mouseDownAction
-
-
-COPYMETHOD:: ValueView -mouseUpAction
-
-
-COPYMETHOD:: ValueView -limitRefresh
-
-
-COPYMETHOD:: ValueView -refresh
-
-
-COPYMETHOD:: ValueView -maxRefreshRate
-
-
-COPYMETHOD:: ValueView -autoRefresh
-
-COPYMETHOD:: ValueView -userView
-
-
-METHOD:: valueAtAction
-Set the value at strong::index:: of the value array and perform the
-link::#-action::. This also updates the link::#-inputAt:: by unmapping from the
-link::#-specAt::.
-
-argument:: index
-The strong::index:: of the value array to set.
-
-argument:: value
-A link::Classes/Number:: in the range of the link::#-specAt::. Out-of-range
-values will be clipped to the link::#-specAt:: range, unless link::#-wrap:: is
-code::true::, in which case the strong::value:: is wrapped into range.
-
-
-METHOD:: valuesPerPixel
-Get/set the link::Classes/Array:: of values for the sensitivity of mouse
-interaction (and output resolution) by specifying the value change per pixel
-when interacting with the view through mouse movement. The size of the array
-should match the size of the link::#-values:: array.
-
-The default for each value is code::specAt[i].range / 200::, i.e. the entire
-range of each value will be covered in 200 pixels of movement.
-
-Alternatively you can set the number of pixels which represent the full range
-of a value with link::#-rangeInPixelsAt::.
-
-
-METHOD:: rangeInPixelsAt
-Get/set the sensitivity of mouse interaction (and output resolution) for
-individual values by specifying the number of pixels that represent the value's
-full range. Default is code::200::, i.e. the entire range of possible values
-will be covered in 200 pixels of movement. See also link::#-valuesPerPixel::.
-
-argument:: index
-The index of the value whose sensitivity is being set.
-
-argument:: px
-The number of pixels covering the value's full range.
-
-
-
-METHOD:: doAction
-Perform the link::#-action::. Usually called through
-link::#-valueAtAction::, link::#-valuesAction::, link::#-inputAtAction::,
-or link::#-inputsAction::.
-
-argument:: newValue
-A link::Classes/Boolean:: determining whether the link::#-action:: is
-performed. Default is code::true::. (When calling this method directly, the
-argument is redundant.)
-
-
-METHOD:: valueAt
-Get/set the value at strong::index:: of the value array without performing the
-link::#-action::. This also updates the link::#-inputAt:: by unmapping from the
-link::#-specAt::.
-
-argument:: index
-The strong::index:: of the value array to set.
-
-argument:: value
-A link::Classes/Number:: in the range of the link::#-specAt::. Out-of-range
-values will be clipped to the link::#-specAt:: range, unless link::#-wrap:: is
-code::true::, in which case the strong::value:: is wrapped into range.
-
-argument:: broadcast
-A link::Classes/Boolean:: indicating whether the new value should be broadcast.
-Default is code::true::, which is the common behavior. In exceptional cases you
-may want to link::#-broadcastState:: only after setting multiple values so the
-view isn't redrawn with each value update. (This is how
-link::#-valuesAction:: behaves internally.)
-
-
-METHOD:: inputAtAction
-Set the input at strong::index:: of the input array and perform the
-link::#-action::. This also updates the link::#-valueAt:: by mapping through
-the link::#-specAt::.
-
-argument:: index
-The strong::index:: of the value array to set.
-
-argument:: normInput
-A value from code::(0..1)::.
-
-
-METHOD:: action
-Get/set the action to be performed by the view when link::#-valueAtAction::,
-link::#-valuesAction::, link::#-inputAtAction::, link::#-inputsAction::,
-or link::#-doAction:: are called.
-
-argument:: actionFunc
-A link::Classes/Function:: which will be
-passed code::[this, this.values, this.inputs]:: as arguments.
-
-
-
-
-
-METHOD:: wrap
-Get the link::Classes/Array:: of link::Classes/Boolean::s determining whether
-setting out-of-range values are wrapped within the link::#-specs:: or clipped
-to its range. Set these values individually with link::#-wrapAt::.
-
-METHOD:: wrapAt
-Get/set the link::Classes/Boolean:: at a certain value index determining
-whether out-of-range values are wrapped within the link::#-specAt:: or clipped
-to its range. Each wrap setting is initialized to code::false::
-(values are clipped).
-
-argument:: index
-Index of the value array to apply this wrap setting to.
-
-argument:: bool
-A link::Classes/Boolean::.
-
-
-
-
 METHOD:: values
 Get/set the values held by the view, which are the mapped counterpart
 of the link::#-inputs:: (via the link::#-specs::), i.e. a value from
@@ -243,13 +75,25 @@ Out-of-range strong::vals:: will be clipped, unless link::#-wrap:: is
 code::true::, in which case they are wrapped into range.
 
 
-METHOD:: valuesAction
-Like link::#-values::, but in addition to setting the values, also perform the
-link::#action::. See link::#-values:: for more details.
+METHOD:: valueAt
+Get/set the value at strong::index:: of the value array without performing the
+link::#-action::. This also updates the link::#-inputAt:: by unmapping from the
+link::#-specAt::.
 
-argument::  ... newValues
-The new values, as succesive arguments. See link::#-values:: for more details.
+argument:: index
+The strong::index:: of the value array to set.
 
+argument:: value
+A link::Classes/Number:: in the range of the link::#-specAt::. Out-of-range
+values will be clipped to the link::#-specAt:: range, unless link::#-wrap:: is
+code::true::, in which case the strong::value:: is wrapped into range.
+
+argument:: broadcast
+A link::Classes/Boolean:: indicating whether the new value should be broadcast.
+Default is code::true::, which is the common behavior. In exceptional cases you
+may want to link::#-broadcastState:: only after setting multiple values so the
+view isn't redrawn with each value update. (This is how
+link::#-valuesAction:: behaves internally.)
 
 
 METHOD:: inputs
@@ -278,14 +122,6 @@ clipped, unless link::#-wrap:: is code::true::, in which case
 the strong::normInputs:: are wrapped into range.
 
 
-METHOD:: inputsAction
-Set the inputs, and perform the link::#-action::. (See link::#-inputs:: for
-more details.)
-
-argument::  ... normInputs
-The new inputs, as successive arguments, in the range code::(0..1)::. (See
-link::#-inputs:: for more details.)
-
 
 METHOD:: inputAt
 Get/set a single input at strong::index:: of the input array without performing
@@ -308,6 +144,102 @@ view isn't redrawn with each input update. (This is how
 link::#-inputsAction:: behaves internally.)
 
 
+METHOD:: action
+Get/set the action to be performed by the view when link::#-valueAtAction::,
+link::#-valuesAction::, link::#-inputAtAction::, link::#-inputsAction::,
+or link::#-doAction:: are called.
+
+argument:: actionFunc
+A link::Classes/Function:: which will be
+passed code::[this, this.values, this.inputs]:: as arguments.
+
+
+METHOD:: specs
+Get the link::Classes/Array:: that holds all of the
+link::Classes/ControlSpec::s used to both map the link::#-inputs:: and
+constrain the link::#-values::.
+
+
+METHOD::specAt
+Get/set the link::Classes/ControlSpec:: used to both map the input and
+constrain the value at the strong::index:: of the array of link::#-values::.
+
+argument:: index
+The index of the value to which this spec is assigned.
+
+argument:: controlSpec
+A link::Classes/ControlSpec::.
+
+argument:: updateValue
+A link::Classes/Boolean:: specifying whether the corresponding value should be
+updated when the new strong::controlSpec:: is set. Default is code::true::.
+
+
+SUBSECTION:: Action and Broadcasting
+
+
+METHOD:: valuesAction
+Like link::#-values::, but in addition to setting the values, also perform the
+link::#action::. See link::#-values:: for more details.
+
+argument::  ... newValues
+The new values, as succesive arguments. See link::#-values:: for more details.
+
+
+METHOD:: valueAtAction
+Set the value at strong::index:: of the value array and perform the
+link::#-action::. This also updates the link::#-inputAt:: by unmapping from the
+link::#-specAt::.
+
+argument:: index
+The strong::index:: of the value array to set.
+
+argument:: value
+A link::Classes/Number:: in the range of the link::#-specAt::. Out-of-range
+values will be clipped to the link::#-specAt:: range, unless link::#-wrap:: is
+code::true::, in which case the strong::value:: is wrapped into range.
+
+
+METHOD:: inputsAction
+Set the inputs, and perform the link::#-action::. (See link::#-inputs:: for
+more details.)
+
+argument::  ... normInputs
+The new inputs, as successive arguments, in the range code::(0..1)::. (See
+link::#-inputs:: for more details.)
+
+
+METHOD:: inputAtAction
+Set the input at strong::index:: of the input array and perform the
+link::#-action::. This also updates the link::#-valueAt:: by mapping through
+the link::#-specAt::.
+
+argument:: index
+The strong::index:: of the value array to set.
+
+argument:: normInput
+A value from code::(0..1)::.
+
+
+METHOD:: doAction
+Perform the link::#-action::. Usually called through
+link::#-valueAtAction::, link::#-valuesAction::, link::#-inputAtAction::,
+or link::#-inputsAction::.
+
+argument:: newValue
+A link::Classes/Boolean:: determining whether the link::#-action:: is
+performed. Default is code::true::. (When calling this method directly, the
+argument is redundant.)
+
+
+METHOD:: suppressRepeatedAction
+Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
+performed only when a newly set value differs from its previous state. This
+applies when calling link::#-valueAction::, link::#-inputAction::,
+or link::#-doAction::. Default is code::true:: (repeated actions are
+suppressed).
+
+
 METHOD:: broadcastNewOnly
 Get/set the link::Classes/Boolean:: determining whether dependents are
 notified when the link::#-inputs:: or link::#-values:: are set but havn't
@@ -324,18 +256,85 @@ Dependents can listen for strong::.changed:: messages with the keys
 code::\values:: and code::\inputs::.
 
 
-METHOD:: suppressRepeatedAction
-Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
-performed only when a newly set value differs from its previous state. This
-applies when calling link::#-valueAction::, link::#-inputAction::,
-or link::#-doAction::. Default is code::true:: (repeated actions are
-suppressed).
+SUBSECTION:: Interaction
 
 
-PRIVATE:: update, drawFunc, superInit, broadcastState
+METHOD:: wrap
+Get the link::Classes/Array:: of link::Classes/Boolean::s determining whether
+setting out-of-range values are wrapped within the link::#-specs:: or clipped
+to its range. Set these values individually with link::#-wrapAt::.
+
+
+METHOD:: wrapAt
+Get/set the link::Classes/Boolean:: at a certain value index determining
+whether out-of-range values are wrapped within the link::#-specAt:: or clipped
+to its range. Each wrap setting is initialized to code::false::
+(values are clipped).
+
+argument:: index
+Index of the value array to apply this wrap setting to.
+
+argument:: bool
+A link::Classes/Boolean::.
+
+
+METHOD:: rangeInPixelsAt
+Get/set the sensitivity of mouse interaction (and output resolution) for
+individual values by specifying the number of pixels that represent the value's
+full range. Default is code::200::, i.e. the entire range of possible values
+will be covered in 200 pixels of movement. See also link::#-valuesPerPixel::.
+
+argument:: index
+The index of the value whose sensitivity is being set.
+
+argument:: px
+The number of pixels covering the value's full range.
+
+
+METHOD:: valuesPerPixel
+Get/set the link::Classes/Array:: of values for the sensitivity of mouse
+interaction (and output resolution) by specifying the value change per pixel
+when interacting with the view through mouse movement. The size of the array
+should match the size of the link::#-values:: array.
+
+The default for each value is code::specAt[i].range / 200::, i.e. the entire
+range of each value will be covered in 200 pixels of movement.
+
+Alternatively you can set the number of pixels which represent the full range
+of a value with link::#-rangeInPixelsAt::.
+
+
+COPYMETHOD:: ValueView -mouseMoveAction
+
+COPYMETHOD:: ValueView -mouseDownAction
+
+COPYMETHOD:: ValueView -mouseUpAction
+
+COPYMETHOD:: ValueView -onClose
+
+
+SUBSECTION:: Updating
+
+
+COPYMETHOD:: ValueView -refresh
+
+COPYMETHOD:: ValueView -limitRefresh
+
+COPYMETHOD:: ValueView -maxRefreshRate
+
+COPYMETHOD:: ValueView -autoRefresh
+
+
+SUBSECTION:: View Layers
+
+
+COPYMETHOD:: ValueView -userView
+
+COPYMETHOD:: ValueView -layers
+
+
+PRIVATE:: update, drawFunc, superInit, broadcastState, refresh, limitRefresh, maxRefreshRate, autoRefresh, userView, layers, mouseUpAction, mouseDownAction, mouseMoveAction, onClose
+
 
 EXAMPLES::
-
-code::
-(some example code)
-::
+See link::Classes/XYScaleView#Examples::.

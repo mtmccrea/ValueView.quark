@@ -21,8 +21,8 @@ authoring link::Classes/ValueViewLayer::s which define drawing layers.
 See link::Guides/Subclassing-ValueView::.
 
 Dependents can listen for strong::.changed:: messages with the keys
-code::\value:: and code::\input:: (the link::#-iinput:: is the link::#-value::
-unmapped by the link::#-spec::).
+code::\value:: and code::\input:: (the link::#-input:: is the
+link::#-value:: unmapped by the link::#-spec::).
 
 To represent more than one value associated with a single view,
 use link::Classes/ValuesView::.
@@ -62,39 +62,6 @@ returns:: A link::Classes/ValueView::.
 
 INSTANCEMETHODS::
 
-METHOD:: onClose
-Set the link::Classes/Function:: to be executed when the view closes.
-
-argument:: func
-A link::Classes/Function::. It will be passed this view as an argument.
-
-
-METHOD:: broadcastNewOnly
-Get/set the link::Classes/Boolean:: determining whether dependents are
-notified when the link::#-input:: or link::#-value:: is set but hasn't changed
-from its previous value.  An advantage is that there's less throughput
-if your view's (unchanged) state is updated rapidly. The disadvantage is that
-if a new dependent is added, it won't necessarily know the state of the view
-until the value changes (in which case it would need to access
-this view's link::#-value:: and/or link::#-input:: when it's initialized).
-
-Default is code::false::, i.e. the value and input are always broadcast when
-set even if the values haven't changed.
-
-Dependents can listen for strong::.changed:: messages with the keys
-code::\value:: and code::\input::.
-
-
-METHOD:: layers
-Return the drawing layer objects used by this view. Useful for recalling what
-drawing layers have been designed for the view, though each layer is more
-likely more conveniently accessed by its instance variable name (which should
-be designed into the class—see source code for this class).
-
-
-METHOD:: userView
-Return the link::Classes/UserView:: used internally.
-
 
 METHOD:: value
 Get/set the strong::value:: held by the view, which is the mapped counterpart
@@ -112,6 +79,22 @@ emphasis::wrapped:: within the view's link::#-spec::, depending on the state of
 link::#-wrap:: (default is code::false::, i.e. constrained to the spec.).
 
 
+METHOD:: input
+Get/set the input held by the view, which is the unmapped counterpart
+of the link::#-value:: (via the link::#-spec::), i.e. a value from (0..1). This
+is useful for updating other UI elements which are often set through normalized
+values, like link::Classes/Slider::s.
+
+The new input and corresponding link::#-value:: will be broadcast to
+dependents, via code::\input:: and code::\value:: messages, respectively, every
+time either is set, unless link::#-broadcastNewOnly:: is code::true::, in which
+case the values are only broadcast if they differ from their previous state.
+
+argument:: normValue
+A link::Classes/Number:: in the range code::(0..1)::, which will be mapped by
+the link::#-spec:: to set the value.
+
+
 METHOD:: action
 Get/set the action to be performed by the view when link::#-valueAction::,
 link::#-inputAction::, or link::#-doAction:: are called.
@@ -119,40 +102,6 @@ link::#-inputAction::, or link::#-doAction:: are called.
 argument:: actionFunc
 A link::Classes/Function:: which will be
 passed code::[this, this.value, this.input]:: as arguments.
-
-
-METHOD:: keyStep
-Get/set the step amount of each arrow key press, as a percentage of the range
-of the spec. E.g. strong::keyStep:: of code::30.reciprocal:: (the default)
-means it takes 30 key strokes to cover the full value range (warped according
-to the link::#-spec::).
-
-
-METHOD:: scrollStep
-Get/set the step amount when scrolling. Default is code::100.reciprocal::.
-
-
-METHOD:: scroll
-Get/set the link::Classes/Boolean:: indicating whether the value changes with
-mouse scrolling. Default is code::true::.
-
-
-METHOD:: limitRefresh
-Get/set the link::Classes/Boolean:: indicating whether the refresh rate should
-be limited to link::#-maxRefreshRate::.
-
-
-METHOD:: maxRefreshRate
-Get/set the maximum refresh rate of the view when link::#-limitRefresh:: is
-code::true::.
-
-argument:: hz
-A link::Classes/Number:: that is the max refresh rate of the view.
-
-
-METHOD:: autoRefresh
-A link::Classes/Boolean:: determining whether the view is refreshed when
-drawing layer properties are set. Default is code::true::
 
 
 METHOD:: spec
@@ -171,25 +120,7 @@ A link::Classes/Boolean:: specifying whether the link::#-value::
 set. Default is code::true::.
 
 
-METHOD:: xScrollDir
-Get/set the x scroll direction. code::1:: is left to right scrolling
-(default), code::-1:: is the reverse.
-
-
-METHOD:: yScrollDir
-Get/set the y scroll direction. code::-1:: is "natural" scrolling (default),
-code::1:: is the reverse.
-
-
-METHOD:: keyDirLR
-Get/set the step direction of Left/Right arrow keys. code::1:: = right
-increments, left decrements (default). code::-1:: = left increments, right
-decrements.
-
-
-METHOD:: keyDirUD
-Get/set the step direction of Up/Down arrow keys. code::1:: = up increments,
-down decrements (default). code::-1:: = down increments, up decrements.
+SUBSECTION:: Action and Broadcasting
 
 
 METHOD:: valueAction
@@ -213,41 +144,6 @@ clipped to the range, unless link::#-wrap:: is code::true::, in which case
 the strong::normValue:: is wrapped into range.
 
 
-METHOD:: suppressRepeatedAction
-Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
-performed only when a newly set value differs from its previous state. This
-applies when calling link::#-valueAction::, link::#-inputAction::,
-or link::#-doAction::. Default is code::true:: (repeated actions are
-suppressed). See link::Classes/RotaryView#Example: radio dial::.
-
-
-METHOD:: refresh
-Refresh the view. If link::#-limitRefresh:: is code::true:: the view will only
-update at link::#-maxRefreshRate::.
-
-
-METHOD:: input
-Get/set the input held by the view, which is the unmapped counterpart
-of the link::#-value:: (via the link::#-spec::), i.e. a value from (0..1). This
-is useful for updating other UI elements which are often set through normalized
-values, like link::Classes/Slider::s.
-
-The new input and corresponding link::#-value:: will be broadcast to
-dependents, via code::\input:: and code::\value:: messages, respectively, every
-time either is set, unless link::#-broadcastNewOnly:: is code::true::, in which
-case the values are only broadcast if they differ from their previous state.
-
-argument:: normValue
-A link::Classes/Number:: in the range code::(0..1)::, which will be mapped by
-the link::#-spec:: to set the value.
-
-
-METHOD:: wrap
-A link::Classes/Boolean:: determining whether setting out-of-range values are
-wrapped within the link::#-spec:: or clipped to its range. Default
-is code::false:: (values are clipped).
-
-
 METHOD:: doAction
 Perform the link::#-action::. Usually called through
 link::#-valueAction:: or link::#-inputAction::.
@@ -260,6 +156,92 @@ the result of code::newValue != oldValue::, i.e. whether the value has changed
 to signal whether the action should be suppressed according
 to link::#-supressRepearedAction::, hence the name strong::newValue::. When
 calling this method directly, the argument is redundant.)
+
+
+METHOD:: suppressRepeatedAction
+Get/set the link::Classes/Boolean:: which determines if the link::#-action:: is
+performed only when a newly set value differs from its previous state. This
+applies when calling link::#-valueAction::, link::#-inputAction::,
+or link::#-doAction::. Default is code::true:: (repeated actions are
+suppressed). See link::Classes/RotaryView#Example: radio dial::.
+
+
+METHOD:: broadcastNewOnly
+Get/set the link::Classes/Boolean:: determining whether dependents are
+notified when the link::#-input:: or link::#-value:: is set but hasn't changed
+from its previous value.  An advantage is that there's less throughput
+if your view's (unchanged) state is updated rapidly. The disadvantage is that
+if a new dependent is added, it won't necessarily know the state of the view
+until the value changes (in which case it would need to access
+this view's link::#-value:: and/or link::#-input:: when it's initialized).
+
+Default is code::false::, i.e. the value and input are always broadcast when
+set even if the values haven't changed.
+
+Dependents can listen for strong::.changed:: messages with the keys
+code::\value:: and code::\input::.
+
+
+SUBSECTION:: Interaction
+
+
+METHOD:: wrap
+A link::Classes/Boolean:: determining whether setting out-of-range values are
+wrapped within the link::#-spec:: or clipped to its range. Default
+is code::false:: (values are clipped).
+
+
+METHOD:: scroll
+Get/set the link::Classes/Boolean:: indicating whether the value changes with
+mouse scrolling. Default is code::true::.
+
+
+METHOD:: scrollStep
+Get/set the step amount when scrolling. Default is code::100.reciprocal::.
+
+
+METHOD:: xScrollDir
+Get/set the x scroll direction. code::1:: is left to right scrolling
+(default), code::-1:: is the reverse.
+
+
+METHOD:: yScrollDir
+Get/set the y scroll direction. code::-1:: is "natural" scrolling (default),
+code::1:: is the reverse.
+
+
+METHOD:: rangeInPixels
+Get/set the sensitivity of mouse interaction (and output resolution) by
+specifying the number of pixels over which the whole view's value range can be
+covered. Default is code::200::, i.e. the entire range of possible values will
+be covered in 200 pixels of movement. This can also be set
+by link::#-valuePerPixel::.
+
+
+METHOD:: valuePerPixel
+Get/set the sensitivity of mouse interaction (and output resolution) by
+specifying the value change per pixel when interacting with the view through
+mouse movement. Default is code::spec.range / 200::, i.e. the entire range of
+possible values will be covered in 200 pixels of movement. This can also be set
+by link::#-rangeInPixels::.
+
+
+METHOD:: keyStep
+Get/set the step amount of each arrow key press, as a percentage of the range
+of the spec. E.g. strong::keyStep:: of code::30.reciprocal:: (the default)
+means it takes 30 key strokes to cover the full value range (warped according
+to the link::#-spec::).
+
+
+METHOD:: keyDirLR
+Get/set the step direction of Left/Right arrow keys. code::1:: = right
+increments, left decrements (default). code::-1:: = left increments, right
+decrements.
+
+
+METHOD:: keyDirUD
+Get/set the step direction of Up/Down arrow keys. code::1:: = up increments,
+down decrements (default). code::-1:: = down increments, up decrements.
 
 
 METHOD:: mouseMoveAction
@@ -283,26 +265,55 @@ code::[this, x, y, modifiers, buttonNumber]:: as arguments (see
 link::Classes/View#Mouse actions::).
 
 
-METHOD:: rangeInPixels
-Get/set the sensitivity of mouse interaction (and output resolution) by
-specifying the number of pixels over which the whole view's value range can be
-covered. Default is code::200::, i.e. the entire range of possible values will
-be covered in 200 pixels of movement. This can also be set
-by link::#-valuePerPixel::.
+METHOD:: onClose
+Set the link::Classes/Function:: to be executed when the view closes.
+
+argument:: func
+A link::Classes/Function::. It will be passed this view as an argument.
 
 
-METHOD:: valuePerPixel
-Get/set the sensitivity of mouse interaction (and output resolution) by
-specifying the value change per pixel when interacting with the view through
-mouse movement. Default is code::spec.range / 200::, i.e. the entire range of
-possible values will be covered in 200 pixels of movement. This can also be set
-by link::#-rangeInPixels::.
+SUBSECTION:: Updating
+
+
+METHOD:: refresh
+Refresh the view. If link::#-limitRefresh:: is code::true:: the view will only
+update at link::#-maxRefreshRate::.
+
+
+METHOD:: limitRefresh
+Get/set the link::Classes/Boolean:: indicating whether the refresh rate should
+be limited to link::#-maxRefreshRate::.
+
+
+METHOD:: maxRefreshRate
+Get/set the maximum refresh rate of the view when link::#-limitRefresh:: is
+code::true::.
+
+argument:: hz
+A link::Classes/Number:: that is the max refresh rate of the view.
+
+
+METHOD:: autoRefresh
+A link::Classes/Boolean:: determining whether the view is refreshed when
+drawing layer properties are set. Default is code::true::
+
+
+SUBSECTION:: View Layers
+
+
+METHOD:: userView
+Return the link::Classes/UserView:: used internally.
+
+
+METHOD:: layers
+Return the drawing layer objects used by this view. Useful for recalling what
+drawing layers have been designed for the view, though each layer is more
+likely more conveniently accessed by its instance variable name (which should
+be designed into the class—see source code for this class).
+
 
 PRIVATE:: stepByScroll, stepByArrowKey, update, drawFunc, superInit, broadcastState
 
 
 EXAMPLES::
-
-code::
-(some example code)
-::
+See link::Classes/RotaryView#Examples::.

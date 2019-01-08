@@ -368,7 +368,7 @@ to center the text, in a range of code::(0..1)::
 
 where top-left is code::0@0::, bottom-right is code::1@1::
 ## round    || code::0.1:: || a link::Classes/Number:: to round the value display to
-## fontSize || code::0.1:: || font size
+## fontSize || code::0.1:: || font size in pixels, unless code::< 1::, then relative to radius
 ## fontName || code::"Helvetica":: || a link::Classes/String::, the font name
 ## color    || code::Color.gray:: || link::Classes/Color:: of the text
 ::
