@@ -4,13 +4,13 @@
         author: "Michael McCrea",
      copyright: "2017",
        license: "GPL v3",
-       version: "0.0.1",
-        schelp: "",
+       version: "0.1.0",
+        schelp: "ValueView",
           test: "",
            url: "https://github.com/mtmccrea/ValueView",
   dependencies: [
 
                 ],
   isCompatible: true ,
-         since: ""
+         since: "2017"
 )
