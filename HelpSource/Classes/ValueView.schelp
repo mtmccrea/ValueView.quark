@@ -1,31 +1,51 @@
 TITLE:: ValueView
-summary:: A customizable UI view associated with a value and an assignable action.
+summary:: A class for creating your own customizable GUI or data visualization.
 categories:: GUI>Views
-related:: Classes/ValueViewLayer, Classes/RotaryView, Classes/ValuesView, Guides/Subclassing-ValueView
+related:: Guides/Subclassing-ValueView, Classes/RotaryView, Classes/ValueViewLayer, Classes/ValuesView
+
+image::../img/RotaryView_layout_example.png#RotaryView, an example of a widget made with ValueView.::
 
 DESCRIPTION::
-Create customizable UI views associated with values and assignable actions.
+A class for creating customizable views associated with one value
+for designing your own UI and/or for data visualization.
+
 A link::Classes/ValueView:: stores a value and will draw a representation of
-that value in whatever way you choose, updating when those values change and
-notifying dependents of changed values. It uses Pen's drawing methods
-using a link::Classes/UserView:: internally. The
-view automatically updates when the value is set, and the view can
-optionally be made interactive to change the value as well as perform an action
-when the value changes. Update rates can be limited and repeated actions can be
-suppressed.
+that value in whatever way you choose. Similarly, for a view that interacts
+with multiple values, there is link::Classes/ValuesView::.
 
-The class isn't quite plug-and-play — link::Classes/ValueView:: is meant to be
-subclassed to author a new view/value representation, along with
-authoring link::Classes/ValueViewLayer::s which define drawing layers.
+SUBSECTION:: Highlights
 
-See link::Guides/Subclassing-ValueView::.
+The view:
+list::
+## will automatically update when its value changes
+## can perform an action when the value is updated
+## will notify dependents of a changed value
+## can optionally be made interactive, so you can change its value through
+mouse/key/scroll interaction
+## can limit its update rate and suppress repeated actions
+## uses `ControlSpec`s internally for un/mapping values for easy setting of
+ranges and warp factors
+::
 
-Dependents can listen for strong::.changed:: messages with the keys
-code::\value:: and code::\input:: (the link::#-input:: is the
-link::#-value:: unmapped by the link::#-spec::).
+SUBSECTION:: Composing your own view
 
-To represent more than one value associated with a single view,
-use link::Classes/ValuesView::.
+link::Classes/ValueView:: and link::Classes/ValuesView:: aren't quite
+plug-and-play: they're is meant to be subclassed
+to author a new view/value representation. You'll also subclass
+link::Classes/ValueViewLayer::s which define drawing layers with
+user-assignable properties.
+
+There's a guide to get you up and running:
+link::Guides/Subclassing-ValueView::, which explains how to sublcass
+link::Classes/ValueView::, though the process is the same for
+link::Classes/ValuesView::.
+
+There are also two fully functional classes to use and reference:
+list::
+## link::Classes/RotaryView::, a rotary encoder style widget (like a
+flexible version of link::Classes/Knob::), and
+## link::Classes/XYScaleView::, an X/Y plotter controller
+::
 
 
 CLASSMETHODS::

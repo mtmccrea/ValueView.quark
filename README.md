@@ -1,12 +1,12 @@
-The ValueView Quark : Read Me
-=============================
+The ValueView Quark
+===================
 _A library of customizable views associated with one or more values for designing your own UI and/or for data visualization._
 
  A `ValueView` stores a value and will draw a representation of that value in whatever way you choose. Similarly, for a view that interacts with multiple values, there is `ValuesView`.
 The Quark includes functional examples classes: `RotaryView`, a rotary encoder style widget (like a more flexible version of `Knob`), and `XYScaleView`, an X/Y plotter controller.
 
 ![RotaryView example](HelpSource/img/RotaryView_layout_example.png)
-*RotaryView, an example of a widget made with ValueView.*
+*`RotaryView`: an example of a widget made with `ValueView`.*
 
 #### Highlights
 
@@ -24,7 +24,8 @@ These classes aren't quite plug-and-play: `ValueView` is meant to be subclassed 
 There's a guide to get you up and running, `Guides>Subclassing ValueView`, as well as two fully functional classes to use and reference: `RotaryView` and `XYScaleView`.
 
 ![XYScaleView example](HelpSource/img/XYScaleView_example.png)
-*XYScaleView, a simple example of a widget made with ValuesView.*
+
+*`XYScaleView`: a simple example of a widget made with `ValuesView`. (Represents two independently scaled values: X an Y)*
 
 Installing
 ==========

@@ -3,18 +3,23 @@ summary:: A class for drawing a layer of an interactive view subclassed from Val
 categories:: GUI>Views
 related:: Classes/ValueView, Classes/ValuesView, Classes/RotaryViewLayer, Guides/Subclassing-ValueView
 
+
 DESCRIPTION::
 link::Classes/ValueView:: and link::Classes/ValuesView:: are customizable UI
-views associated with values and assignable actions. This class is at the core
-of how those views draw their user interfaces. Each
-link::Classes/ValueViewLayer:: encapsulates a drawing layer if your UI, with a
-set of properties that will automatically update when changed. Within
-link::Classes/ValueView::, multiple layers are drawn in succession to form your
-final visualization.
+views associated with values and assignable actions.
+
+This class is at the core of how those views draw their user interfaces. Each
+link::Classes/ValueViewLayer:: encapsulates a drawing layer of your UI, with a
+set of properties that will automatically update when changed.
+
+Within the link::Classes/ValueView::, multiple layers are drawn in succession
+to form your final visualization.
+
 link::Classes/ValueViewLayer:: is meant to be subclassed once for each layer in
 your UI. For example you may have one for a background layer, a middle layer, a
 top layer, and a text overlay layer, each with different properties like font,
 color, stroke/fill, line width, etc.
+
 
 CLASSMETHODS::
 
@@ -72,7 +77,15 @@ A Symbol: code::\butt::, code::\round::, code::\square::.
 
 
 SECTION:: Composing your subclass
-How-to
+There's a guide to get you up and running:
+link::Guides/Subclassing-ValueView::, which explains how to sublcass
+link::Classes/ValueView:: along with this class (the process is the same for
+link::Classes/ValuesView::).
 
+There are also two fully functional classes to use and reference:
+list::
+## link::Classes/RotaryView::, a rotary encoder style widget, and
+## link::Classes/XYScaleView::, an X/Y plotter controller
+::
 
 PRIVATE:: register, doesNotUnderstand

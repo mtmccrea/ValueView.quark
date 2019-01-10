@@ -3,6 +3,8 @@ summary:: A UI view that mimics a rotary-style encoder.
 categories:: GUI>Views
 related:: Classes/ValueView, Classes/Knob
 
+image::../img/RotaryView_layout_example.png#An example of a series of RotaryViews in a layout.::
+
 DESCRIPTION::
 A GUI view that mimics a rotary-style encoder, similar to link::Classes/Knob::,
 but fully customizable, including optionally a full 360-degree continuous range.

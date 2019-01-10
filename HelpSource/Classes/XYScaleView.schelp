@@ -3,7 +3,12 @@ summary:: An XY control widget
 categories:: GUI>Views
 related:: Classes/ValuesView,  Guides/Subclassing-ValueView
 
+
+image::../img/XYScaleView_example.png#A simple X-Y plotter interface::
+
+
 DESCRIPTION::
+
 A link::Classes/View:: for interacting with two values on an X/Y plot. Each
 axis can be mapped to an independent link::Classes/ControlSpec::, and the
 appearance can be customized.
