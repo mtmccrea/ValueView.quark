@@ -70,11 +70,15 @@ A Symbol: code::\miter::, code::\round::, code::\bevel::.
 
 
 METHOD:: getCapIndex
-(describe method here)
+A convenience to look up the code::Pen.capStyle:: by keyword.
 
 argument:: style
 A Symbol: code::\butt::, code::\round::, code::\square::.
 
+
+METHOD:: listProperties
+Post a formatted (unordered) list of the drawing layer's properties and their
+current values.
 
 SECTION:: Composing your subclass
 There's a guide to get you up and running:

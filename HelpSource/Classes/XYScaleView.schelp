@@ -83,7 +83,7 @@ The drawing layer representing the canvas "background" (which isn't the same
 as the view's link::#-background::)
 
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show        || code::true:: || show the backgrnd layer or not
 ## stroke      || code::false:: || stroke the boarder of the view or not (drawn last, on top)
 ## strokeWidth || code::2:: || width of stroke, in pixels
@@ -99,7 +99,7 @@ METHOD:: range
 The drawing layer responsible for drawing the range illustration of each axis.
 
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show         || code::true:: || show the range layer or not
 ## strokeWidth  || code::0.03:: || width of stroke, in pixels
 
@@ -118,7 +118,7 @@ METHOD:: levels
 The drawing layer responsible for drawing the current values of X and Y.
 
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show         || code::true:: || show the levels layer or not
 ## showPoint    || code::true:: || show a point where the values cross on the plotter or not
 ## pointSize    || code::true:: || radius of the point in pixels
@@ -155,7 +155,7 @@ v = XYScaleView(
 )
 
 v.layers;                   // these are the drawing layers
-v.range.strokeWidth = 0.01; // change a drawing layer attributes (range layer)
+v.range.strokeWidth = 0.01; // change a drawing layer properties (range layer)
 v.levels.showCrosshairs_(false).showText_(false); // (levels layer)
 
 v.specAt_(1, [2,3].asSpec); // change the value spec of the second value (y), view updates

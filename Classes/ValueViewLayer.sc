@@ -42,13 +42,13 @@ ValueViewLayer {
 		"'%'' property not found".format(asGetter).warn;
 	}
 
-	properties {^p}
+	properties { ^p }
 
-	getJoinIndex {|style|
-		if (style.isKindOf(Number))
-		{^style}
-		{
-			^switch(style,
+	getJoinIndex { |style|
+		^if (style.isKindOf(Number)) {
+			style
+		} {
+			switch(style,
 				\miter, { 0 },    // pointed corners, will overshoot vertex at sharp angles
 				\round, { 1 },    // round corners
 				\bevel, { 2 },    // snubbed corners
@@ -57,11 +57,11 @@ ValueViewLayer {
 		}
 	}
 
-	getCapIndex {|style|
-		if (style.isKindOf(Number))
-		{^style}
-		{
-			^switch(style,
+	getCapIndex { |style|
+		^if (style.isKindOf(Number)) {
+			style
+		} {
+			switch(style,
 				\butt,   { 0 },    // square end that doesn't overshoot endpoint, i.e. "butts" up angainst the endpoint
 				\flat,   { 0 },    // same as butt, as Qt calls it
 				\round,  { 1 },    // round end that overshoots endpoint by half pen width, i.e. center of the brush stops on the endpoint

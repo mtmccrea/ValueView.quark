@@ -289,10 +289,10 @@ A A link::Classes/Number:: in radians.
 SUBSECTION:: Drawing layers: fine tuning appearance
 
 The rotary is comprised of multiple layers, each with their own settable
-attributes: range, level, text, ticks, handle, and outline. Each drawing
+properties: range, level, text, ticks, handle, and outline. Each drawing
 layer has a code::*properties:: list (an link::Classes/Event::), the keys of
 which can be accessed as pseudo-methods for getting and setting their values.
-Setting an attribute automatically refreshes the view. For example:
+Setting a property automatically refreshes the view. For example:
 code::
 // assuming you've created a RotaryView 'myRotary'
 myRotary.handle.style = \arrow;  // make the rotary's "handle" an arrow
@@ -304,7 +304,7 @@ The layer showing the range of the rotary. Some parameters apply only for a
 certain code::style::. If code::style == \wedge::, an annularWedge is drawn
 for the range. If code::style == \arc:: a stroked arc is used.
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show        || code::true:: || show the range layer or not
 ## style       || code::\wedge:: || code::\arc:: or code::\wedge:: (an annularWedge); if code::\arc::, the width
 
@@ -335,7 +335,7 @@ The layer showing the level of the rotary. If code::style == \wedge::, an
 annularWedge is drawn for the range. If code::style == \arc:: a stroked arc
 is used.
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show        || code::true:: || show the level layer or not
 ## style       || code::\wedge:: || code::\arc:: or code::\wedge:: (an annularWedge); if code::\arc::, the width
 
@@ -362,7 +362,7 @@ an link::Classes/Integer:: of the link::Classes/Pen#*capStyle::
 METHOD:: text
 The layer showing the text of the rotary's current value.
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show     || code::true:: || show the text layer or not
 ## align    || code::\center:: || code::\top::, code::\bottom::, code::\center::, code::\left::, code::\right::, or a link::Classes/Point:: on which
 
@@ -383,7 +383,7 @@ are set through link::#-numTicks::, link::#-ticksAt::, link::#-ticksAtValues::,
 or link::#-ticksEveryVal::.
 
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show        || code::false:: || show the tick layer or not
 ## anchor      || code::0.97:: || code::(0..1):: position/radius where the ticks are "anchored",
 
@@ -411,7 +411,7 @@ METHOD:: handle
 The layer showing the "handle" of the rotary. Some properties are only valid
 for certain strong::style::s.
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show        || code::true:: || show the handle layer or not
 ## style       || code::'line':: || code::\line::, code::\circle::, or code::\arrow::
 ## anchor      || code::0.9:: || reference radius of for drawing the anchor strong::align::, code::(0..1)::
@@ -442,7 +442,7 @@ The layer showing the outline of the rotary. It's called "outline", but need
 not be on the perimeter—it's essentially a circle of variable size/fill that
 can serve as an outline or visual accent. It's the topmost layer.
 table::
-## strong::attribute:: || strong::default:: || strong::description::
+## strong::property:: || strong::default:: || strong::description::
 ## show        || code::false:: || show the outline layer or not
 ## radius      || code::1:: || code::(0..1)::, relative to radius
 ## stroke      || code::true:: || stroke or not

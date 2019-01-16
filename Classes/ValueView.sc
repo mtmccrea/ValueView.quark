@@ -174,7 +174,7 @@ ValueView : View {
 	broadcastState { |newValue=true|
 		// update the value and input in layers' properties list
 		// note: because this sets p values directly, it doesn't trigger an update
-		layers.do({|l| l.p.val = value; l.p.input = input});
+		layers.do{ |l| l.p.val = value; l.p.input = input };
 
 		// notify dependants
 		if (newValue) {
