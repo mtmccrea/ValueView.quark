@@ -23,25 +23,23 @@ ValueViewLayer {
 	}
 
 	// catch setters and forward to setting properties
-	doesNotUnderstand {|selector, value|
+	doesNotUnderstand { |selector, value|
 		var asGetter = selector.asGetter;
+		var curVal = p[asGetter];
 
 		if (selector.isSetter) {
-			if (p[asGetter].notNil) {
+			if (curVal.notNil) {
 				p[asGetter] = value;
-				this.changed(\layerProperty, asGetter, value);
-			} {
-				format("'%'' property not found", asGetter).warn;
-				// return self
+				^this.changed(\layerProperty, asGetter, value);
 			}
 		} {
-			if(p[asGetter].notNil) {
-				^p[selector];
-			} {
-				format("'%'' property not found", asGetter).warn;
-				// return self
+			if (curVal.notNil) {
+				^p[selector]
 			}
 		};
+
+		// unknown selector, warn and return self
+		"'%'' property not found".format(asGetter).warn;
 	}
 
 	properties {^p}
@@ -71,5 +69,11 @@ ValueViewLayer {
 				{ 0 }              // default
 			)
 		}
+	}
+
+	listProperties {
+		postf("% (\n", this.class.name);
+		this.p.keysValuesDo{ |k,v| postf("\t% : %\n", k, v) };
+		")".postln;
 	}
 }
