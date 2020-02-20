@@ -242,14 +242,14 @@ RotaryView : ValueView {
 	// ticks values by value hop, unmapped by spec
 	ticksEveryVal_ { |valueHop, majorEvery=2|
 		var numSteps, step, ticks, numMaj, majList, minList;
-		numSteps = (spec.range / valueHop).asInt;
+		numSteps = (spec.range / valueHop).asInteger;
 		step = numSteps.reciprocal;
 		ticks = (0..numSteps) * step * sweepLength;
 		if ((ticks.first % 2pi) == (ticks.last % 2pi)) {
 			// first and last tick are the same, discard last
 			ticks = ticks[0..numSteps-1];
 		};
-		numMaj = (numSteps/majorEvery).asInt;
+		numMaj = (numSteps/majorEvery).asInteger;
 		majList = List(numMaj);
 		minList = List(numSteps-numMaj);
 		ticks.do{ |val, i| if ((i % majorEvery) == 0, { majList.add(val) }, { minList.add(val) }) };
@@ -261,7 +261,7 @@ RotaryView : ValueView {
 	numTicks_ { |num, majorEvery=2, startAndEnd=true|
 		var hop, ticks, numMaj, majList, minList;
 		hop = if (startAndEnd, { sweepLength / (num-1) }, { sweepLength / num });
-		ticks = num.asInt.collect{ |i| i * hop };
+		ticks = num.asInteger.collect{ |i| i * hop };
 		numMaj = num/majorEvery;
 		majList = List(numMaj);
 		minList = List(num-numMaj);
