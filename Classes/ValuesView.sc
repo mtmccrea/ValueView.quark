@@ -4,7 +4,7 @@
 
 ValuesView : View {
 	// to be set and accessed by subclasses
-	var <specs, <values, <inputs, <action, <wrap;
+	var <specs, <values, <inputs, <wrap; // <action (from View)
 
 	var <>limitRefresh = false, <maxRefreshRate=25, updateWait, allowUpdate=true, updateHeld=false;
 	var <>suppressRepeatedAction = true;
@@ -13,7 +13,6 @@ ValuesView : View {
 
 	// interaction
 	var mouseDownPnt, mouseUpPnt, mouseMovePnt;
-	var <>mouseDownAction, <>mouseUpAction, <>mouseMoveAction;
 	var <>valuesPerPixel;
 
 	var <userView;

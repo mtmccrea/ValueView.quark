@@ -3,7 +3,7 @@
 // and draws custom layers in a UserView, with mouse/arrow key interaction
 
 ValueView : View {
-	var <spec, <value, <input, <action;
+	var <spec, <value, <input;        // <action (from View)
 	var <>wrap = false;
 	var <>limitRefresh = false, <maxRefreshRate=25, updateWait, allowUpdate=true, updateHeld=false;
 	var <>suppressRepeatedAction = true;
@@ -12,7 +12,6 @@ ValueView : View {
 
 	// interaction
 	var mouseDownPnt, mouseUpPnt, mouseMovePnt;
-	var <>mouseDownAction, <>mouseUpAction, <>mouseMoveAction;
 	var <>valuePerPixel;
 	var <>scroll = true;
 
